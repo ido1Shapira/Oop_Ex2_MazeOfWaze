@@ -6,14 +6,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import utils.StdDraw;
+
 /**
  * This class represents a directional weighted graph.
  */
 public class DGraph implements graph{
 
 	private HashMap<Integer,node_data> idToVertex;
-	private HashMap<node_data,ArrayList<node_data>> vertexTohisNeighbors;
-	private HashMap<node_data,ArrayList<edge_data>> edgesOfVertex;
+	private HashMap<Integer,ArrayList<Integer>> vertexTohisNeighbors;
+	private HashMap<Integer,ArrayList<edge_data>> edgesOfVertex;
 	private HashMap<List<Integer>,edge_data> idToEdge;
 	private int mc;
 
@@ -21,8 +23,8 @@ public class DGraph implements graph{
 	public DGraph() {
 		this.idToVertex = new HashMap<Integer,node_data>();
 		this.idToEdge = new HashMap<List<Integer>,edge_data>();
-		this.vertexTohisNeighbors = new HashMap<node_data,ArrayList<node_data>>();
-		this.edgesOfVertex = new HashMap<node_data,ArrayList<edge_data>>();
+		this.vertexTohisNeighbors = new HashMap<Integer,ArrayList<Integer>>();
+		this.edgesOfVertex = new HashMap<Integer,ArrayList<edge_data>>();
 
 	}
 	//////copy contractor//////////////
@@ -77,6 +79,7 @@ public class DGraph implements graph{
 		if(!this.idToVertex.containsKey(n.getKey())) {
 			this.idToVertex.put(n.getKey(),n);
 		}
+		this.mc++;
 	}
 
 	/**
@@ -94,14 +97,15 @@ public class DGraph implements graph{
 		if(!this.idToEdge.containsKey(id)) {
 			this.idToEdge.put(id,new Edge(src,dest,w)); //ask edut if this ok
 		}
-		if(this.vertexTohisNeighbors.isEmpty()) {
-			this.vertexTohisNeighbors.put(this.getNode(src),(new ArrayList<node_data>()));
+		if(!this.vertexTohisNeighbors.containsKey(src)) {
+			this.vertexTohisNeighbors.put(src,(new ArrayList<Integer>()));
 		}
-		this.vertexTohisNeighbors.get(this.getNode(src)).add(this.getNode(dest));
-		if(this.edgesOfVertex.isEmpty()) {
-			this.edgesOfVertex.put(this.getNode(src),(new ArrayList<edge_data>()));
+		this.vertexTohisNeighbors.get(src).add(dest);
+		if(!this.edgesOfVertex.containsKey(src)) {
+			this.edgesOfVertex.put(src,(new ArrayList<edge_data>()));
 		}
-		this.edgesOfVertex.get(this.getNode(src)).add(this.idToEdge.get(id));
+		this.edgesOfVertex.get(src).add(this.idToEdge.get(id));
+		this.mc++;
 	}
 
 	/**
@@ -124,7 +128,7 @@ public class DGraph implements graph{
 	 */
 	@Override
 	public Collection<edge_data> getE(int node_id) {
-		return this.edgesOfVertex.get(this.getNode(node_id));
+		return this.edgesOfVertex.get(node_id);
 	}
 
 	/**
@@ -140,17 +144,19 @@ public class DGraph implements graph{
 		if(nodeToRemove != null) {
 			List<Integer> id = new ArrayList<Integer>();
 			id.add(key);
-			for (Iterator<node_data> iterator = this.vertexTohisNeighbors.get(nodeToRemove).iterator(); iterator.hasNext();) {
-				node_data node = (node_data) iterator.next();
-				id.add(node.getKey());
+			for (Iterator<Integer> iterator = this.vertexTohisNeighbors.get(key).iterator(); iterator.hasNext();) {
+				int id_node = (int) iterator.next();
+				id.add(id_node);
 				this.idToEdge.remove(id);
-				id.remove(node.getKey());
+				id.remove(1); //id_node
 			}
-			this.vertexTohisNeighbors.remove(nodeToRemove);
+			this.vertexTohisNeighbors.remove(key);
 			this.idToVertex.remove(key);
-			this.edgesOfVertex.remove(this.getNode(key));
+			this.edgesOfVertex.remove(key);
 		}
+		this.mc++;
 		return nodeToRemove;
+		
 	}
 
 	/**
@@ -168,8 +174,9 @@ public class DGraph implements graph{
 			key.add(src);
 			key.add(dest);
 			this.idToEdge.remove(key);
-			this.edgesOfVertex.get(this.getNode(src)).remove(edgeToRemove);
+			this.edgesOfVertex.get(src).remove(edgeToRemove);
 		}
+		this.mc++;
 		return edgeToRemove;
 	}
 
@@ -200,5 +207,26 @@ public class DGraph implements graph{
 	public int getMC() {
 		return this.mc;
 	}
-
+	/**
+	 * paint the gragh
+	 */
+	public void paint() {
+		StdDraw.setCanvasSize();
+		for (Iterator<node_data> iterator = this.getV().iterator(); iterator.hasNext();) {
+			node_data node = (node_data) iterator.next();
+			drawNode(node);
+			for (Iterator<edge_data> iterator2 = this.getE(node.getKey()).iterator(); iterator2.hasNext();) {
+				edge_data edge = (edge_data) iterator2.next();
+				drawEdge(edge);
+			}
+		}
+	}
+	private void drawEdge(edge_data edge) {
+		node_data src = this.getNode(edge.getSrc());
+		node_data dest = this.getNode(edge.getDest());
+		StdDraw.line(src.getLocation().x(),src.getLocation().y(),dest.getLocation().x() , dest.getLocation().y());
+	}
+	private void drawNode(node_data node) {
+		StdDraw.point(node.getLocation().x(), node.getLocation().y());
+	}
 }
