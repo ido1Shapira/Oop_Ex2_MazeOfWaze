@@ -28,21 +28,21 @@ public class DGraph implements graph{
 
 	}
 	//////copy contractor//////////////
-//	public DGraph(DGraph g) {
-//		this.idToVertex = new HashMap<Integer,node_data>();
-//		for (Iterator<node_data> iterator = g.getV().iterator(); iterator.hasNext();) {
-//			node_data node = (node_data) iterator.next();
-//			this.idToVertex.put(node.getKey(),node);
-//		}
-//
-//		this.vertexTohisNeighbors = new HashMap<node_data,ArrayList<node_data>>();
-//		this.vertexTohisNeighbors.putAll(g.vertexTohisNeighbors);
-//
-//		this.idToEdge = new HashMap<List<Integer>,edge_data>();
-//		this.idToEdge.putAll(g.idToEdge);
-//
-//		this.mc = g.mc;
-//	}
+	//	public DGraph(DGraph g) {
+	//		this.idToVertex = new HashMap<Integer,node_data>();
+	//		for (Iterator<node_data> iterator = g.getV().iterator(); iterator.hasNext();) {
+	//			node_data node = (node_data) iterator.next();
+	//			this.idToVertex.put(node.getKey(),node);
+	//		}
+	//
+	//		this.vertexTohisNeighbors = new HashMap<node_data,ArrayList<node_data>>();
+	//		this.vertexTohisNeighbors.putAll(g.vertexTohisNeighbors);
+	//
+	//		this.idToEdge = new HashMap<List<Integer>,edge_data>();
+	//		this.idToEdge.putAll(g.idToEdge);
+	//
+	//		this.mc = g.mc;
+	//	}
 
 	/**
 	 * return the node_data by the node_id,
@@ -156,7 +156,7 @@ public class DGraph implements graph{
 		}
 		this.mc++;
 		return nodeToRemove;
-		
+
 	}
 
 	/**
@@ -211,22 +211,47 @@ public class DGraph implements graph{
 	 * paint the gragh
 	 */
 	public void paint() {
-		StdDraw.setCanvasSize();
+		StdDraw.setCanvasSize(800,600);
+		StdDraw.setXscale(0,100);
+		StdDraw.setYscale(0,100);
 		for (Iterator<node_data> iterator = this.getV().iterator(); iterator.hasNext();) {
 			node_data node = (node_data) iterator.next();
 			drawNode(node);
-			for (Iterator<edge_data> iterator2 = this.getE(node.getKey()).iterator(); iterator2.hasNext();) {
-				edge_data edge = (edge_data) iterator2.next();
-				drawEdge(edge);
+			if(this.getE(node.getKey()) != null) {
+				for (Iterator<edge_data> iterator2 = this.getE(node.getKey()).iterator(); iterator2.hasNext();) {
+					edge_data edge = (edge_data) iterator2.next();
+					drawEdge(edge);
+				}
 			}
 		}
+
 	}
 	private void drawEdge(edge_data edge) {
+		StdDraw.setPenRadius(0.005);
+		StdDraw.setPenColor(StdDraw.BLACK);
 		node_data src = this.getNode(edge.getSrc());
 		node_data dest = this.getNode(edge.getDest());
 		StdDraw.line(src.getLocation().x(),src.getLocation().y(),dest.getLocation().x() , dest.getLocation().y());
+		StdDraw.setPenRadius(0.02);
+		StdDraw.setPenColor(StdDraw.ORANGE);
+		double relativex=(src.getLocation().x()+5*dest.getLocation().x())/6;
+		double relativey=(src.getLocation().y()+5*dest.getLocation().y())/6;
+		//		double x[]= {relativex-1,relativex+1,relativex};
+		//		double y[]= {relativey+1,relativey-1,relativey};
+		//		StdDraw.filledPolygon(x, y);
+		StdDraw.point(relativex, relativey);
+		int round=(int)(edge.getWeight()*100);
+		double roundafter=round;
+		roundafter=roundafter/100;
+		StdDraw.setPenColor(StdDraw.RED);
+		StdDraw.text(relativex-1, relativey-1,""+roundafter);
 	}
 	private void drawNode(node_data node) {
+		StdDraw.setPenRadius(0.03);
+		StdDraw.setPenColor(StdDraw.CYAN);
 		StdDraw.point(node.getLocation().x(), node.getLocation().y());
 	}
+	//	public DGraph copy() {
+	//		return null;
+	//	}
 }
