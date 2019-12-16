@@ -2,6 +2,7 @@ package Test;
 
 import java.util.Iterator;
 
+import algorithms.Graph_Algo;
 import dataStructure.DGraph;
 import dataStructure.Vertex;
 import dataStructure.edge_data;
@@ -14,8 +15,30 @@ public class idoTest {
 	public final static int numberOfEdge = 7;
 
 	public static void main(String[] args) {
-	idotesting();
+//	idotesting();
 	edutesting();
+//	algotest();
+	}
+	private static void algotest() {
+		DGraph g = new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1), 0);
+		Vertex v2=new Vertex(new Point3D(10,80,1), 0);
+		Vertex v3=new Vertex(new Point3D(10,20,1), 0);
+		Vertex v4=new Vertex(new Point3D(7,65,1), 0);
+		g.addNode(v1);
+		g.addNode(v2);
+		g.addNode(v3);
+		g.addNode(v4);
+		g.connect(v1.getKey(), v2.getKey(), 3);
+		g.connect(v3.getKey(), v4.getKey(), 6);
+		g.connect(v1.getKey(), v4.getKey(), 2.33);
+		g.connect(v3.getKey(), v2.getKey(), 8);
+		Graph_Algo al=new Graph_Algo();
+		al.init(g);
+		al.save("start");
+		Graph_Algo al2=new Graph_Algo();
+		al2.init("start");
+	//	al2.myGraph.paint();
 	}
 	private static void edutesting() {
 		DGraph g = new DGraph();

@@ -17,13 +17,13 @@ public class Vertex implements node_data {
 	
 	///////////////////constructors/////////////////////
 	/**
-	 * @param id
+	 * @param id---not relevant
 	 * @param location
 	 * @param weight
 	 * @param info
 	 * @param tag
 	 */
-	public Vertex(Point3D location, double weight,String info,int tag) {
+	public Vertex(Point3D location, double weight ,String info,int tag) {
 		this.id = key++;
 		this.setLocation(location);
 		this.setWeight(weight);
@@ -31,7 +31,7 @@ public class Vertex implements node_data {
 		this.setTag(tag);
 	}
 	/**
-	 * @param id
+	 * @param id ---not relevant
 	 * @param location
 	 * @param weight
 	 * @param info
@@ -44,7 +44,7 @@ public class Vertex implements node_data {
 		this.tag = 0;
 	}
 	/**
-	 * @param id
+	 * @param id ---not relevant
 	 * @param location
 	 * @param weight
 	 */
@@ -94,12 +94,15 @@ public class Vertex implements node_data {
 	/**
 	 * Allows changing this node's weight.
 	 * @param w - the new weight
+	 * @throws Exception 
 	 */
 	@Override
 	public void setWeight(double w) {
 		if (w >= 0) {
 			this.weight = w;
 		}
+		else
+			System.out.println("weight must be positive");
 	}
 
 	/**
