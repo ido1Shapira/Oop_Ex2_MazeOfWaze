@@ -12,11 +12,11 @@ import utils.Point3D;
 public class idoTest {
 
 	public final static int numberOfVertexs = 10;
-	public final static int numberOfEdge = 7;
+	public final static int numberOfEdge = 20;
 
 	public static void main(String[] args) {
-//	idotesting();
-	edutesting();
+	idotesting();
+//	edutesting();
 //	algotest();
 	}
 	private static void algotest() {
@@ -75,7 +75,7 @@ public class idoTest {
 			do {  
 				v2 = (int)(Math.random()*numberOfVertexs) +1;
 			}while(v1 == v2);
-			g.connect(v1, v2, Math.random()*100);
+			g.connect(v1, v2, g.getNode(v1).getLocation().distance2D(g.getNode(v2).getLocation()));
 		}
 		long endTime = System.currentTimeMillis();
 

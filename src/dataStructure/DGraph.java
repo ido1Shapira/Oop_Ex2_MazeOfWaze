@@ -77,7 +77,7 @@ public class DGraph implements graph{
 	@Override
 	public void addNode(node_data n) {
 		if(!this.idToVertex.containsKey(n.getKey())) {
-			this.idToVertex.put(n.getKey(),n);
+			this.idToVertex.put(n.getKey(),new Vertex(n));
 		}
 		this.mc++;
 	}

@@ -56,6 +56,13 @@ public class Vertex implements node_data {
 		this.tag = 0;
 	}
 	
+	public Vertex(node_data n) {
+		this.id = n.getKey();
+		this.info = this.getInfo();
+		this.location = new Point3D(n.getLocation());
+		this.weight = n.getWeight();
+		this.tag = n.getTag();
+	}
 	/**
 	 * Return the key (id) associated with this node.
 	 * @return
@@ -144,5 +151,4 @@ public class Vertex implements node_data {
 			this.tag = t;
 		}
 	}
-
 }

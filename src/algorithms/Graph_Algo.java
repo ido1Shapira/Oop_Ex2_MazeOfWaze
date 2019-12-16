@@ -2,21 +2,13 @@ package algorithms;
 import dataStructure.*;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-
-import com.google.gson.Gson;
 
 /**
  * This empty class represents the set of graph-theory algorithms
@@ -25,11 +17,11 @@ import com.google.gson.Gson;
  *
  */
 public class Graph_Algo implements graph_algorithms{
-	public DGraph myGraph;
+	public graph myGraph;
 
 	@Override
 	public void init(graph g) {
-		myGraph=(DGraph) g;
+		myGraph= g;
 	}
 
 	@Override
@@ -38,7 +30,7 @@ public class Graph_Algo implements graph_algorithms{
 		try 
 		{
 			FileReader reader = new FileReader(file_name+".json");
-			DGraph gr = gson.fromJson(reader,DGraph.class);
+			graph gr = gson.fromJson(reader,DGraph.class);
 			this.myGraph=gr;
 		} 
 		catch (FileNotFoundException e) {
@@ -46,7 +38,22 @@ public class Graph_Algo implements graph_algorithms{
 		}
 
 	}
-
+	@Override
+	public graph copy() {
+		graph gcopy = new DGraph();
+		//vertex deep copy
+		for (Iterator<node_data> iterator = this.myGraph.getV().iterator(); iterator.hasNext();) {
+			node_data v = (node_data) iterator.next();
+			gcopy.addNode(v);
+			//edge deep copy
+			for (Iterator<edge_data> iterator2 = this.myGraph.getE(v.getKey()).iterator(); iterator.hasNext();) {
+				edge_data e = (edge_data) iterator2.next();
+				gcopy.connect(e.getSrc(),e.getDest(),e.getWeight());
+			}
+		}
+		return gcopy;
+	}
+	
 	@Override
 	public void save(String file_name) {
 		//Make JSON!!
@@ -91,11 +98,4 @@ public class Graph_Algo implements graph_algorithms{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public graph copy() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
