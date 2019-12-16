@@ -10,14 +10,41 @@ import utils.Point3D;
 
 public class idoTest {
 
-	public final static int numberOfVertexs = 1000000;
-	public final static int numberOfEdge = 10000;
+	public final static int numberOfVertexs = 10;
+	public final static int numberOfEdge = 7;
 
 	public static void main(String[] args) {
+	idotesting();
+	edutesting();
+	}
+	private static void edutesting() {
+		DGraph g = new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1), 0);
+		Vertex v2=new Vertex(new Point3D(10,80,1), 0);
+		g.addNode(v1);
+		g.addNode(v2);
+		g.connect(v1.getKey(), v2.getKey(), 3);
+		Vertex v3=new Vertex(new Point3D(10,20,1), 0);
+		Vertex v4=new Vertex(new Point3D(7,65,1), 0);
+		g.addNode(v3);
+		g.addNode(v4);
+		g.connect(v3.getKey(), v4.getKey(), 6);
+		g.connect(v1.getKey(), v4.getKey(), 2.33);
+		g.connect(v3.getKey(), v2.getKey(), 888);
+		g.paint();
+		System.out.println("before="+g.edgeSize());
+		System.out.println(g.getEdge(v1.getKey(), v2.getKey()).getWeight());
+		g.removeNode(v1.getKey());
+		g.paint();
+		System.out.println("after="+g.edgeSize());
+		System.out.println(g.getMC());
+		System.out.println(g.getEdge(v1.getKey(), v2.getKey()));
+	}
+	private static void idotesting() {
 		long startTime = System.currentTimeMillis();
 		DGraph g = new DGraph();
 		for(int i = 1; i<=numberOfVertexs;i++) {
-			g.addNode((node_data) new Vertex(new Point3D(i,i+1,i+2),Math.random()*100));
+			g.addNode((node_data) new Vertex(new Point3D(Math.random()*100,Math.random()*100,0),Math.random()*100)/*random weight*/);
 		}
 		for(int i = 1; i<=numberOfEdge;i++) {
 			int v1 = (int)(Math.random()*numberOfVertexs) +1;
@@ -37,7 +64,6 @@ public class idoTest {
 		//		removeNodeTest(g,4);
 		g.paint();
 	}
-
 	private static void removeEdge(DGraph g, int src, int dest) {
 		int sizebefore = g.edgeSize();
 		edge_data edge = g.removeEdge(src, dest);
