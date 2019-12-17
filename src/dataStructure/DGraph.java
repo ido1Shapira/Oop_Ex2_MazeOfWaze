@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import utils.Point3D;
 import utils.StdDraw;
 
 /**
@@ -25,25 +26,7 @@ public class DGraph implements graph{
 		this.idToEdge = new HashMap<List<Integer>,edge_data>();
 		this.vertexTohisNeighbors = new HashMap<Integer,ArrayList<Integer>>();
 		this.edgesOfVertex = new HashMap<Integer,ArrayList<edge_data>>();
-
 	}
-	//////copy contractor//////////////
-	//	public DGraph(DGraph g) {
-	//		this.idToVertex = new HashMap<Integer,node_data>();
-	//		for (Iterator<node_data> iterator = g.getV().iterator(); iterator.hasNext();) {
-	//			node_data node = (node_data) iterator.next();
-	//			this.idToVertex.put(node.getKey(),node);
-	//		}
-	//
-	//		this.vertexTohisNeighbors = new HashMap<node_data,ArrayList<node_data>>();
-	//		this.vertexTohisNeighbors.putAll(g.vertexTohisNeighbors);
-	//
-	//		this.idToEdge = new HashMap<List<Integer>,edge_data>();
-	//		this.idToEdge.putAll(g.idToEdge);
-	//
-	//		this.mc = g.mc;
-	//	}
-
 	/**
 	 * return the node_data by the node_id,
 	 * @param key - the node_id
@@ -102,12 +85,11 @@ public class DGraph implements graph{
 		}
 		this.vertexTohisNeighbors.get(src).add(dest);
 		if(!this.edgesOfVertex.containsKey(src)) {
-			this.edgesOfVertex.put(src,(new ArrayList<edge_data>()));
+			this.edgesOfVertex.put(src,new ArrayList<edge_data>());
 		}
 		this.edgesOfVertex.get(src).add(this.idToEdge.get(id));
 		this.mc++;
 	}
-
 	/**
 	 * This method return a pointer (shallow copy) for the
 	 * collection representing all the nodes in the graph. 
@@ -118,7 +100,6 @@ public class DGraph implements graph{
 	public Collection<node_data> getV() {
 		return this.idToVertex.values();
 	}
-
 	/**
 	 * This method return a pointer (shallow copy) for the
 	 * collection representing all the edges getting out of 
@@ -130,7 +111,6 @@ public class DGraph implements graph{
 	public Collection<edge_data> getE(int node_id) {
 		return this.edgesOfVertex.get(node_id);
 	}
-
 	/**
 	 * Delete the node (with the given ID) from the graph -
 	 * and removes all edges which starts or ends at this node.
@@ -156,9 +136,7 @@ public class DGraph implements graph{
 		}
 		this.mc++;
 		return nodeToRemove;
-
 	}
-
 	/**
 	 * Delete the edge from the graph, 
 	 * Note: this method should run in O(1) time.
@@ -179,7 +157,6 @@ public class DGraph implements graph{
 		this.mc++;
 		return edgeToRemove;
 	}
-
 	/** return the number of vertices (nodes) in the graph.
 	 * Note: this method should run in O(1) time. 
 	 * @return
@@ -188,7 +165,6 @@ public class DGraph implements graph{
 	public int nodeSize() {
 		return idToVertex.size();
 	}
-
 	/** 
 	 * return the number of edges (assume directional graph).
 	 * Note: this method should run in O(1) time.
@@ -198,7 +174,6 @@ public class DGraph implements graph{
 	public int edgeSize() {
 		return idToEdge.size();
 	}
-
 	/**
 	 * return the Mode Count - for testing changes in the graph.
 	 * @return
@@ -224,7 +199,6 @@ public class DGraph implements graph{
 				}
 			}
 		}
-
 	}
 	private void drawEdge(edge_data edge) {
 		StdDraw.setPenRadius(0.005);
@@ -251,7 +225,214 @@ public class DGraph implements graph{
 		StdDraw.setPenColor(StdDraw.CYAN);
 		StdDraw.point(node.getLocation().x(), node.getLocation().y());
 	}
-	//	public DGraph copy() {
-	//		return null;
-	//	}
+	public class Edge implements edge_data {	
+		private int idSrc;
+		private int idDest;
+		private double weight;
+		private String info;
+		private int tag;
+		///////////////////constructors/////////////////////
+		public Edge(int idSrc, int idDest, double weight, String info, int tag) {
+			this.idSrc = idSrc;
+			this.idDest = idDest;
+			if(weight >= 0) this.weight = weight;
+			else throw new RuntimeException("weight must be a positive value");
+			this.setInfo(info);
+			this.setTag(tag);
+		}
+		public Edge(int idSrc, int idDest, double weight, String info) {
+			this.idSrc = idSrc;
+			this.idDest = idDest;
+			if(weight >= 0) this.weight = weight;
+			else throw new RuntimeException("weight must be a positive value");
+			this.setInfo(info);
+			this.tag = 0;
+		}
+		public Edge(int idSrc, int idDest, double weight) {
+			this.idSrc = idSrc;
+			this.idDest = idDest;
+			if(weight >= 0) this.weight = weight;
+			else throw new RuntimeException("weight must be a positive value");
+			this.info = "";
+			this.tag = 0;
+		}
+		/**
+		 * The id of the source node of this edge.
+		 * @return
+		 */
+		@Override
+		public int getSrc() {
+			return this.idSrc;
+		}
+		/**
+		 * The id of the destination node of this edge
+		 * @return
+		 */
+		@Override
+		public int getDest() {
+			return this.idDest;
+		}
+		/**
+		 * @return the weight of this edge (positive value).
+		 */
+		@Override
+		public double getWeight() {
+			return this.weight;
+		}
+		/**
+		 * return the remark (meta data) associated with this edge.
+		 * @return
+		 */
+		@Override
+		public String getInfo() {
+			return this.info;
+		}
+		/**
+		 * Allows changing the remark (meta data) associated with this edge.
+		 * @param s
+		 */
+		@Override
+		public void setInfo(String s) {
+			this.info = s;
+		}
+		/**
+		 * Temporal data (aka color: e,g, white, gray, black) 
+		 * which can be used be algorithms 
+		 * @return
+		 */
+		@Override
+		public int getTag() {
+			return this.tag;
+		}
+		/** 
+		 * Allow setting the "tag" value for temporal marking an edge - common 
+		 * practice for marking by algorithms.
+		 * @param t - the new value of the tag
+		 */
+		@Override
+		public void setTag(int t) {
+			if (t >= 0) this.tag = t;
+		}
+	}
+	/**
+	 * This class represents a node (vertex) in a (directional) weighted graph.
+	 * @author ido shapira & edut cohen
+	 */
+	private static int key=1;
+	public class Vertex implements node_data {
+		private int id;
+		private Point3D location;
+		private double weight;
+		private String info;
+		private int tag;
+		///////////////////constructors/////////////////////
+		public Vertex(Point3D location, double weight ,String info,int tag) {
+			this.id = key++;
+			this.setLocation(location);
+			this.setWeight(weight);
+			this.setInfo(info);
+			this.setTag(tag);
+		}
+		public Vertex(Point3D location, double weight,String info) {
+			this.id = key++;
+			this.setLocation(location);
+			this.setWeight(weight);
+			this.setInfo(info);
+			this.tag = 0;
+		}
+		public Vertex(Point3D location, double weight) {
+			this.id = key++;
+			this.setLocation(location);
+			this.setWeight(weight);
+			this.info = "";
+			this.tag = 0;
+		}
+		public Vertex(node_data n) {
+			this.id = n.getKey();
+			this.info = this.getInfo();
+			this.location = new Point3D(n.getLocation());
+			this.weight = n.getWeight();
+			this.tag = n.getTag();
+		}
+		/**
+		 * Return the key (id) associated with this node.
+		 * @return
+		 */
+		@Override
+		public int getKey() {
+			return this.id;
+		}
+		/** Return the location (of applicable) of this node, if
+		 * none return null.
+		 * @return
+		 */
+		@Override
+		public Point3D getLocation() {
+			return this.location;
+		}
+		/** Allows changing this node's location.
+		 * @param p - new new location  (position) of this node.
+		 */
+		@Override
+		public void setLocation(Point3D p) {
+			this.location = new Point3D(p);
+		}
+		/**
+		 * Return the weight associated with this node.
+		 * @return
+		 */
+		@Override
+		public double getWeight() {
+			return this.weight;
+		}
+		/**
+		 * Allows changing this node's weight.
+		 * @param w - the new weight
+		 * @throws Exception 
+		 */
+		@Override
+		public void setWeight(double w) {
+			if (w >= 0) {
+				this.weight = w;
+			}
+			else
+				System.out.println("weight must be positive");
+		}
+		/**
+		 * return the remark (meta data) associated with this node.
+		 * @return
+		 */
+		@Override
+		public String getInfo() {
+			return this.info;
+		}
+		/**
+		 * Allows changing the remark (meta data) associated with this node.
+		 * @param s
+		 */
+		@Override
+		public void setInfo(String s) {
+			this.info = s;
+		}
+		/**
+		 * Temporal data (aka color: e,g, white, gray, black) 
+		 * which can be used be algorithms 
+		 * @return
+		 */
+		@Override
+		public int getTag() {
+			return this.tag;
+		}
+		/** 
+		 * Allow setting the "tag" value for temporal marking an node - common 
+		 * practice for marking by algorithms.
+		 * @param t - the new value of the tag
+		 */
+		@Override
+		public void setTag(int t) {
+			if(t >=0) {
+				this.tag = t;
+			}
+		}
+	}
 }
