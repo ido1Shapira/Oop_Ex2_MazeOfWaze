@@ -11,13 +11,13 @@ import utils.Point3D;
 
 public class idoTest {
 
-	public final static int numberOfVertexs = 10;
-	public final static int numberOfEdge = 20;
+	public final static int numberOfVertexs = 4;
+	public final static int numberOfEdge = 10;
 
 	public static void main(String[] args) {
 	idotesting();
 //	edutesting();
-//	algotest();
+	algotest();
 	}
 	private static void algotest() {
 		DGraph g = new DGraph();
@@ -37,7 +37,8 @@ public class idoTest {
 		al.init(g);
 		al.save("start");
 		Graph_Algo al2=new Graph_Algo();
-		al2.init("start");
+//		al2.init("start");
+		
 	//	al2.myGraph.paint();
 	}
 	private static void edutesting() {

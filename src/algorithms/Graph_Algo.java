@@ -30,7 +30,7 @@ public class Graph_Algo implements graph_algorithms{
 		try 
 		{
 			FileReader reader = new FileReader(file_name+".json");
-			graph gr = gson.fromJson(reader,DGraph.class);
+			graph gr = (graph) gson.fromJson(reader,DGraph.class);
 			this.myGraph=gr;
 		} 
 		catch (FileNotFoundException e) {
@@ -53,7 +53,7 @@ public class Graph_Algo implements graph_algorithms{
 		}
 		return gcopy;
 	}
-	
+
 	@Override
 	public void save(String file_name) {
 		//Make JSON!!
@@ -74,13 +74,78 @@ public class Graph_Algo implements graph_algorithms{
 		}
 
 	}
+	// A function used by DFS 
+	void DFSUtil(int v,boolean visited[],DGraph dg) 
+	{ 
+		// Mark the current node as visited and print it 
+		visited[v] = true; 
+		//System.out.print(v+" "); 
+
+		// Recur for all the vertices adjacent to this vertex 
+		Iterator<Integer> i = dg.getVertexTohisNeighbors().get(v).listIterator(); 
+		while (i.hasNext()) 
+		{ 
+			int n = i.next(); 
+			if (!visited[n]) 
+				DFSUtil(n, visited,dg); 
+		} 
+	} 
+
+	// The function to do DFS traversal. It uses recursive DFSUtil() 
+	void DFS(int v,graph g) 
+	{ 
+		// Mark all the vertices as not visited(set as 
+		// false by default in java) 
+		boolean visited[] = new boolean[g.nodeSize()]; 
+		DGraph dg = null;
+		if(g instanceof DGraph) {
+			dg = (DGraph) g;
+		}
+		// Call the recursive helper function to print DFS traversal 
+		DFSUtil(v, visited,dg); 
+	} 
 
 	@Override
 	public boolean isConnected() {
-		// TODO Auto-generated method stub
+		if(!this.checkLegal()) return false;
+		DGraph dg = null;
+		if(this.myGraph instanceof DGraph) {
+			dg = (DGraph) this.copy();
+
+		}
+		this.DFS(1,dg);
 		return false;
 	}
 
+	private boolean checkLegal () {
+		int count = 0;
+		DGraph dg = null;
+		if(this.myGraph instanceof DGraph) {
+			dg = (DGraph) this.copy();
+		}
+		for (Iterator<node_data> init = this.myGraph.getV().iterator(); init.hasNext();) {
+			node_data v = (node_data) init.next();
+			v.setTag(0);
+		}
+		for (Iterator<node_data> iterator = this.myGraph.getV().iterator(); iterator.hasNext();) {
+			node_data v = (node_data) iterator.next();
+			if(!dg.getVertexTohisNeighbors().isEmpty()) {
+				count++;
+				for (Iterator<Integer> iterator2 = dg.getVertexTohisNeighbors().get(v.getKey()).iterator(); iterator2.hasNext();) {
+					node_data vb = dg.getNode(((Integer) iterator2.next()));
+					vb.setTag(1);
+				}
+			}
+		}
+		if(count != dg.nodeSize()) return false;
+		for (Iterator<node_data> iterator = this.myGraph.getV().iterator(); iterator.hasNext();) {
+			node_data v = (node_data) iterator.next();
+			if(v.getTag() == 0) return false;
+		}
+
+		return true;
+
+	}
 	@Override
 	public double shortestPathDist(int src, int dest) {
 		// TODO Auto-generated method stub
