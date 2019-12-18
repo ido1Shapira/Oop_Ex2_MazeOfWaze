@@ -1,31 +1,33 @@
 package dataStructure;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 
-import utils.Point3D;
 import utils.StdDraw;
 
 /**
  * This class represents a directional weighted graph.
  */
-public class DGraph implements graph{
+public class DGraph implements graph, Serializable{
 
 	private HashMap<Integer,node_data> idToVertex;
-	private HashMap<Integer,ArrayList<Integer>> vertexTohisNeighbors;
-	private HashMap<Integer,ArrayList<edge_data>> edgesOfVertex;
-	private HashMap<List<Integer>,edge_data> idToEdge;
+	private HashMap<ArrayList<Integer>,edge_data> idToEdge;
+	private HashMap<Integer,HashSet<Integer>> vertexToNeighbors; // v1--->V
+	private HashMap<Integer,HashSet<Integer>> NeighborsToVertex; // V--->v1
+	private HashMap<Integer,HashSet<edge_data>> edgesOfVertex;
 	private int mc;
 
 	/////////Default contractor//////////
 	public DGraph() {
 		this.idToVertex = new HashMap<Integer,node_data>();
-		this.idToEdge = new HashMap<List<Integer>,edge_data>();
-		this.vertexTohisNeighbors = new HashMap<Integer,ArrayList<Integer>>();
-		this.edgesOfVertex = new HashMap<Integer,ArrayList<edge_data>>();
+		this.idToEdge = new HashMap<ArrayList<Integer>,edge_data>();
+		this.vertexToNeighbors = new HashMap<Integer,HashSet<Integer>>();
+		this.NeighborsToVertex = new HashMap<Integer,HashSet<Integer>>();
+		this.edgesOfVertex = new HashMap<Integer,HashSet<edge_data>>();
 	}
 	/**
 	 * return the node_data by the node_id,
@@ -46,7 +48,7 @@ public class DGraph implements graph{
 	 */
 	@Override
 	public edge_data getEdge(int src, int dest) {
-		List<Integer> id = new ArrayList<Integer>();
+		ArrayList<Integer> id = new ArrayList<Integer>();
 		id.add(src);
 		id.add(dest);
 		return this.idToEdge.get(id);
@@ -59,9 +61,7 @@ public class DGraph implements graph{
 	 */
 	@Override
 	public void addNode(node_data n) {
-		if(!this.idToVertex.containsKey(n.getKey())) {
-			this.idToVertex.put(n.getKey(),new Vertex(n));
-		}
+		this.idToVertex.put(n.getKey(),new Vertex(n));
 		this.mc++;
 	}
 
@@ -74,20 +74,31 @@ public class DGraph implements graph{
 	 */
 	@Override
 	public void connect(int src, int dest, double w) {
-		List<Integer> id = new ArrayList<Integer>();
+		ArrayList<Integer> id = new ArrayList<Integer>();
 		id.add(src);
 		id.add(dest);
-		if(!this.idToEdge.containsKey(id)) {
-			this.idToEdge.put(id,new Edge(src,dest,w)); //ask edut if this ok
+		this.idToEdge.put(id,new Edge(src,dest,w));
+		try {
+			this.vertexToNeighbors.get(src).add(dest);
 		}
-		if(!this.vertexTohisNeighbors.containsKey(src)) {
-			this.vertexTohisNeighbors.put(src,(new ArrayList<Integer>()));
+		catch(NullPointerException e){
+			this.vertexToNeighbors.put(src,(new HashSet<Integer>()));			this.vertexToNeighbors.get(src).add(dest);
+			this.vertexToNeighbors.get(src).add(dest);
 		}
-		this.vertexTohisNeighbors.get(src).add(dest);
-		if(!this.edgesOfVertex.containsKey(src)) {
-			this.edgesOfVertex.put(src,new ArrayList<edge_data>());
+		try {
+			this.NeighborsToVertex.get(dest).add(src);
 		}
-		this.edgesOfVertex.get(src).add(this.idToEdge.get(id));
+		catch(NullPointerException e){
+			this.NeighborsToVertex.put(dest,(new HashSet<Integer>()));			this.vertexToNeighbors.get(src).add(dest);
+			this.NeighborsToVertex.get(dest).add(src);
+		}
+		try {
+			this.edgesOfVertex.get(src).add(this.getEdge(src, dest));
+		}
+		catch(NullPointerException e){
+			this.edgesOfVertex.put(src,new HashSet<edge_data>());	
+			this.edgesOfVertex.get(src).add(this.getEdge(src, dest));
+		}
 		this.mc++;
 	}
 	/**
@@ -122,19 +133,20 @@ public class DGraph implements graph{
 	public node_data removeNode(int key) {
 		node_data nodeToRemove = this.idToVertex.get(key);
 		if(nodeToRemove != null) {
-			List<Integer> id = new ArrayList<Integer>();
-			id.add(key);
-			for (Iterator<Integer> iterator = this.vertexTohisNeighbors.get(key).iterator(); iterator.hasNext();) {
-				int id_node = (int) iterator.next();
-				id.add(id_node);
-				this.idToEdge.remove(id);
-				id.remove(1); //id_node
+			for (Iterator<Integer> iterator = this.idToVertex.keySet().iterator(); iterator.hasNext();) {
+				Integer dest = (Integer) iterator.next();
+				if(key != dest) {
+					this.removeEdge(key, dest);
+					this.removeEdge(dest, key);
+				}
 			}
-			this.vertexTohisNeighbors.remove(key);
-			this.idToVertex.remove(key);
+			this.NeighborsToVertex.remove(key);
+			this.vertexToNeighbors.remove(key);
 			this.edgesOfVertex.remove(key);
+			this.idToVertex.remove(key);
+
+			this.mc++;
 		}
-		this.mc++;
 		return nodeToRemove;
 	}
 	/**
@@ -148,13 +160,16 @@ public class DGraph implements graph{
 	public edge_data removeEdge(int src, int dest) {
 		edge_data edgeToRemove = this.getEdge(src, dest);
 		if(edgeToRemove != null) {
-			List<Integer> key = new ArrayList<Integer>();
+			ArrayList<Integer> key = new ArrayList<Integer>();
 			key.add(src);
 			key.add(dest);
-			this.idToEdge.remove(key);
 			this.edgesOfVertex.get(src).remove(edgeToRemove);
+			this.vertexToNeighbors.get(src).remove((Integer)dest); ///fix me
+			this.NeighborsToVertex.get(dest).remove((Integer)src); ///fix me
+			this.idToEdge.remove(key);
+
+			this.mc++;
 		}
-		this.mc++;
 		return edgeToRemove;
 	}
 	/** return the number of vertices (nodes) in the graph.
@@ -174,11 +189,14 @@ public class DGraph implements graph{
 	public int edgeSize() {
 		return idToEdge.size();
 	}
-	public HashMap<Integer, ArrayList<Integer>> getVertexTohisNeighbors() {
-		return vertexTohisNeighbors;
+	public HashMap<Integer, HashSet<Integer>> getVertexToNeighbors() {
+		return vertexToNeighbors;
 	}
-	public HashMap<Integer, ArrayList<edge_data>> getEdgesOfVertex() {
+	public HashMap<Integer, HashSet<edge_data>> getEdgesOfVertex() {
 		return edgesOfVertex;
+	}
+	public HashMap<Integer, HashSet<Integer>> getNeighborsToVertex() {
+		return NeighborsToVertex;
 	}
 	/**
 	 * return the Mode Count - for testing changes in the graph.
@@ -231,94 +249,4 @@ public class DGraph implements graph{
 		StdDraw.setPenColor(StdDraw.CYAN);
 		StdDraw.point(node.getLocation().x(), node.getLocation().y());
 	}
-	public class Edge implements edge_data {	
-		private int idSrc;
-		private int idDest;
-		private double weight;
-		private String info;
-		private int tag;
-		///////////////////constructors/////////////////////
-		public Edge(int idSrc, int idDest, double weight, String info, int tag) {
-			this.idSrc = idSrc;
-			this.idDest = idDest;
-			if(weight >= 0) this.weight = weight;
-			else throw new RuntimeException("weight must be a positive value");
-			this.setInfo(info);
-			this.setTag(tag);
-		}
-		public Edge(int idSrc, int idDest, double weight, String info) {
-			this.idSrc = idSrc;
-			this.idDest = idDest;
-			if(weight >= 0) this.weight = weight;
-			else throw new RuntimeException("weight must be a positive value");
-			this.setInfo(info);
-			this.tag = 0;
-		}
-		public Edge(int idSrc, int idDest, double weight) {
-			this.idSrc = idSrc;
-			this.idDest = idDest;
-			if(weight >= 0) this.weight = weight;
-			else throw new RuntimeException("weight must be a positive value");
-			this.info = "";
-			this.tag = 0;
-		}
-		/**
-		 * The id of the source node of this edge.
-		 * @return
-		 */
-		@Override
-		public int getSrc() {
-			return this.idSrc;
-		}
-		/**
-		 * The id of the destination node of this edge
-		 * @return
-		 */
-		@Override
-		public int getDest() {
-			return this.idDest;
-		}
-		/**
-		 * @return the weight of this edge (positive value).
-		 */
-		@Override
-		public double getWeight() {
-			return this.weight;
-		}
-		/**
-		 * return the remark (meta data) associated with this edge.
-		 * @return
-		 */
-		@Override
-		public String getInfo() {
-			return this.info;
-		}
-		/**
-		 * Allows changing the remark (meta data) associated with this edge.
-		 * @param s
-		 */
-		@Override
-		public void setInfo(String s) {
-			this.info = s;
-		}
-		/**
-		 * Temporal data (aka color: e,g, white, gray, black) 
-		 * which can be used be algorithms 
-		 * @return
-		 */
-		@Override
-		public int getTag() {
-			return this.tag;
-		}
-		/** 
-		 * Allow setting the "tag" value for temporal marking an edge - common 
-		 * practice for marking by algorithms.
-		 * @param t - the new value of the tag
-		 */
-		@Override
-		public void setTag(int t) {
-			if (t >= 0) this.tag = t;
-		}
-	}
-
 }

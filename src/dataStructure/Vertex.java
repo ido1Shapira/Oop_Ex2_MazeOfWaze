@@ -1,12 +1,14 @@
 package dataStructure;
 
+import java.io.Serializable;
+
 import utils.Point3D;
 
 /**
  * This class represents a node (vertex) in a (directional) weighted graph.
  * @author ido shapira & edut cohen
  */
-public class Vertex implements node_data {
+public class Vertex implements node_data,Serializable {
 	private static int key=1;
 	private int id;
 	private Point3D location;
@@ -14,6 +16,13 @@ public class Vertex implements node_data {
 	private String info;
 	private int tag;
 	///////////////////constructors/////////////////////
+	public Vertex(Point3D location) {
+		this.id = key++;
+		this.setLocation(location);
+		this.setWeight(0);
+		this.setInfo("");
+		this.setTag(0);
+	}
 	public Vertex(Point3D location, double weight ,String info,int tag) {
 		this.id = key++;
 		this.setLocation(location);

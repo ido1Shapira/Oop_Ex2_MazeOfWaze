@@ -715,13 +715,43 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// create the menu bar (changed to private)
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("File");
-		menuBar.add(menu);
-		JMenuItem menuItem1 = new JMenuItem(" Save...   ");
-		menuItem1.addActionListener(std);
-		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+		JMenu file = new JMenu("File");
+		JMenu algo = new JMenu("algoritm");
+		JMenu add = new JMenu("add..");
+
+		menuBar.add(file);
+		menuBar.add(algo);
+		menuBar.add(add);
+
+		JMenuItem save = new JMenuItem(" Save...   ");
+		save.addActionListener(std);
+		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		menu.add(menuItem1);
+		file.add(save);
+		
+		JMenuItem load = new JMenuItem(" Load...   ");
+//		menuItem1.addActionListener(std);
+//		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		file.add(load);
+		
+		JMenuItem isConnected = new JMenuItem("isConnected");
+//		save.addActionListener(std);
+//		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		algo.add(isConnected);
+		
+		JMenuItem v = new JMenuItem("Vertex");
+//		save.addActionListener(std);
+//		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		add.add(v);
+		
+		JMenuItem e = new JMenuItem("Edge");
+//		save.addActionListener(std);
+//		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		add.add(e);
 		return menuBar;
 	}
 
