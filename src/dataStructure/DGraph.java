@@ -7,27 +7,25 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import utils.StdDraw;
+import utils.Point3D;
 
 /**
  * This class represents a directional weighted graph.
  */
 public class DGraph implements graph, Serializable{
 
-	private HashMap<Integer,node_data> idToVertex;
+	public static final int FORBIDDEN_KEY = 0;
+	private int id;
 	private HashMap<ArrayList<Integer>,edge_data> idToEdge;
-	private HashMap<Integer,HashSet<Integer>> vertexToNeighbors; // v1--->V
-	private HashMap<Integer,HashSet<Integer>> NeighborsToVertex; // V--->v1
-	private HashMap<Integer,HashSet<edge_data>> edgesOfVertex;
+	private HashMap<Integer,Object> idToVertexEdge; //key = 0 all vertex key >0 list of edges
 	private int mc;
 
 	/////////Default contractor//////////
 	public DGraph() {
-		this.idToVertex = new HashMap<Integer,node_data>();
+		this.id =0;
 		this.idToEdge = new HashMap<ArrayList<Integer>,edge_data>();
-		this.vertexToNeighbors = new HashMap<Integer,HashSet<Integer>>();
-		this.NeighborsToVertex = new HashMap<Integer,HashSet<Integer>>();
-		this.edgesOfVertex = new HashMap<Integer,HashSet<edge_data>>();
+		this.idToVertexEdge = new HashMap<Integer,Object>();
+		this.idToVertexEdge.put(0,new HashMap<Integer,node_data>());
 	}
 	/**
 	 * return the node_data by the node_id,
@@ -36,7 +34,9 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public node_data getNode(int key) {
-		return this.idToVertex.get(key);
+		if(key <= FORBIDDEN_KEY)
+		{throw new RuntimeException("FORBIDDEN_KEY exception - key cant be 0 , starting from 1");}
+		return ((HashMap<Integer,node_data>)this.idToVertexEdge.get(0)).get(key);
 	}
 
 	/**
@@ -48,6 +48,8 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public edge_data getEdge(int src, int dest) {
+		if(src <= FORBIDDEN_KEY || dest <= FORBIDDEN_KEY) 
+		{throw new RuntimeException("FORBIDDEN_KEY exception - key cant be 0 , starting from 1");}
 		ArrayList<Integer> id = new ArrayList<Integer>();
 		id.add(src);
 		id.add(dest);
@@ -61,10 +63,12 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public void addNode(node_data n) {
-		this.idToVertex.put(n.getKey(),new Vertex(n));
+		id++;
+		((HashMap<Integer,node_data>)this.idToVertexEdge.get(0)).put(id,new Vertex(new Point3D(n.getLocation()),id));
+
 		this.mc++;
 	}
-	
+
 	/**
 	 * Connect an edge with weight w between node src to node dest.
 	 * * Note: this method should run in O(1) time.
@@ -74,31 +78,20 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public void connect(int src, int dest, double w) {
+		if(src <= FORBIDDEN_KEY || dest <= FORBIDDEN_KEY) 
+		{throw new RuntimeException("FORBIDDEN_KEY exception - key cant be 0 , starting from 1");}
 		ArrayList<Integer> id = new ArrayList<Integer>();
 		id.add(src);
 		id.add(dest);
 		this.idToEdge.put(id,new Edge(src,dest,w));
 		try {
-			this.vertexToNeighbors.get(src).add(dest);
+			((HashSet<edge_data>) this.idToVertexEdge.get(src)).add(this.getEdge(src, dest));
 		}
 		catch(NullPointerException e){
-			this.vertexToNeighbors.put(src,(new HashSet<Integer>()));			this.vertexToNeighbors.get(src).add(dest);
-			this.vertexToNeighbors.get(src).add(dest);
+			this.idToVertexEdge.put(src,new HashSet<edge_data>());	
+			((HashSet<edge_data>) this.idToVertexEdge.get(src)).add(this.getEdge(src, dest));
 		}
-		try {
-			this.NeighborsToVertex.get(dest).add(src);
-		}
-		catch(NullPointerException e){
-			this.NeighborsToVertex.put(dest,(new HashSet<Integer>()));			this.vertexToNeighbors.get(src).add(dest);
-			this.NeighborsToVertex.get(dest).add(src);
-		}
-		try {
-			this.edgesOfVertex.get(src).add(this.getEdge(src, dest));
-		}
-		catch(NullPointerException e){
-			this.edgesOfVertex.put(src,new HashSet<edge_data>());	
-			this.edgesOfVertex.get(src).add(this.getEdge(src, dest));
-		}
+
 		this.mc++;
 	}
 	/**
@@ -109,7 +102,7 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public Collection<node_data> getV() {
-		return this.idToVertex.values();
+		return ((HashMap<Integer,node_data>)this.idToVertexEdge.get(0)).values();
 	}
 	/**
 	 * This method return a pointer (shallow copy) for the
@@ -120,7 +113,9 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public Collection<edge_data> getE(int node_id) {
-		return this.edgesOfVertex.get(node_id);
+		if(node_id <= FORBIDDEN_KEY)
+		{throw new RuntimeException("FORBIDDEN_KEY exception - key cant be 0 , starting from 1");}
+		return (Collection<edge_data>) this.idToVertexEdge.get(node_id);
 	}
 	/**
 	 * Delete the node (with the given ID) from the graph -
@@ -131,20 +126,19 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public node_data removeNode(int key) {
-		node_data nodeToRemove = this.idToVertex.get(key);
+		if(key <= FORBIDDEN_KEY) {throw new RuntimeException("FORBIDDEN_KEY exception - key cant be 0 , starting from 1");}
+		node_data nodeToRemove = this.getNode(key);
 		if(nodeToRemove != null) {
-			for (Iterator<Integer> iterator = this.idToVertex.keySet().iterator(); iterator.hasNext();) {
-				Integer dest = (Integer) iterator.next();
-				if(key != dest) {
-					this.removeEdge(key, dest);
-					this.removeEdge(dest, key);
+			for (Iterator<node_data> iterator = this.getV().iterator(); iterator.hasNext();) {
+				node_data dest = (node_data) iterator.next();
+				if(key != dest.getKey()) {
+					this.removeEdge(key, dest.getKey());
+					this.removeEdge(dest.getKey(), key);
 				}
 			}
-			this.NeighborsToVertex.remove(key);
-			this.vertexToNeighbors.remove(key);
-			this.edgesOfVertex.remove(key);
-			this.idToVertex.remove(key);
-
+			((HashMap<Integer,node_data>)this.idToVertexEdge.get(0)).remove(key);
+			this.idToVertexEdge.remove(key);
+			
 			this.mc++;
 		}
 		return nodeToRemove;
@@ -158,14 +152,14 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public edge_data removeEdge(int src, int dest) {
+		if(src <= FORBIDDEN_KEY || dest <= FORBIDDEN_KEY) 
+		{throw new RuntimeException("FORBIDDEN_KEY exception - key cant be 0 , starting from 1");}
 		edge_data edgeToRemove = this.getEdge(src, dest);
 		if(edgeToRemove != null) {
 			ArrayList<Integer> key = new ArrayList<Integer>();
 			key.add(src);
 			key.add(dest);
-			this.edgesOfVertex.get(src).remove(edgeToRemove);
-			this.vertexToNeighbors.get(src).remove((Integer)dest); ///fix me
-			this.NeighborsToVertex.get(dest).remove((Integer)src); ///fix me
+			((HashSet<edge_data>)this.idToVertexEdge.get(src)).remove(edgeToRemove);
 			this.idToEdge.remove(key);
 
 			this.mc++;
@@ -178,7 +172,7 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public int nodeSize() {
-		return idToVertex.size();
+		return id;
 	}
 	/** 
 	 * return the number of edges (assume directional graph).
@@ -189,15 +183,6 @@ public class DGraph implements graph, Serializable{
 	public int edgeSize() {
 		return idToEdge.size();
 	}
-	public HashMap<Integer, HashSet<Integer>> getVertexToNeighbors() {
-		return vertexToNeighbors;
-	}
-	public HashMap<Integer, HashSet<edge_data>> getEdgesOfVertex() {
-		return edgesOfVertex;
-	}
-	public HashMap<Integer, HashSet<Integer>> getNeighborsToVertex() {
-		return NeighborsToVertex;
-	}
 	/**
 	 * return the Mode Count - for testing changes in the graph.
 	 * @return
@@ -205,48 +190,5 @@ public class DGraph implements graph, Serializable{
 	@Override
 	public int getMC() {
 		return this.mc;
-	}
-	/**
-	 * paint the gragh
-	 */
-	public void paint() {
-		StdDraw.setCanvasSize(800,600);
-		StdDraw.setXscale(0,100);
-		StdDraw.setYscale(0,100);
-		for (Iterator<node_data> iterator = this.getV().iterator(); iterator.hasNext();) {
-			node_data node = (node_data) iterator.next();
-			drawNode(node);
-			if(this.getE(node.getKey()) != null) {
-				for (Iterator<edge_data> iterator2 = this.getE(node.getKey()).iterator(); iterator2.hasNext();) {
-					edge_data edge = (edge_data) iterator2.next();
-					drawEdge(edge);
-				}
-			}
-		}
-	}
-	private void drawEdge(edge_data edge) {
-		StdDraw.setPenRadius(0.005);
-		StdDraw.setPenColor(StdDraw.BLACK);
-		node_data src = this.getNode(edge.getSrc());
-		node_data dest = this.getNode(edge.getDest());
-		StdDraw.line(src.getLocation().x(),src.getLocation().y(),dest.getLocation().x() , dest.getLocation().y());
-		StdDraw.setPenRadius(0.02);
-		StdDraw.setPenColor(StdDraw.ORANGE);
-		double relativex=(src.getLocation().x()+5*dest.getLocation().x())/6;
-		double relativey=(src.getLocation().y()+5*dest.getLocation().y())/6;
-		//		double x[]= {relativex-1,relativex+1,relativex};
-		//		double y[]= {relativey+1,relativey-1,relativey};
-		//		StdDraw.filledPolygon(x, y);
-		StdDraw.point(relativex, relativey);
-		int round=(int)(edge.getWeight()*100);
-		double roundafter=round;
-		roundafter=roundafter/100;
-		StdDraw.setPenColor(StdDraw.RED);
-		StdDraw.text(relativex-1, relativey-1,""+roundafter);
-	}
-	private void drawNode(node_data node) {
-		StdDraw.setPenRadius(0.03);
-		StdDraw.setPenColor(StdDraw.CYAN);
-		StdDraw.point(node.getLocation().x(), node.getLocation().y());
 	}
 }

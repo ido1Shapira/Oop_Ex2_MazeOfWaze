@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -22,11 +22,46 @@ import java.io.FileOutputStream;
  *
  */
 public class Graph_Algo implements graph_algorithms{
-	public graph myGraph;
+	private graph myGraph;
+	private HashMap<Integer,HashSet<Integer>> vertexToNeighbors; // v1--->V
+	private HashMap<Integer,HashSet<Integer>> NeighborsToVertex; // V--->v1
 
 	@Override
 	public void init(graph g) {
 		myGraph = g;
+		this.vertexToNeighbors = new HashMap<Integer,HashSet<Integer>>();
+		for (Iterator<node_data> Nodeiter = this.myGraph.getV().iterator(); Nodeiter.hasNext();) {
+			node_data n = (node_data) Nodeiter.next();
+			if(this.myGraph.getE(n.getKey()) != null) {
+				for (Iterator<edge_data> Edgeiter = this.myGraph.getE(n.getKey()).iterator(); Edgeiter.hasNext();) {
+					edge_data edge = (edge_data) Edgeiter.next();
+					try {
+						this.vertexToNeighbors.get(edge.getSrc()).add(edge.getDest());
+					}
+					catch(NullPointerException e){
+						this.vertexToNeighbors.put(edge.getSrc(),(new HashSet<Integer>()));			
+						this.vertexToNeighbors.get(edge.getSrc()).add(edge.getDest());
+					}
+				}
+			}
+		}
+		this.NeighborsToVertex = new HashMap<Integer,HashSet<Integer>>();
+		for (Iterator<node_data> Nodeiter = this.myGraph.getV().iterator(); Nodeiter.hasNext();) {
+			node_data n = (node_data) Nodeiter.next();
+			if(this.myGraph.getE(n.getKey()) != null) {
+				for (Iterator<edge_data> Edgeiter = this.myGraph.getE(n.getKey()).iterator(); Edgeiter.hasNext();) {
+					edge_data edge = (edge_data) Edgeiter.next();
+					try {
+						this.NeighborsToVertex.get(edge.getDest()).add(edge.getSrc());
+					}
+					catch(NullPointerException e){
+						this.NeighborsToVertex.put(edge.getDest(),(new HashSet<Integer>()));			
+						this.NeighborsToVertex.get(edge.getDest()).add(edge.getSrc());
+					}
+				}
+			}
+		}
+		int x =0;
 	}
 
 	@Override
@@ -76,16 +111,10 @@ public class Graph_Algo implements graph_algorithms{
 		file.delete(); 
 		return ga.myGraph;
 	}
-	private void tagsReset() {
-		for (Iterator<node_data> init = this.myGraph.getV().iterator(); init.hasNext();) {
-			node_data v = (node_data) init.next();
-			v.setTag(0);
-		}
-	}
 
 	@Override
 	public boolean isConnected() {
-		tagsReset();
+		infoTagWeightReset();
 		if(!this.checkLegal()) return false;
 		DGraph dg = null;
 		if(this.myGraph instanceof DGraph) {
@@ -93,7 +122,6 @@ public class Graph_Algo implements graph_algorithms{
 			int i=1;
 			while (dg.getNode(i) == null) i++;
 			node_data mySrc= dg.getNode(i);
-			//this.tagMyFamily(mySrc, dg);
 			return dg.nodeSize()<=this.tagMyChilds(mySrc, dg) 
 					&& dg.nodeSize()<=this.tagMyFathers(mySrc, dg);
 		}
@@ -101,7 +129,7 @@ public class Graph_Algo implements graph_algorithms{
 	}
 
 	private int tagMyFathers(node_data grandSon,DGraph dg) {
-		for (Iterator<Integer> iterator = dg.getNeighborsToVertex().get(grandSon.getKey()).iterator(); iterator.hasNext();) {
+		for (Iterator<Integer> iterator = this.NeighborsToVertex.get(grandSon.getKey()).iterator(); iterator.hasNext();) {
 			Integer sonKey = (Integer) iterator.next();
 			node_data grandpa = dg.getNode(sonKey);
 			grandSon.setTag(2);
@@ -112,7 +140,7 @@ public class Graph_Algo implements graph_algorithms{
 	}
 
 	private int tagMyChilds(node_data father,DGraph dg) {
-		for (Iterator<Integer> iterator = dg.getVertexToNeighbors().get(father.getKey()).iterator(); iterator.hasNext();) {
+		for (Iterator<Integer> iterator = this.vertexToNeighbors.get(father.getKey()).iterator(); iterator.hasNext();) {
 			Integer sonKey = (Integer) iterator.next();
 			node_data son = dg.getNode(sonKey);
 			father.setTag(1);
@@ -121,17 +149,13 @@ public class Graph_Algo implements graph_algorithms{
 		}
 		return 1;
 	}
-	public boolean checkLegal() {
+	private boolean checkLegal() {
 		int count = 0;
-		DGraph dg = null;
-		if(this.myGraph instanceof DGraph) {
-			dg = (DGraph) this.myGraph;
-		}
 		for (Iterator<node_data> it = this.myGraph.getV().iterator(); it.hasNext();) {
 			node_data v = (node_data) it.next();
-			if(!dg.getVertexToNeighbors().containsKey(v.getKey())) 
+			if(!this.vertexToNeighbors.containsKey(v.getKey())) 
 				count++;
-			if(!dg.getNeighborsToVertex().containsKey(v.getKey())) 
+			if(!this.NeighborsToVertex.containsKey(v.getKey())) 
 				count++;
 		}      
 		if(count == 0) return true;
@@ -142,16 +166,16 @@ public class Graph_Algo implements graph_algorithms{
 			node_data v = (node_data) init.next();
 			v.setInfo("");
 			v.setTag(0);
-			v.setWeight(1000000);
+			v.setWeight(Integer.MAX_VALUE-1);
 		}
 	}
-	public void shortPathGraph(int src) {
+	private void shortPathGraph(int src) {
 		infoTagWeightReset();
 		this.myGraph.getNode(src).setTag(0);// starting point
 		this.myGraph.getNode(src).setInfo(""+src);// starting point
 		this.myGraph.getNode(src).setWeight(0);
 		HashMap<Integer, node_data> hashCopy = new HashMap<Integer, node_data>();
-		for (Iterator<node_data> init =((DGraph) this.myGraph).getV().iterator(); init.hasNext();) {
+		for (Iterator<node_data> init = this.myGraph.getV().iterator(); init.hasNext();) {
 			node_data v = (node_data) init.next();
 			hashCopy.put(v.getKey(), v);		//init copy list for all vertices we havent visited yet
 		}
@@ -159,8 +183,8 @@ public class Graph_Algo implements graph_algorithms{
 			node_data current =  this.findMin(hashCopy);
 			int currentKey = current.getKey();
 			hashCopy.remove(currentKey);
-			if( ((DGraph) this.myGraph).getVertexToNeighbors().get(currentKey) !=null) {
-				for (Iterator<Integer> iterator = ((DGraph) this.myGraph).getVertexToNeighbors().get(currentKey).iterator(); iterator.hasNext();) {
+			if( this.vertexToNeighbors.get(currentKey) !=null) {
+				for (Iterator<Integer> iterator = this.vertexToNeighbors.get(currentKey).iterator(); iterator.hasNext();) {
 					Integer sonKey = (Integer) iterator.next();
 					node_data son = ((DGraph) this.myGraph).getNode(sonKey);
 					double edgeWeight = ((DGraph) this.myGraph).getEdge(currentKey, sonKey).getWeight();
@@ -175,10 +199,10 @@ public class Graph_Algo implements graph_algorithms{
 	}
 
 	public node_data findMin (HashMap<Integer, node_data> hashNotVisited) {
-		node_data min=new Vertex(new Point3D(0,0,0), 1000000000);
+		node_data min=new Vertex(new Point3D(0,0,0), Integer.MAX_VALUE, Integer.MAX_VALUE);
 		for (Iterator <node_data> it = hashNotVisited.values().iterator(); it.hasNext();) {
 			node_data now = (node_data) it.next();
-			if(now.getTag()==0 && now.getWeight()<min.getWeight())
+			if(now.getTag()==0 && now.getWeight() < min.getWeight())
 				min = now;
 		}
 		return min;
@@ -207,7 +231,32 @@ public class Graph_Algo implements graph_algorithms{
 			return null;
 		}
 	}
-
+	public void drawTable () {
+		DGraph dg= (DGraph)this.myGraph;
+		int i=0;
+		int j=0;
+		int n= dg.nodeSize();
+		node_data [] nodesByOrder= new node_data[n];
+		double [][] table = new double[n][n];
+		for (Iterator<node_data> iterator = dg.getV().iterator(); iterator.hasNext();) {
+			node_data out = (node_data) iterator.next();
+			nodesByOrder[i]=out;
+			j=0;
+			for (Iterator<node_data> it = dg.getV().iterator(); it.hasNext();) {
+				node_data in = (node_data) it.next();
+				//System.out.println(i +"   " +  j);
+				table[i][j]=this.shortestPathDist(out.getKey(), in.getKey());
+				j++;
+		}
+			i++;
+	}
+		for (int a = 0; a < n; a++) {
+		    for (int b = 0; b < n; b++) {
+		        System.out.print(table[a][b] + " ");
+		    }
+		    System.out.println();
+		}
+}
 	@Override
 	public List<node_data> TSP(List<Integer> targets) {
 		// TODO Auto-generated method stub

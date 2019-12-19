@@ -14,11 +14,10 @@ import utils.StdDraw;
 
 public class idoTest {
 
-	public final static int numberOfVertexs = 10;
-	public final static int numberOfEdge = 20;
+	public final static int numberOfVertexs = 1000000;
+	public final static int numberOfEdge = 6000000;
 	public static int seed = 5;
 	public static void main(String[] args) {
-//		triangel();
 //		SPtest();
 //		edutesting();
 //		save_init_test();
@@ -27,56 +26,34 @@ public class idoTest {
 
 	private static void SPtest() {
 		DGraph g = new DGraph();
-		Vertex v1=new Vertex(new Point3D(50,5,1), 30);
-		Vertex v2=new Vertex(new Point3D(10,80,1),20);
-		Vertex v3=new Vertex(new Point3D(10,20,1),10);
-		Vertex v4=new Vertex(new Point3D(7,65,1), 0);
+		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
+		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
+		Vertex v3=new Vertex(new Point3D(10,20,1),3,30);
+		Vertex v4=new Vertex(new Point3D(7,65,1),4,40);
 		g.addNode(v1);
 		g.addNode(v2);
 		g.addNode(v3);
 		g.addNode(v4);
 		g.connect(v1.getKey(), v2.getKey(), 3);
-		g.connect(v2.getKey(), v4.getKey(), 6);
-		g.connect(v1.getKey(), v4.getKey(), 10.33);
-		g.connect(v4.getKey(), v3.getKey(), 8);
+		g.connect(v2.getKey(), v3.getKey(), 6);
+		g.connect(v3.getKey(), v4.getKey(), 10.33);
+		g.connect(v4.getKey(), v1.getKey(), 8);
 		Graph_Algo al=new Graph_Algo();
 		al.init(g);
-		System.out.println(g.getVertexToNeighbors().get(4)==null);
-		System.out.println(al.shortestPathDist(1, 3));
-		System.out.println(g.getNode(4).getInfo());
-		System.out.println(al.shortestPath(1, 4));
+		System.out.println(al.isConnected());
+		System.out.println("path 1-2 ="+al.shortestPathDist(1, 2));
+		System.out.println("4 path "+g.getNode(4).getInfo());
+		System.out.println("object address trip "+al.shortestPath(1, 4));
 
 	}
-	private static void triangel () {
-		Point3D src=new Point3D(0, 0);
-		Point3D dest=new Point3D(0.5, 0.5);
-		Point3D mid=new Point3D((src.x()+dest.x()*7)/8, (src.y()+dest.y()*7)/8);
-		StdDraw.setPenRadius(0.01);
-		StdDraw.point(src.x(), src.y());
-		StdDraw.point(dest.x(), dest.y());
-		StdDraw.point(mid.x(), mid.y());
-		StdDraw.setPenRadius(0.001);
-		double m=(dest.x()-src.x())/(-dest.y()+src.y());
-		Point3D onL1= new Point3D(mid.x()+0.05,m*(mid.x()+0.05)+mid.y()-m*mid.x());
-		Point3D onL2= new Point3D(mid.x()-0.05,m*(mid.x()-0.05)+mid.y()-m*mid.x());
-		StdDraw.point(onL1.x(), onL1.y());
-		StdDraw.point(onL2.x(), onL2.y());
-		StdDraw.line(onL1.x(), onL1.y(), onL2.x(), onL2.y());
-		StdDraw.line(src.x(), src.y(), dest.x(), dest.y());
-		double x [] = {dest.x(),onL1.x(),onL2.x()};
-		double y [] = {dest.y(),onL1.y(),onL2.y()};
-		StdDraw.filledPolygon(x, y);
-	}
-
-
 
 
 	private static void save_init_test() {
 		DGraph g = new DGraph();
-		Vertex v1=new Vertex(new Point3D(50,5,1), 0);
-		Vertex v2=new Vertex(new Point3D(10,80,1), 0);
-		Vertex v3=new Vertex(new Point3D(10,20,1), 0);
-		Vertex v4=new Vertex(new Point3D(7,65,1), 0);
+		Vertex v1=new Vertex(new Point3D(50,5,1), 1);
+		Vertex v2=new Vertex(new Point3D(10,80,1), 2);
+		Vertex v3=new Vertex(new Point3D(10,20,1), 3);
+		Vertex v4=new Vertex(new Point3D(7,65,1), 4);
 		g.addNode(v1);
 		g.addNode(v2);
 		g.addNode(v3);
@@ -91,35 +68,31 @@ public class idoTest {
 		Graph_Algo al1=new Graph_Algo();
 		al1.init("edut");
 		graph gcopy = al.copy();
-		((DGraph)al.myGraph).paint();
 		g.removeNode(1);
-		((DGraph) gcopy).paint();
-		g.paint();
+	
 	}
 	private static void edutesting() {
 
 		DGraph g = new DGraph();
-		Vertex v1=new Vertex(new Point3D(50,5,1), 0);
-		Vertex v2=new Vertex(new Point3D(10,80,1), 0);
-		Vertex v3=new Vertex(new Point3D(10,20,1), 0);
-		Vertex v4=new Vertex(new Point3D(7,65,1), 0);
-		Vertex v5=new Vertex(new Point3D(44,24,1), 0);
-		g.addNode(v1);		g.addNode(v2); 		g.addNode(v3); 		g.addNode(v4); g.addNode(v5);
+		Vertex v1=new Vertex(new Point3D(50,5,1), 1);
+		Vertex v2=new Vertex(new Point3D(10,80,1), 2);
+		Vertex v3=new Vertex(new Point3D(10,20,1), 3);
+		Vertex v4=new Vertex(new Point3D(7,65,1), 4);
+		Vertex v5=new Vertex(new Point3D(44,24,1), 5);
+		g.addNode(v1);g.addNode(v2);g.addNode(v3);g.addNode(v4);g.addNode(v5);
 		g.connect(v1.getKey(), v2.getKey(), 3);
 		g.connect(v2.getKey(), v4.getKey(), 6);
 		g.connect(v4.getKey(), v3.getKey(), 2.33);
 		g.connect(v3.getKey(), v1.getKey(), 8);
-//		System.out.println(g.getNeighborsToVertex());
-//		System.out.println(g.getVertexToNeighbors());
-		Graph_Algo ga=new Graph_Algo();
-		ga.init(g);
-		StdDraw.paint(g);
-		System.out.println(v2.getLocation().distance2D(v4.getLocation()));
-//		System.out.println(ga.checkLegal());
+		
+		g.removeEdge(1, 2);
+		g.removeNode(1);
+//		Graph_Algo ga=new Graph_Algo();
+//		ga.init(g);
 //		System.out.println(ga.isConnected());
 //		System.out.println(ga.shortestPathDist(1, 2));
 //		System.out.println(ga.shortestPathDist(1, 3));
-		algotest(g);
+//		algotest(g);
 
 	}
 	private static void algotest(DGraph g) {
@@ -132,7 +105,7 @@ public class idoTest {
 		Random r = new Random(seed);
 		DGraph g = new DGraph();
 		for(int i = 1; i<=numberOfVertexs;i++) {
-			g.addNode((node_data) new Vertex(new Point3D(r.nextInt(100),r.nextInt(100),0),0)/*random weight*/);
+			g.addNode((node_data) new Vertex(new Point3D(r.nextInt(100),r.nextInt(100),0)));
 		}
 		for(int i = 1; i<=numberOfEdge;i++) {
 			int v1 = r.nextInt(numberOfVertexs) +1;
@@ -148,15 +121,15 @@ public class idoTest {
 		//				nodeSizeTest(g);
 		//				edgeSizeTest(g);
 
-		StdDraw.paint(g);
+	//	StdDraw.paint(g);
 		//			g.removeNode(1);
 		//			g.connect(2, 3, 1);
 		//	g.paint();
 		//	g.removeEdge(2,3);
 		//	g.paint();
-		Graph_Algo al=new Graph_Algo();
-		al.init(g);
-		System.out.println(al.isConnected()+"    "+al.shortestPathDist(4, 10));
+	//	Graph_Algo al=new Graph_Algo();
+	//	al.init(g);
+	//	System.out.println(al.isConnected()+"    "+al.shortestPathDist(4, 10));
 	//	algotest(g);
 	}
 	private static void removeEdge(DGraph g, int src, int dest) {

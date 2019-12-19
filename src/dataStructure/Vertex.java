@@ -9,42 +9,38 @@ import utils.Point3D;
  * @author ido shapira & edut cohen
  */
 public class Vertex implements node_data,Serializable {
-	private static int key=1;
 	private int id;
 	private Point3D location;
 	private double weight;
 	private String info;
 	private int tag;
+	
 	///////////////////constructors/////////////////////
-	public Vertex(Point3D location) {
-		this.id = key++;
+	public Vertex(Point3D location,int id) {
+		if(id <= DGraph.FORBIDDEN_KEY) 
+		{throw new RuntimeException("FORBIDDEN_KEY exception - key cant be 0 , starting from 1");}
+		this.id = id;
 		this.setLocation(location);
 		this.setWeight(0);
 		this.setInfo("");
 		this.setTag(0);
 	}
-	public Vertex(Point3D location, double weight ,String info,int tag) {
-		this.id = key++;
+	public Vertex(Point3D location) { //for stddraw
 		this.setLocation(location);
-		this.setWeight(weight);
-		this.setInfo(info);
-		this.setTag(tag);
+		this.setWeight(0);
+		this.setInfo("");
+		this.setTag(0);
 	}
-	public Vertex(Point3D location, double weight,String info) {
-		this.id = key++;
-		this.setLocation(location);
-		this.setWeight(weight);
-		this.setInfo(info);
-		this.tag = 0;
-	}
-	public Vertex(Point3D location, double weight) {
-		this.id = key++;
+	public Vertex(Point3D location,int id, double weight) {
+		if(id <= DGraph.FORBIDDEN_KEY) 
+		{throw new RuntimeException("FORBIDDEN_KEY exception - key cant be 0 , starting from 1");}
+		this.id = id;
 		this.setLocation(location);
 		this.setWeight(weight);
 		this.info = "";
 		this.tag = 0;
 	}
-	public Vertex(node_data n) {
+	public Vertex(node_data n) { //copy constractor
 		this.id = n.getKey();
 		this.info = this.getInfo();
 		this.location = new Point3D(n.getLocation());
@@ -93,7 +89,7 @@ public class Vertex implements node_data,Serializable {
 			this.weight = w;
 		}
 		else
-			System.out.println("weight must be positive");
+			{throw new RuntimeException("weight must be positive");}
 	}
 	/**
 	 * return the remark (meta data) associated with this node.

@@ -24,7 +24,7 @@ public class DGraphTest {
 	@Test
 	public void testDGraph() {
 		for(int i = 1; i<=numberOfVertexs;i++) {
-			g.addNode((node_data) new Vertex(new Point3D(i,i+1,i+2),Math.random()*100));
+//			g.addNode((node_data) new Vertex(new Point3D(i,i+1,i+2),Math.random()*100));
 		}
 		for(int i = 1; i<=numberOfVertexs;i++) {
 			int v1 = (int)Math.random()*numberOfVertexs;
