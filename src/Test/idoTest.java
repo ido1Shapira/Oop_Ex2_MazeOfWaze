@@ -1,15 +1,12 @@
 package Test;
 
+import java.awt.Window;
 import java.util.Iterator;
 import java.util.Random;
 
 import algorithms.Graph_Algo;
-import dataStructure.DGraph;
-import dataStructure.Vertex;
-import dataStructure.edge_data;
-import dataStructure.graph;
-import dataStructure.node_data;
-import utils.Point3D;
+import dataStructure.*;
+import utils.*;
 
 public class idoTest {
 
@@ -40,11 +37,11 @@ public class idoTest {
 		al.save("edut");
 		Graph_Algo al1=new Graph_Algo();
 		al1.init("edut");
-		graph gcopy = al.copy();
-		((DGraph)al.myGraph).paint();
-		g.removeNode(1);
-		((DGraph) gcopy).paint();
-		g.paint();
+//		graph gcopy = al.copy();
+//		((DGraph)al.myGraph).paint();
+//		g.removeNode(1);
+//		((DGraph) gcopy).paint();
+//		g.paint();
 		
 	//	((DGraph)al2.myGraph).paint();
 	}
@@ -110,14 +107,11 @@ public class idoTest {
 		System.out.println("That took " + (endTime - startTime) + " milliseconds");
 		//				nodeSizeTest(g);
 		//				edgeSizeTest(g);
-
-	g.paint();
-//			g.removeNode(1);
-//			g.connect(2, 3, 1);
-//	g.paint();
-//	g.removeEdge(2,3);
-//	g.paint();
-	algotest(g);
+		
+		StdDraw.paint(g);
+//		GUI_Window w = new GUI_Window((graph) g);
+//		w.setVisible(true);
+		algotest(g);
 	}
 	private static void removeEdge(DGraph g, int src, int dest) {
 		int sizebefore = g.edgeSize();
