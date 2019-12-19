@@ -10,6 +10,7 @@ import dataStructure.edge_data;
 import dataStructure.graph;
 import dataStructure.node_data;
 import utils.Point3D;
+import utils.StdDraw;
 
 public class idoTest {
 
@@ -17,12 +18,12 @@ public class idoTest {
 	public final static int numberOfEdge = 10;
 
 	public static void main(String[] args) {
-		SPtest();
-		edutesting();
+		//		SPtest();
+		//		edutesting();
 	 	save_init_test();
-
+		idotesting();
 	}
-	
+
 	private static void SPtest() {
 		DGraph g = new DGraph();
 		Vertex v1=new Vertex(new Point3D(50,5,1), 30);
@@ -39,17 +40,17 @@ public class idoTest {
 		g.connect(v4.getKey(), v3.getKey(), 8);
 		Graph_Algo al=new Graph_Algo();
 		al.init(g);
-	//	System.out.println(g.getVertexToNeighbors().get(4)==null);
+		System.out.println(g.getVertexToNeighbors().get(4)==null);
 		System.out.println(al.shortestPathDist(1, 3));
 		System.out.println(g.getNode(4).getInfo());
 		System.out.println(al.shortestPath(1, 4));
-		
+
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	private static void save_init_test() {
 		DGraph g = new DGraph();
 		Vertex v1=new Vertex(new Point3D(50,5,1), 0);
@@ -74,8 +75,6 @@ public class idoTest {
 		g.removeNode(1);
 		((DGraph) gcopy).paint();
 		g.paint();
-		
-	//	((DGraph)al2.myGraph).paint();
 	}
 	private static void edutesting() {
 
@@ -89,7 +88,7 @@ public class idoTest {
 		g.connect(v1.getKey(), v2.getKey(), 3);
 		g.connect(v2.getKey(), v4.getKey(), 6);
 		g.connect(v4.getKey(), v3.getKey(), 2.33);
-		g.connect(v3.getKey(), v1.getKey(), 888);
+		g.connect(v3.getKey(), v1.getKey(), 8);
 		System.out.println(g.getNeighborsToVertex());
 		System.out.println(g.getVertexToNeighbors());
 		Graph_Algo ga=new Graph_Algo();
@@ -97,8 +96,9 @@ public class idoTest {
 		((DGraph) ga.myGraph).paint();
 		System.out.println(ga.checkLegal());
 		System.out.println(ga.isConnected());
+		System.out.println(ga.shortestPathDist(1, 2));
 		System.out.println(ga.shortestPathDist(1, 3));
-//		algotest(g);
+		algotest(g);
 
 	}
 	private static void algotest(DGraph g) {
@@ -127,13 +127,16 @@ public class idoTest {
 		//				nodeSizeTest(g);
 		//				edgeSizeTest(g);
 
-	g.paint();
-//			g.removeNode(1);
-//			g.connect(2, 3, 1);
-//	g.paint();
-//	g.removeEdge(2,3);
-//	g.paint();
-	algotest(g);
+		StdDraw.paint(g);
+		//			g.removeNode(1);
+		//			g.connect(2, 3, 1);
+		//	g.paint();
+		//	g.removeEdge(2,3);
+		//	g.paint();
+		Graph_Algo al=new Graph_Algo();
+		al.init(g);
+		System.out.println(al.isConnected()+"    "+al.shortestPathDist(4, 10));
+		algotest(g);
 	}
 	private static void removeEdge(DGraph g, int src, int dest) {
 		int sizebefore = g.edgeSize();
