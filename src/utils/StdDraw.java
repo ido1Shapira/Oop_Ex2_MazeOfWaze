@@ -744,7 +744,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 		algo.add(isConnected);
 		algo.add(sortestPath);
-		
+
 		return menuBar;
 	}
 
@@ -1735,7 +1735,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 	private static Point3D p;
 	private static boolean isMouseMoved;
-	
+
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -1929,7 +1929,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			StdDraw.setXscale(0,100);
 			StdDraw.setYscale(0,100);
 		}
-		
+
 		int i=0;
 		for (Iterator<node_data> iterator = g.getV().iterator(); iterator.hasNext();) {
 			node_data node = (node_data) iterator.next();
@@ -1953,12 +1953,29 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		node_data dest = g.getNode(edge.getDest());
 		StdDraw.line(src.getLocation().x(),src.getLocation().y(),dest.getLocation().x() , dest.getLocation().y());
 		StdDraw.setPenRadius(0.02);
+		double dist=src.getLocation().distance2D(dest.getLocation());
+		if((dest.getLocation().y()!=src.getLocation().y())) {
+			Point3D mid=new Point3D((src.getLocation().x()+dest.getLocation().x()*7)/8, (src.getLocation().y()+dest.getLocation().y()*7)/8);
+			double m=(dest.getLocation().x()-src.getLocation().x())/(-dest.getLocation().y()+src.getLocation().y());
+			Point3D onL1= new Point3D(mid.x()+0.01*dist,m*(mid.x()+0.5)+mid.y()-m*mid.x());
+			Point3D onL2= new Point3D(mid.x()-0.01*dist,m*(mid.x()-0.5)+mid.y()-m*mid.x());
+			double x [] = {dest.getLocation().x(),onL1.x(),onL2.x()};
+			double y [] = {dest.getLocation().y(),onL1.y(),onL2.y()};
+			StdDraw.setPenColor(ORANGE);
+			StdDraw.filledPolygon(x, y);
+		}
+		else {
+			Point3D mid=new Point3D((src.getLocation().x()+dest.getLocation().x()*7)/8, (src.getLocation().y()+dest.getLocation().y()*7)/8);
+			Point3D onL1= new Point3D(mid.x(),mid.y()+0.01*dist);
+			Point3D onL2= new Point3D(mid.x(),mid.y()-0.01*dist);
+			double x [] = {dest.getLocation().x(),onL1.x(),onL2.x()};
+			double y [] = {dest.getLocation().y(),onL1.y(),onL2.y()};
+			StdDraw.filledPolygon(x, y);
+		}
 		StdDraw.setPenColor(StdDraw.ORANGE);
+
 		double relativex=(src.getLocation().x()+5*dest.getLocation().x())/6;
 		double relativey=(src.getLocation().y()+5*dest.getLocation().y())/6;
-		//		double x[]= {relativex-1,relativex+1,relativex};
-		//		double y[]= {relativey+1,relativey-1,relativey};
-		//		StdDraw.filledPolygon(x, y);
 		StdDraw.point(relativex, relativey);
 		int round=(int)(edge.getWeight()*100);
 		double roundafter=round;

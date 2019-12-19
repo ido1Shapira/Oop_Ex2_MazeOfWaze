@@ -14,13 +14,14 @@ import utils.StdDraw;
 
 public class idoTest {
 
-	public final static int numberOfVertexs = 10;
-	public final static int numberOfEdge = 10;
-
+	public final static int numberOfVertexs = 1000000;
+	public final static int numberOfEdge = 2000000;
+	public static int seed = 5;
 	public static void main(String[] args) {
-		//		SPtest();
-		//		edutesting();
-	 	save_init_test();
+//		triangel();
+//		SPtest();
+//		edutesting();
+//		save_init_test();
 		idotesting();
 	}
 
@@ -46,7 +47,26 @@ public class idoTest {
 		System.out.println(al.shortestPath(1, 4));
 
 	}
-
+	private static void triangel () {
+		Point3D src=new Point3D(0, 0);
+		Point3D dest=new Point3D(0.5, 0.5);
+		Point3D mid=new Point3D((src.x()+dest.x()*7)/8, (src.y()+dest.y()*7)/8);
+		StdDraw.setPenRadius(0.01);
+		StdDraw.point(src.x(), src.y());
+		StdDraw.point(dest.x(), dest.y());
+		StdDraw.point(mid.x(), mid.y());
+		StdDraw.setPenRadius(0.001);
+		double m=(dest.x()-src.x())/(-dest.y()+src.y());
+		Point3D onL1= new Point3D(mid.x()+0.05,m*(mid.x()+0.05)+mid.y()-m*mid.x());
+		Point3D onL2= new Point3D(mid.x()-0.05,m*(mid.x()-0.05)+mid.y()-m*mid.x());
+		StdDraw.point(onL1.x(), onL1.y());
+		StdDraw.point(onL2.x(), onL2.y());
+		StdDraw.line(onL1.x(), onL1.y(), onL2.x(), onL2.y());
+		StdDraw.line(src.x(), src.y(), dest.x(), dest.y());
+		double x [] = {dest.x(),onL1.x(),onL2.x()};
+		double y [] = {dest.y(),onL1.y(),onL2.y()};
+		StdDraw.filledPolygon(x, y);
+	}
 
 
 
@@ -108,7 +128,7 @@ public class idoTest {
 	}
 	private static void idotesting() {
 		long startTime = System.currentTimeMillis();
-		Random r = new Random(3);
+		Random r = new Random(seed);
 		DGraph g = new DGraph();
 		for(int i = 1; i<=numberOfVertexs;i++) {
 			g.addNode((node_data) new Vertex(new Point3D(r.nextInt(100),r.nextInt(100),0),r.nextInt(100))/*random weight*/);
@@ -127,16 +147,16 @@ public class idoTest {
 		//				nodeSizeTest(g);
 		//				edgeSizeTest(g);
 
-		StdDraw.paint(g);
+	//	StdDraw.paint(g);
 		//			g.removeNode(1);
 		//			g.connect(2, 3, 1);
 		//	g.paint();
 		//	g.removeEdge(2,3);
 		//	g.paint();
-		Graph_Algo al=new Graph_Algo();
-		al.init(g);
-		System.out.println(al.isConnected()+"    "+al.shortestPathDist(4, 10));
-		algotest(g);
+	//	Graph_Algo al=new Graph_Algo();
+	//	al.init(g);
+	//	System.out.println(al.isConnected()+"    "+al.shortestPathDist(4, 10));
+	//	algotest(g);
 	}
 	private static void removeEdge(DGraph g, int src, int dest) {
 		int sizebefore = g.edgeSize();

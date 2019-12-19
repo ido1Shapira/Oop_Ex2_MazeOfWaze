@@ -151,7 +151,7 @@ public class Graph_Algo implements graph_algorithms{
 		this.myGraph.getNode(src).setInfo(""+src);// starting point
 		this.myGraph.getNode(src).setWeight(0);
 		HashMap<Integer, node_data> hashCopy = new HashMap<Integer, node_data>();
-		for (Iterator<node_data> init =((DGraph) this.myGraph).getIdToVertex().values().iterator(); init.hasNext();) {
+		for (Iterator<node_data> init =((DGraph) this.myGraph).getV().iterator(); init.hasNext();) {
 			node_data v = (node_data) init.next();
 			hashCopy.put(v.getKey(), v);		//init copy list for all vertices we havent visited yet
 		}
@@ -190,16 +190,22 @@ public class Graph_Algo implements graph_algorithms{
 	}
 
 	@Override
-	public List<node_data> shortestPath(int src, int dest) {
-		this.shortPathGraph(src);
-		String path = this.myGraph.getNode(dest).getInfo();
-		String [] pathSplit= path.split(" ");
-		ArrayList <node_data> list= new ArrayList<node_data>();
-		for (int i = 0; i < pathSplit.length; i++) {
-			int toAdd= Integer.parseInt(pathSplit[i]);
-			list.add(this.myGraph.getNode(toAdd));
+	public List<node_data> shortestPath(int src, int dest)  {
+		try {
+			this.shortPathGraph(src);
+			String path = this.myGraph.getNode(dest).getInfo();
+			String [] pathSplit= path.split(" ");
+			ArrayList <node_data> list= new ArrayList<node_data>();
+			for (int i = 0; i < pathSplit.length; i++) {
+				int toAdd= Integer.parseInt(pathSplit[i]);
+				list.add(this.myGraph.getNode(toAdd));
+			}
+			return list;
 		}
-		return list;
+		catch(Exception e) {
+			System.out.println("src or dest does not exist");
+			return null;
+		}
 	}
 
 	@Override

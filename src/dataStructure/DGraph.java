@@ -65,10 +65,6 @@ public class DGraph implements graph, Serializable{
 		this.mc++;
 	}
 	
-	public HashMap<Integer, node_data> getIdToVertex(){
-		return this.idToVertex;
-	}
-
 	/**
 	 * Connect an edge with weight w between node src to node dest.
 	 * * Note: this method should run in O(1) time.
