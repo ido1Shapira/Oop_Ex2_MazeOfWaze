@@ -1,12 +1,15 @@
 package Test;
 
-import java.awt.Window;
 import java.util.Iterator;
 import java.util.Random;
 
 import algorithms.Graph_Algo;
-import dataStructure.*;
-import utils.*;
+import dataStructure.DGraph;
+import dataStructure.Vertex;
+import dataStructure.edge_data;
+import dataStructure.graph;
+import dataStructure.node_data;
+import utils.Point3D;
 
 public class idoTest {
 
@@ -14,10 +17,39 @@ public class idoTest {
 	public final static int numberOfEdge = 10;
 
 	public static void main(String[] args) {
-		idotesting();
-//		edutesting();
-//	 	save_init_test();
+		SPtest();
+		edutesting();
+	 	save_init_test();
+
 	}
+	
+	private static void SPtest() {
+		DGraph g = new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1), 30);
+		Vertex v2=new Vertex(new Point3D(10,80,1),20);
+		Vertex v3=new Vertex(new Point3D(10,20,1),10);
+		Vertex v4=new Vertex(new Point3D(7,65,1), 0);
+		g.addNode(v1);
+		g.addNode(v2);
+		g.addNode(v3);
+		g.addNode(v4);
+		g.connect(v1.getKey(), v2.getKey(), 3);
+		g.connect(v2.getKey(), v4.getKey(), 6);
+		g.connect(v1.getKey(), v4.getKey(), 10.33);
+		g.connect(v4.getKey(), v3.getKey(), 8);
+		Graph_Algo al=new Graph_Algo();
+		al.init(g);
+	//	System.out.println(g.getVertexToNeighbors().get(4)==null);
+		System.out.println(al.shortestPathDist(1, 3));
+		System.out.println(g.getNode(4).getInfo());
+		System.out.println(al.shortestPath(1, 4));
+		
+	}
+	
+	
+	
+	
+	
 	private static void save_init_test() {
 		DGraph g = new DGraph();
 		Vertex v1=new Vertex(new Point3D(50,5,1), 0);
@@ -37,11 +69,11 @@ public class idoTest {
 		al.save("edut");
 		Graph_Algo al1=new Graph_Algo();
 		al1.init("edut");
-//		graph gcopy = al.copy();
-//		((DGraph)al.myGraph).paint();
-//		g.removeNode(1);
-//		((DGraph) gcopy).paint();
-//		g.paint();
+		graph gcopy = al.copy();
+		((DGraph)al.myGraph).paint();
+		g.removeNode(1);
+		((DGraph) gcopy).paint();
+		g.paint();
 		
 	//	((DGraph)al2.myGraph).paint();
 	}
@@ -52,35 +84,22 @@ public class idoTest {
 		Vertex v2=new Vertex(new Point3D(10,80,1), 0);
 		Vertex v3=new Vertex(new Point3D(10,20,1), 0);
 		Vertex v4=new Vertex(new Point3D(7,65,1), 0);
-		g.addNode(v1); g.addNode(v2); g.addNode(v3); g.addNode(v4);
+		Vertex v5=new Vertex(new Point3D(44,24,1), 0);
+		g.addNode(v1);		g.addNode(v2); 		g.addNode(v3); 		g.addNode(v4); g.addNode(v5);
 		g.connect(v1.getKey(), v2.getKey(), 3);
-		g.connect(v2.getKey(), v3.getKey(), 6);
-		g.connect(v4.getKey(), v1.getKey(), 2.33);
-		g.connect(v3.getKey(), v4.getKey(), 888);
-
+		g.connect(v2.getKey(), v4.getKey(), 6);
+		g.connect(v4.getKey(), v3.getKey(), 2.33);
+		g.connect(v3.getKey(), v1.getKey(), 888);
 		System.out.println(g.getNeighborsToVertex());
 		System.out.println(g.getVertexToNeighbors());
-	//	System.out.println(g.getEdgesOfVertex());
-		//System.out.println(g.getV());
 		Graph_Algo ga=new Graph_Algo();
 		ga.init(g);
-	//	((DGraph) ga.myGraph).paint();
+		((DGraph) ga.myGraph).paint();
 		System.out.println(ga.checkLegal());
 		System.out.println(ga.isConnected());
-//		g.removeEdge(1, 2);
-//		g.removeNode(1);	
-//		System.out.println(g.getNeighborsToVertex());
-//		System.out.println(g.getVertexTohisNeighbors());
-//		System.out.println(g.getEdgesOfVertex());
-//		System.out.println(g.getV());
+		System.out.println(ga.shortestPathDist(1, 3));
 //		algotest(g);
-		//g.paint();
-//		System.out.println("before="+g.edgeSize());
-//		System.out.println(g.getEdge(v1.getKey(), v2.getKey()).getWeight());
-//		g.paint();
-//		System.out.println("after="+g.edgeSize());
-//		System.out.println(g.getMC());
-//		System.out.println(g.getEdge(v1.getKey(), v2.getKey()));
+
 	}
 	private static void algotest(DGraph g) {
 		Graph_Algo al = new Graph_Algo();	
@@ -107,11 +126,14 @@ public class idoTest {
 		System.out.println("That took " + (endTime - startTime) + " milliseconds");
 		//				nodeSizeTest(g);
 		//				edgeSizeTest(g);
-		
-		StdDraw.paint(g);
-//		GUI_Window w = new GUI_Window((graph) g);
-//		w.setVisible(true);
-		algotest(g);
+
+	g.paint();
+//			g.removeNode(1);
+//			g.connect(2, 3, 1);
+//	g.paint();
+//	g.removeEdge(2,3);
+//	g.paint();
+	algotest(g);
 	}
 	private static void removeEdge(DGraph g, int src, int dest) {
 		int sizebefore = g.edgeSize();

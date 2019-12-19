@@ -1,8 +1,13 @@
 package algorithms;
 import dataStructure.*;
+import utils.Point3D;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -77,6 +82,7 @@ public class Graph_Algo implements graph_algorithms{
 			v.setTag(0);
 		}
 	}
+
 	@Override
 	public boolean isConnected() {
 		tagsReset();
@@ -93,7 +99,7 @@ public class Graph_Algo implements graph_algorithms{
 		}
 		return false;
 	}
-	
+
 	private int tagMyFathers(node_data grandSon,DGraph dg) {
 		for (Iterator<Integer> iterator = dg.getNeighborsToVertex().get(grandSon.getKey()).iterator(); iterator.hasNext();) {
 			Integer sonKey = (Integer) iterator.next();
@@ -131,16 +137,69 @@ public class Graph_Algo implements graph_algorithms{
 		if(count == 0) return true;
 		return false;
 	}
+	private void infoTagWeightReset() {
+		for (Iterator<node_data> init = this.myGraph.getV().iterator(); init.hasNext();) {
+			node_data v = (node_data) init.next();
+			v.setInfo("");
+			v.setTag(0);
+			v.setWeight(1000000);
+		}
+	}
+	public void shortPathGraph(int src) {
+		infoTagWeightReset();
+		this.myGraph.getNode(src).setTag(0);// starting point
+		this.myGraph.getNode(src).setInfo(""+src);// starting point
+		this.myGraph.getNode(src).setWeight(0);
+		HashMap<Integer, node_data> hashCopy = new HashMap<Integer, node_data>();
+		for (Iterator<node_data> init =((DGraph) this.myGraph).getIdToVertex().values().iterator(); init.hasNext();) {
+			node_data v = (node_data) init.next();
+			hashCopy.put(v.getKey(), v);		//init copy list for all vertices we havent visited yet
+		}
+		for(int i=0; i<this.myGraph.nodeSize();i++) {
+			node_data current =  this.findMin(hashCopy);
+			int currentKey = current.getKey();
+			hashCopy.remove(currentKey);
+			if( ((DGraph) this.myGraph).getVertexToNeighbors().get(currentKey) !=null) {
+				for (Iterator<Integer> iterator = ((DGraph) this.myGraph).getVertexToNeighbors().get(currentKey).iterator(); iterator.hasNext();) {
+					Integer sonKey = (Integer) iterator.next();
+					node_data son = ((DGraph) this.myGraph).getNode(sonKey);
+					double edgeWeight = ((DGraph) this.myGraph).getEdge(currentKey, sonKey).getWeight();
+					if(son.getWeight()>(current.getWeight()+edgeWeight) && son.getTag()==0) {
+						son.setWeight(current.getWeight()+edgeWeight);
+						son.setInfo(current.getInfo()+" "+sonKey);
+					}
+				}
+			}
+			current.setTag(1);
+		}
+	}
+
+	public node_data findMin (HashMap<Integer, node_data> hashNotVisited) {
+		node_data min=new Vertex(new Point3D(0,0,0), 1000000000);
+		for (Iterator <node_data> it = hashNotVisited.values().iterator(); it.hasNext();) {
+			node_data now = (node_data) it.next();
+			if(now.getTag()==0 && now.getWeight()<min.getWeight())
+				min = now;
+		}
+		return min;
+	}
 	@Override
 	public double shortestPathDist(int src, int dest) {
-		// TODO Auto-generated method stub
-		return 0;
+		this.shortPathGraph(src);
+		return this.myGraph.getNode(dest).getWeight();
 	}
 
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
-		// TODO Auto-generated method stub
-		return null;
+		this.shortPathGraph(src);
+		String path = this.myGraph.getNode(dest).getInfo();
+		String [] pathSplit= path.split(" ");
+		ArrayList <node_data> list= new ArrayList<node_data>();
+		for (int i = 0; i < pathSplit.length; i++) {
+			int toAdd= Integer.parseInt(pathSplit[i]);
+			list.add(this.myGraph.getNode(toAdd));
+		}
+		return list;
 	}
 
 	@Override

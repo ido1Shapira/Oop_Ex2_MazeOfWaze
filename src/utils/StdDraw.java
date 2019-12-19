@@ -28,7 +28,6 @@ package utils;
  ******************************************************************************/
 
 import java.awt.BasicStroke;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.Font;
@@ -56,12 +55,13 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
 import java.awt.image.WritableRaster;
+
 import java.io.File;
 import java.io.IOException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
+
 import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.NoSuchElementException;
@@ -74,12 +74,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
-
-import dataStructure.Vertex;
-import dataStructure.edge_data;
-import dataStructure.graph;
-import dataStructure.node_data;
-
 
 /**
  *  The {@code StdDraw} class provides a basic capability for
@@ -636,9 +630,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// set of key codes currently pressed down
 	private static TreeSet<Integer> keysDown = new TreeSet<Integer>();
 
-	public static graph g;
 	// singleton pattern: client can't instantiate
-	public StdDraw() { }
+	private StdDraw() { }
+
 
 	// static initializer
 	static {
@@ -710,8 +704,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		frame.addKeyListener(std);    // JLabel cannot get keyboard focus
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
-		//		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
-		frame.setTitle("Drawing of the graph");
+		// frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
+		frame.setTitle("Standard Draw");
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
 		frame.requestFocusInWindow();
@@ -719,32 +713,45 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	// create the menu bar (changed to private)
-	public static JMenuBar createMenuBar() {
+	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu file = new JMenu("File");
 		JMenu algo = new JMenu("algoritm");
+		JMenu add = new JMenu("add..");
 
 		menuBar.add(file);
 		menuBar.add(algo);
+		menuBar.add(add);
 
 		JMenuItem save = new JMenuItem(" Save...   ");
 		save.addActionListener(std);
 		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		file.add(save);
-
-		JMenuItem load = new JMenuItem(" Load...   ");
-		//		menuItem1.addActionListener(std);
-		//		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-		//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		file.add(load);
-
-		JMenuItem isConnected = new JMenuItem("isConnected");
-		JMenuItem sortestPath = new JMenuItem("sortestPath");
-
-		algo.add(isConnected);
-		algo.add(sortestPath);
 		
+		JMenuItem load = new JMenuItem(" Load...   ");
+//		menuItem1.addActionListener(std);
+//		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		file.add(load);
+		
+		JMenuItem isConnected = new JMenuItem("isConnected");
+//		save.addActionListener(std);
+//		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		algo.add(isConnected);
+		
+		JMenuItem v = new JMenuItem("Vertex");
+//		save.addActionListener(std);
+//		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		add.add(v);
+		
+		JMenuItem e = new JMenuItem("Edge");
+//		save.addActionListener(std);
+//		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		add.add(e);
 		return menuBar;
 	}
 
@@ -1736,22 +1743,29 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
-	private static Point3D p;
-	private static boolean isMouseMoved;
-	
+
 	/**
 	 * This method cannot be called directly.
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(e.getClickCount() == 2) {
-			Point3D p = new Point3D(e.getX(),e.getY());
-			node_data n = new Vertex(p);
-			g.addNode(n);
-			System.out.println("succsess to add vertex");
-			System.out.println("g:" + g.edgeSize() + "   "+ g.nodeSize());
-			paint(null);
-		}
+		// this body is intentionally left empty
+	}
+
+	/**
+	 * This method cannot be called directly.
+	 */
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// this body is intentionally left empty
+	}
+
+	/**
+	 * This method cannot be called directly.
+	 */
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// this body is intentionally left empty
 	}
 
 	/**
@@ -1764,9 +1778,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			mouseY = StdDraw.userY(e.getY());
 			isMousePressed = true;
 		}
-		p = new Point3D(e.getX(),e.getY());
-		//		System.out.println("on pressed: " +p.toString());
-		isMouseMoved = false;
 	}
 
 	/**
@@ -1777,27 +1788,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		synchronized (mouseLock) {
 			isMousePressed = false;
 		}
-		if(true //isMouseMoved
-				&& e.getClickCount() == 1) {
-			Point3D p2= new Point3D(e.getX(),e.getY());
-			int src = findVertexWhenClicked(p);
-			int dest = findVertexWhenClicked(p2);
-			if(src != -1 && dest != -1) {
-				g.connect(src, dest, 0);
-				System.out.println("succsess to add edge");
-			}
-			//			System.out.println("on released: " +p2.toString());
-			paint(null);
-		}
 	}
 
-	private int findVertexWhenClicked(Point3D p) {
-		for (Iterator<node_data> iterator = g.getV().iterator(); iterator.hasNext();) {
-			Vertex v = (Vertex) iterator.next();
-			if(v.getLocation().equalsXY(p)) return v.getKey();
-		}
-		return -1;
-	}
 	/**
 	 * This method cannot be called directly.
 	 */
@@ -1818,23 +1810,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			mouseX = StdDraw.userX(e.getX());
 			mouseY = StdDraw.userY(e.getY());
 		}
-		StdDraw.isMouseMoved = true;
-	}
-	/**
-	 * This method cannot be called directly.
-	 */
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// this body is intentionally left empty
 	}
 
-	/**
-	 * This method cannot be called directly.
-	 */
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// this body is intentionally left empty
-	}
 
 	/***************************************************************************
 	 *  Keyboard interactions.
@@ -1923,59 +1900,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
-	public static void paint(graph g2) {
-		StdDraw.clear();
-		if(g2 != null) {
-			StdDraw.g = g2;
-			System.out.println("g: " +StdDraw.g.edgeSize() + "   "+ StdDraw.g.nodeSize());
-			StdDraw.setCanvasSize(800,600);
-			StdDraw.setXscale(0,100);
-			StdDraw.setYscale(0,100);
-		}
-		
-		int i=0;
-		for (Iterator<node_data> iterator = g.getV().iterator(); iterator.hasNext();) {
-			node_data node = (node_data) iterator.next();
-			drawNode(node);
-			i++;
-			if(g.getE(node.getKey()) != null) {
-				for (Iterator<edge_data> iterator2 = g.getE(node.getKey()).iterator(); iterator2.hasNext();) {
-					edge_data edge = (edge_data) iterator2.next();
-					drawEdge(edge);
-					i++;
-				}
-			}
-		}
-		System.out.println(i);
-		StdDraw.show();
-	}
-	private static void drawEdge(edge_data edge) {
-		StdDraw.setPenRadius(0.005);
-		StdDraw.setPenColor(StdDraw.BLACK);
-		node_data src = g.getNode(edge.getSrc());
-		node_data dest = g.getNode(edge.getDest());
-		StdDraw.line(src.getLocation().x(),src.getLocation().y(),dest.getLocation().x() , dest.getLocation().y());
-		StdDraw.setPenRadius(0.02);
-		StdDraw.setPenColor(StdDraw.ORANGE);
-		double relativex=(src.getLocation().x()+5*dest.getLocation().x())/6;
-		double relativey=(src.getLocation().y()+5*dest.getLocation().y())/6;
-		//		double x[]= {relativex-1,relativex+1,relativex};
-		//		double y[]= {relativey+1,relativey-1,relativey};
-		//		StdDraw.filledPolygon(x, y);
-		StdDraw.point(relativex, relativey);
-		int round=(int)(edge.getWeight()*100);
-		double roundafter=round;
-		roundafter=roundafter/100;
-		StdDraw.setPenColor(StdDraw.RED);
-		StdDraw.text(relativex-1, relativey-1,""+roundafter);
-	}
-	private static void drawNode(node_data node) {
-		StdDraw.setPenRadius(0.0255);
-		StdDraw.setPenColor(StdDraw.CYAN);
-		StdDraw.point(node.getLocation().x(), node.getLocation().y());
-		StdDraw.setPenColor(StdDraw.BLUE);
-		StdDraw.text(node.getLocation().x(), node.getLocation().y()+1,""+node.getKey());
-	}
+
 
 
 	/**
@@ -2005,6 +1930,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		StdDraw.setPenColor(StdDraw.WHITE);
 		StdDraw.text(0.8, 0.8, "white text");
 	}
+
 }
 
 
