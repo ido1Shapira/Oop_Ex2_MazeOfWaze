@@ -1954,41 +1954,53 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		StdDraw.line(src.getLocation().x(),src.getLocation().y(),dest.getLocation().x() , dest.getLocation().y());
 		StdDraw.setPenRadius(0.02);
 		double dist=src.getLocation().distance2D(dest.getLocation());
-		if((dest.getLocation().y()!=src.getLocation().y())) {
-			Point3D mid=new Point3D((src.getLocation().x()+dest.getLocation().x()*7)/8, (src.getLocation().y()+dest.getLocation().y()*7)/8);
-			double m=(dest.getLocation().x()-src.getLocation().x())/(-dest.getLocation().y()+src.getLocation().y());
-			Point3D onL1= new Point3D(mid.x()+0.01*dist,m*(mid.x()+0.5)+mid.y()-m*mid.x());
-			Point3D onL2= new Point3D(mid.x()-0.01*dist,m*(mid.x()-0.5)+mid.y()-m*mid.x());
-			double x [] = {dest.getLocation().x(),onL1.x(),onL2.x()};
-			double y [] = {dest.getLocation().y(),onL1.y(),onL2.y()};
-			StdDraw.setPenColor(ORANGE);
-			StdDraw.filledPolygon(x, y);
-		}
-		else {
-			Point3D mid=new Point3D((src.getLocation().x()+dest.getLocation().x()*7)/8, (src.getLocation().y()+dest.getLocation().y()*7)/8);
-			Point3D onL1= new Point3D(mid.x(),mid.y()+0.01*dist);
-			Point3D onL2= new Point3D(mid.x(),mid.y()-0.01*dist);
-			double x [] = {dest.getLocation().x(),onL1.x(),onL2.x()};
-			double y [] = {dest.getLocation().y(),onL1.y(),onL2.y()};
-			StdDraw.filledPolygon(x, y);
-		}
+
+//		if((dest.getLocation().y()-src.getLocation().y())>0.5) {
+//			Point3D mid=new Point3D((src.getLocation().x()+dest.getLocation().x()*(dist/5-1))/(dist/5), (src.getLocation().y()+dest.getLocation().y()*(dist/5-1))/(dist/5));
+//			double m=(dest.getLocation().x()-src.getLocation().x())/(-dest.getLocation().y()+src.getLocation().y());
+//			double d;
+//			if(dist>20)
+//				d= 0.02;
+//			else
+//				d=0.1;
+//		
+//			Point3D onL1= new Point3D(mid.x()+(d*dist),m*(mid.x()+(d*dist))+mid.y()-m*mid.x());
+//			Point3D onL2= new Point3D(mid.x()-(d*dist),m*(mid.x()-(d*dist))+mid.y()-m*mid.x());
+//			double x [] = {dest.getLocation().x(),onL1.x(),onL2.x()};
+//			double y [] = {dest.getLocation().y(),onL1.y(),onL2.y()};
+//			StdDraw.setPenColor(BLACK);
+//			StdDraw.setPenRadius(0.005);
+//			StdDraw.filledPolygon(x, y);
+//		}
+//		else {
+//			Point3D mid=new Point3D((src.getLocation().x()+dest.getLocation().x()*(dist/5-1))/(dist/5), (src.getLocation().y()+dest.getLocation().y()*(dist/5-1))/(dist/5));
+//			Point3D onL1= new Point3D(mid.x(),mid.y()+0.1*dist);
+//			Point3D onL2= new Point3D(mid.x(),mid.y()-0.1*dist);
+//			double x [] = {dest.getLocation().x(),onL1.x(),onL2.x()};
+//			double y [] = {dest.getLocation().y(),onL1.y(),onL2.y()};
+//			StdDraw.filledPolygon(x, y);
+//		}
+//
+
 		StdDraw.setPenColor(StdDraw.ORANGE);
 
-		double relativex=(src.getLocation().x()+5*dest.getLocation().x())/6;
-		double relativey=(src.getLocation().y()+5*dest.getLocation().y())/6;
+		double relativex=(src.getLocation().x()+dest.getLocation().x()*3)/4;
+		double relativey=(src.getLocation().y()+dest.getLocation().y()*3)/4;
 		StdDraw.point(relativex, relativey);
 		int round=(int)(edge.getWeight()*100);
 		double roundafter=round;
 		roundafter=roundafter/100;
 		StdDraw.setPenColor(StdDraw.RED);
-		StdDraw.text(relativex-1, relativey-1,""+roundafter);
+		StdDraw.setPenRadius(0.02);
+		StdDraw.text(relativex-1.5, relativey-1.5,""+roundafter);
 	}
 	private static void drawNode(node_data node) {
 		StdDraw.setPenRadius(0.0255);
 		StdDraw.setPenColor(StdDraw.CYAN);
 		StdDraw.point(node.getLocation().x(), node.getLocation().y());
 		StdDraw.setPenColor(StdDraw.BLUE);
-		StdDraw.text(node.getLocation().x(), node.getLocation().y()+1,""+node.getKey());
+		StdDraw.setPenRadius(0.05);
+		StdDraw.text(node.getLocation().x()-1, node.getLocation().y()+1,""+node.getKey());
 	}
 
 
@@ -1997,28 +2009,28 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 *
 	 * @param args the command-line arguments
 	 */
-	public static void main(String[] args) {
-		StdDraw.square(0.2, 0.8, 0.1);
-		StdDraw.filledSquare(0.8, 0.8, 0.2);
-		StdDraw.circle(0.8, 0.2, 0.2);
-
-		StdDraw.setPenColor(StdDraw.BOOK_RED);
-		StdDraw.setPenRadius(0.02);
-		StdDraw.arc(0.8, 0.2, 0.1, 200, 45);
-
-		// draw a blue diamond
-		StdDraw.setPenRadius();
-		StdDraw.setPenColor(StdDraw.BOOK_BLUE);
-		double[] x = { 0.1, 0.2, 0.3, 0.2 };
-		double[] y = { 0.2, 0.3, 0.2, 0.1 };
-		StdDraw.filledPolygon(x, y);
-
-		// text
-		StdDraw.setPenColor(StdDraw.BLACK);
-		StdDraw.text(0.2, 0.5, "black text");
-		StdDraw.setPenColor(StdDraw.WHITE);
-		StdDraw.text(0.8, 0.8, "white text");
-	}
+	//	public static void main(String[] args) {
+	//		StdDraw.square(0.2, 0.8, 0.1);
+	//		StdDraw.filledSquare(0.8, 0.8, 0.2);
+	//		StdDraw.circle(0.8, 0.2, 0.2);
+	//
+	//		StdDraw.setPenColor(StdDraw.BOOK_RED);
+	//		StdDraw.setPenRadius(0.02);
+	//		StdDraw.arc(0.8, 0.2, 0.1, 200, 45);
+	//
+	//		// draw a blue diamond
+	//		StdDraw.setPenRadius();
+	//		StdDraw.setPenColor(StdDraw.BOOK_BLUE);
+	//		double[] x = { 0.1, 0.2, 0.3, 0.2 };
+	//		double[] y = { 0.2, 0.3, 0.2, 0.1 };
+	//		StdDraw.filledPolygon(x, y);
+	//
+	//		// text
+	//		StdDraw.setPenColor(StdDraw.BLACK);
+	//		StdDraw.text(0.2, 0.5, "black text");
+	//		StdDraw.setPenColor(StdDraw.WHITE);
+	//		StdDraw.text(0.8, 0.8, "white text");
+	//	}
 }
 
 

@@ -14,8 +14,8 @@ import utils.StdDraw;
 
 public class idoTest {
 
-	public final static int numberOfVertexs = 1000000;
-	public final static int numberOfEdge = 2000000;
+	public final static int numberOfVertexs = 10;
+	public final static int numberOfEdge = 20;
 	public static int seed = 5;
 	public static void main(String[] args) {
 //		triangel();
@@ -109,15 +109,16 @@ public class idoTest {
 		g.connect(v2.getKey(), v4.getKey(), 6);
 		g.connect(v4.getKey(), v3.getKey(), 2.33);
 		g.connect(v3.getKey(), v1.getKey(), 8);
-		System.out.println(g.getNeighborsToVertex());
-		System.out.println(g.getVertexToNeighbors());
+//		System.out.println(g.getNeighborsToVertex());
+//		System.out.println(g.getVertexToNeighbors());
 		Graph_Algo ga=new Graph_Algo();
 		ga.init(g);
-		((DGraph) ga.myGraph).paint();
-		System.out.println(ga.checkLegal());
-		System.out.println(ga.isConnected());
-		System.out.println(ga.shortestPathDist(1, 2));
-		System.out.println(ga.shortestPathDist(1, 3));
+		StdDraw.paint(g);
+		System.out.println(v2.getLocation().distance2D(v4.getLocation()));
+//		System.out.println(ga.checkLegal());
+//		System.out.println(ga.isConnected());
+//		System.out.println(ga.shortestPathDist(1, 2));
+//		System.out.println(ga.shortestPathDist(1, 3));
 		algotest(g);
 
 	}
@@ -131,7 +132,7 @@ public class idoTest {
 		Random r = new Random(seed);
 		DGraph g = new DGraph();
 		for(int i = 1; i<=numberOfVertexs;i++) {
-			g.addNode((node_data) new Vertex(new Point3D(r.nextInt(100),r.nextInt(100),0),r.nextInt(100))/*random weight*/);
+			g.addNode((node_data) new Vertex(new Point3D(r.nextInt(100),r.nextInt(100),0),0)/*random weight*/);
 		}
 		for(int i = 1; i<=numberOfEdge;i++) {
 			int v1 = r.nextInt(numberOfVertexs) +1;
@@ -147,15 +148,15 @@ public class idoTest {
 		//				nodeSizeTest(g);
 		//				edgeSizeTest(g);
 
-	//	StdDraw.paint(g);
+		StdDraw.paint(g);
 		//			g.removeNode(1);
 		//			g.connect(2, 3, 1);
 		//	g.paint();
 		//	g.removeEdge(2,3);
 		//	g.paint();
-	//	Graph_Algo al=new Graph_Algo();
-	//	al.init(g);
-	//	System.out.println(al.isConnected()+"    "+al.shortestPathDist(4, 10));
+		Graph_Algo al=new Graph_Algo();
+		al.init(g);
+		System.out.println(al.isConnected()+"    "+al.shortestPathDist(4, 10));
 	//	algotest(g);
 	}
 	private static void removeEdge(DGraph g, int src, int dest) {
