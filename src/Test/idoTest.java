@@ -14,8 +14,8 @@ import utils.StdDraw;
 
 public class idoTest {
 
-	public final static int numberOfVertexs = 1000000;
-	public final static int numberOfEdge = 6000000;
+	public final static int numberOfVertexs = 10;
+	public final static int numberOfEdge = 20;
 	public static int seed = 5;
 	public static void main(String[] args) {
 //		SPtest();
@@ -118,15 +118,11 @@ public class idoTest {
 		long endTime = System.currentTimeMillis();
 
 		System.out.println("That took " + (endTime - startTime) + " milliseconds");
-		//				nodeSizeTest(g);
-		//				edgeSizeTest(g);
 
-	//	StdDraw.paint(g);
+		StdDraw.paint(g);
 		//			g.removeNode(1);
 		//			g.connect(2, 3, 1);
-		//	g.paint();
 		//	g.removeEdge(2,3);
-		//	g.paint();
 	//	Graph_Algo al=new Graph_Algo();
 	//	al.init(g);
 	//	System.out.println(al.isConnected()+"    "+al.shortestPathDist(4, 10));

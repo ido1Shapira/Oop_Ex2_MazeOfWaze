@@ -1744,8 +1744,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			Point3D p = new Point3D(e.getX(),e.getY());
 			node_data n = new Vertex(p);
 			g.addNode(n);
-			System.out.println("succsess to add vertex");
-			System.out.println("g:" + g.edgeSize() + "   "+ g.nodeSize());
+			System.out.println("succsess to add vertex\ng:" + g.edgeSize() + "   "+ g.nodeSize());
 			paint(null);
 		}
 	}
@@ -1759,10 +1758,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			mouseX = StdDraw.userX(e.getX());
 			mouseY = StdDraw.userY(e.getY());
 			isMousePressed = true;
+			p = new Point3D(mouseX,mouseY);
+			isMouseMoved = false;
 		}
-		p = new Point3D(e.getX(),e.getY());
 		//		System.out.println("on pressed: " +p.toString());
-		isMouseMoved = false;
 	}
 
 	/**
@@ -1772,19 +1771,20 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	public void mouseReleased(MouseEvent e) {
 		synchronized (mouseLock) {
 			isMousePressed = false;
-		}
-		if(true //isMouseMoved
-				&& e.getClickCount() == 1) {
-			Point3D p2= new Point3D(e.getX(),e.getY());
-			int src = findVertexWhenClicked(p);
-			int dest = findVertexWhenClicked(p2);
-			if(src != -1 && dest != -1) {
-				g.connect(src, dest, 0);
-				System.out.println("succsess to add edge");
+			if(true //isMouseMoved
+					&& e.getClickCount() == 1) {
+				Point3D p2= new Point3D(mouseX,mouseY);
+				int src = findVertexWhenClicked(p);
+				int dest = findVertexWhenClicked(p2);
+				if(src != -1 && dest != -1) {
+					g.connect(src, dest, 0);
+					System.out.println("succsess to add edge");
+					paint(null);
+				}
+				//			System.out.println("on released: " +p2.toString());
 			}
-			//			System.out.println("on released: " +p2.toString());
-			paint(null);
 		}
+		
 	}
 
 	private int findVertexWhenClicked(Point3D p) {
@@ -1813,8 +1813,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		synchronized (mouseLock) {
 			mouseX = StdDraw.userX(e.getX());
 			mouseY = StdDraw.userY(e.getY());
+			StdDraw.isMouseMoved = true;
 		}
-		StdDraw.isMouseMoved = true;
 	}
 	/**
 	 * This method cannot be called directly.
@@ -1920,7 +1920,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	public static void paint(graph g2) {
-		StdDraw.clear();
 		if(g2 != null) {
 			StdDraw.g = g2;
 			System.out.println("g: " +StdDraw.g.edgeSize() + "   "+ StdDraw.g.nodeSize());

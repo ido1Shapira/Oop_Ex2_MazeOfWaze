@@ -61,7 +61,6 @@ public class Graph_Algo implements graph_algorithms{
 				}
 			}
 		}
-		int x =0;
 	}
 
 	@Override

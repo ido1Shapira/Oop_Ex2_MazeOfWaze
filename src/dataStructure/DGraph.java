@@ -25,7 +25,7 @@ public class DGraph implements graph, Serializable{
 		this.id =0;
 		this.idToEdge = new HashMap<ArrayList<Integer>,edge_data>();
 		this.idToVertexEdge = new HashMap<Integer,Object>();
-		this.idToVertexEdge.put(0,new HashMap<Integer,node_data>());
+		this.idToVertexEdge.put(FORBIDDEN_KEY,new HashMap<Integer,node_data>());
 	}
 	/**
 	 * return the node_data by the node_id,
@@ -36,7 +36,7 @@ public class DGraph implements graph, Serializable{
 	public node_data getNode(int key) {
 		if(key <= FORBIDDEN_KEY)
 		{throw new RuntimeException("FORBIDDEN_KEY exception - key cant be 0 , starting from 1");}
-		return ((HashMap<Integer,node_data>)this.idToVertexEdge.get(0)).get(key);
+		return ((HashMap<Integer,node_data>)this.idToVertexEdge.get(FORBIDDEN_KEY)).get(key);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class DGraph implements graph, Serializable{
 	@Override
 	public void addNode(node_data n) {
 		id++;
-		((HashMap<Integer,node_data>)this.idToVertexEdge.get(0)).put(id,new Vertex(new Point3D(n.getLocation()),id));
+		((HashMap<Integer,node_data>)this.idToVertexEdge.get(FORBIDDEN_KEY)).put(id,new Vertex(new Point3D(n.getLocation()),id));
 
 		this.mc++;
 	}
@@ -102,7 +102,7 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public Collection<node_data> getV() {
-		return ((HashMap<Integer,node_data>)this.idToVertexEdge.get(0)).values();
+		return ((HashMap<Integer,node_data>)this.idToVertexEdge.get(FORBIDDEN_KEY)).values();
 	}
 	/**
 	 * This method return a pointer (shallow copy) for the
