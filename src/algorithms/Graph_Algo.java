@@ -115,36 +115,31 @@ public class Graph_Algo implements graph_algorithms{
 	public boolean isConnected() {
 		infoTagWeightReset();
 		if(!this.checkLegal()) return false;
-		DGraph dg = null;
-		if(this.myGraph instanceof DGraph) {
-			dg=(DGraph)this.myGraph;
-			int i=1;
-			while (dg.getNode(i) == null) i++;
-			node_data mySrc= dg.getNode(i);
-			return dg.nodeSize()<=this.tagMyChilds(mySrc, dg) 
-					&& dg.nodeSize()<=this.tagMyFathers(mySrc, dg);
-		}
-		return false;
+		int i=1;
+		while (this.myGraph.getNode(i) == null) i++;
+		node_data mySrc= this.myGraph.getNode(i);
+		return this.myGraph.nodeSize()<=this.tagMyChilds(mySrc) 
+				&& this.myGraph.nodeSize()<=this.tagMyFathers(mySrc);
 	}
 
-	private int tagMyFathers(node_data grandSon,DGraph dg) {
+	private int tagMyFathers(node_data grandSon) {
 		for (Iterator<Integer> iterator = this.NeighborsToVertex.get(grandSon.getKey()).iterator(); iterator.hasNext();) {
 			Integer sonKey = (Integer) iterator.next();
-			node_data grandpa = dg.getNode(sonKey);
+			node_data grandpa = this.myGraph.getNode(sonKey);
 			grandSon.setTag(2);
 			if(grandpa.getTag()==1)
-				return 1+tagMyFathers(grandpa, dg) ;
+				return 1+tagMyFathers(grandpa) ;
 		}
 		return 1;
 	}
 
-	private int tagMyChilds(node_data father,DGraph dg) {
+	private int tagMyChilds(node_data father) {
 		for (Iterator<Integer> iterator = this.vertexToNeighbors.get(father.getKey()).iterator(); iterator.hasNext();) {
 			Integer sonKey = (Integer) iterator.next();
-			node_data son = dg.getNode(sonKey);
+			node_data son = this.myGraph.getNode(sonKey);
 			father.setTag(1);
 			if(son.getTag()==0)
-				return 1+tagMyChilds(son, dg) ;
+				return 1+tagMyChilds(son) ;
 		}
 		return 1;
 	}
@@ -169,10 +164,15 @@ public class Graph_Algo implements graph_algorithms{
 		}
 	}
 	private void shortPathGraph(int src) {
+		try {
+			this.myGraph.getNode(src).setTag(0);// starting point
+			this.myGraph.getNode(src).setInfo(""+src);// starting point
+			this.myGraph.getNode(src).setWeight(0);
+		}
+		catch (NullPointerException e) {
+			System.out.println("Vertex "+ src + " does not exist");
+		}
 		infoTagWeightReset();
-		this.myGraph.getNode(src).setTag(0);// starting point
-		this.myGraph.getNode(src).setInfo(""+src);// starting point
-		this.myGraph.getNode(src).setWeight(0);
 		HashMap<Integer, node_data> hashCopy = new HashMap<Integer, node_data>();
 		for (Iterator<node_data> init = this.myGraph.getV().iterator(); init.hasNext();) {
 			node_data v = (node_data) init.next();
@@ -185,8 +185,8 @@ public class Graph_Algo implements graph_algorithms{
 			if( this.vertexToNeighbors.get(currentKey) !=null) {
 				for (Iterator<Integer> iterator = this.vertexToNeighbors.get(currentKey).iterator(); iterator.hasNext();) {
 					Integer sonKey = (Integer) iterator.next();
-					node_data son = ((DGraph) this.myGraph).getNode(sonKey);
-					double edgeWeight = ((DGraph) this.myGraph).getEdge(currentKey, sonKey).getWeight();
+					node_data son = ((graph) this.myGraph).getNode(sonKey);
+					double edgeWeight = ((graph) this.myGraph).getEdge(currentKey, sonKey).getWeight();
 					if(son.getWeight()>(current.getWeight()+edgeWeight) && son.getTag()==0) {
 						son.setWeight(current.getWeight()+edgeWeight);
 						son.setInfo(current.getInfo()+" "+sonKey);
@@ -231,7 +231,7 @@ public class Graph_Algo implements graph_algorithms{
 		}
 	}
 	public void drawTable () {
-		DGraph dg= (DGraph)this.myGraph;
+		graph dg= (graph)this.myGraph;
 		int i=0;
 		int j=0;
 		int n= dg.nodeSize();
@@ -246,16 +246,16 @@ public class Graph_Algo implements graph_algorithms{
 				//System.out.println(i +"   " +  j);
 				table[i][j]=this.shortestPathDist(out.getKey(), in.getKey());
 				j++;
-		}
+			}
 			i++;
-	}
-		for (int a = 0; a < n; a++) {
-		    for (int b = 0; b < n; b++) {
-		        System.out.print(table[a][b] + " ");
-		    }
-		    System.out.println();
 		}
-}
+		for (int a = 0; a < n; a++) {
+			for (int b = 0; b < n; b++) {
+				System.out.print(table[a][b] + " ");
+			}
+			System.out.println();
+		}
+	}
 	@Override
 	public List<node_data> TSP(List<Integer> targets) {
 		// TODO Auto-generated method stub

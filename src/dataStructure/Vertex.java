@@ -17,8 +17,6 @@ public class Vertex implements node_data,Serializable {
 	
 	///////////////////constructors/////////////////////
 	public Vertex(Point3D location,int id) {
-		if(id <= DGraph.FORBIDDEN_KEY) 
-		{throw new RuntimeException("FORBIDDEN_KEY exception - key cant be 0 , starting from 1");}
 		this.id = id;
 		this.setLocation(location);
 		this.setWeight(0);
@@ -32,8 +30,6 @@ public class Vertex implements node_data,Serializable {
 		this.setTag(0);
 	}
 	public Vertex(Point3D location,int id, double weight) {
-		if(id <= DGraph.FORBIDDEN_KEY) 
-		{throw new RuntimeException("FORBIDDEN_KEY exception - key cant be 0 , starting from 1");}
 		this.id = id;
 		this.setLocation(location);
 		this.setWeight(weight);
