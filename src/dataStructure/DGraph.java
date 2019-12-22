@@ -14,10 +14,10 @@ public class DGraph implements graph, Serializable{
 
 	private int id;
 	private HashMap<Integer,node_data> idToVertex;
-	private HashMap<Integer,HashMap<Integer,edge_data>> idToEdge; //key = 0 all vertex key >0 list of edges
+	private HashMap<Integer,HashMap<Integer,edge_data>> idToEdge; 
 	private int mc;
 
-	/////////Default contractor//////////
+	/////////Default constructor//////////
 	public DGraph() {
 		this.id =0;
 		this.idToVertex = new HashMap<Integer,node_data>();

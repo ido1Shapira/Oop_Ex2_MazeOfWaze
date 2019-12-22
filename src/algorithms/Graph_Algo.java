@@ -164,6 +164,7 @@ public class Graph_Algo implements graph_algorithms{
 		}
 	}
 	private void shortPathGraph(int src) {
+		infoTagWeightReset();
 		try {
 			this.myGraph.getNode(src).setTag(0);// starting point
 			this.myGraph.getNode(src).setInfo(""+src);// starting point
@@ -172,7 +173,7 @@ public class Graph_Algo implements graph_algorithms{
 		catch (NullPointerException e) {
 			System.out.println("Vertex "+ src + " does not exist");
 		}
-		infoTagWeightReset();
+
 		HashMap<Integer, node_data> hashCopy = new HashMap<Integer, node_data>();
 		for (Iterator<node_data> init = this.myGraph.getV().iterator(); init.hasNext();) {
 			node_data v = (node_data) init.next();
@@ -211,7 +212,28 @@ public class Graph_Algo implements graph_algorithms{
 		this.shortPathGraph(src);
 		return this.myGraph.getNode(dest).getWeight();
 	}
-
+	private List<node_data> string2list(String path){
+		try {
+			String [] pathSplit= path.split(" ");
+			ArrayList <node_data> list= new ArrayList<node_data>();
+			for (int i = 0; i < pathSplit.length; i++) {
+				int toAdd= Integer.parseInt(pathSplit[i]);
+				list.add(this.myGraph.getNode(toAdd));
+			}
+			return list;
+		}
+		catch(Exception e) {
+			return null;
+		}
+	}
+	public String ShortestPathString(int src, int dest) {
+		this.shortPathGraph(src);
+		String path = this.myGraph.getNode(dest).getInfo();
+		String[] split= path.split(" ", 2);
+		if(split.length==1)
+			return "";
+		return split[1];
+	}
 	@Override
 	public List<node_data> shortestPath(int src, int dest)  {
 		try {
@@ -226,11 +248,10 @@ public class Graph_Algo implements graph_algorithms{
 			return list;
 		}
 		catch(Exception e) {
-			System.out.println("src or dest does not exist");
 			return null;
 		}
 	}
-	public void drawTable () {
+	public double [] [] drawTable () {
 		graph dg= (graph)this.myGraph;
 		int i=0;
 		int j=0;
@@ -243,7 +264,6 @@ public class Graph_Algo implements graph_algorithms{
 			j=0;
 			for (Iterator<node_data> it = dg.getV().iterator(); it.hasNext();) {
 				node_data in = (node_data) it.next();
-				//System.out.println(i +"   " +  j);
 				table[i][j]=this.shortestPathDist(out.getKey(), in.getKey());
 				j++;
 			}
@@ -251,14 +271,128 @@ public class Graph_Algo implements graph_algorithms{
 		}
 		for (int a = 0; a < n; a++) {
 			for (int b = 0; b < n; b++) {
-				System.out.print(table[a][b] + " ");
+				System.out.print(table[a][b] + "\t \t");
 			}
 			System.out.println();
 		}
+		return table;
 	}
+
+	public Object [] tsp(ArrayList<node_data> unvisited,  double cost, int currPosKey, ArrayList<node_data> listTillNow) {
+
+		if (unvisited.size()==1) {
+			int togoKey=unvisited.get(0).getKey();
+			listTillNow.addAll(this.shortestPath(currPosKey, togoKey));
+			Object [] ans=new Object [2];
+			ans[0]=cost+this.shortestPathDist(currPosKey, togoKey);
+			ans[1]=listTillNow;
+			return ans;
+		}
+		else {
+			double min=Integer.MAX_VALUE;
+			node_data minV= null;
+			for (int i = 0; i < unvisited.size(); i++) {
+				ArrayList<node_data> unvisitedcopy=new ArrayList<node_data>();
+				unvisitedcopy=(ArrayList<node_data>) unvisited.clone();
+				ArrayList<node_data> ListCopy=new ArrayList<node_data>();
+				ListCopy= (ArrayList<node_data>) listTillNow.clone();
+				node_data togo=unvisited.get(i);
+				int togoKey=togo.getKey();
+				unvisitedcopy.remove(togo);
+				double currPathWeight=this.shortestPathDist(currPosKey, togoKey);
+				ListCopy.add(togo);
+				double thiscost=
+						(double) this.tsp(unvisitedcopy, cost+currPathWeight, togoKey, ListCopy)[0];
+				if (thiscost<min) {
+					min=thiscost;
+				}
+			}
+			return null; //min;
+		}
+	}
+	//	public ArrayList<node_data> Tsp(ArrayList<node_data> unvisited,  double cost, int currPosKey, ArrayList<node_data> listTillNow) {
+	//		System.out.println("in tsp");
+	//		if (unvisited.size()==1) {
+	//			System.out.println("nherv emv");
+	//			int togoKey=unvisited.get(0).getKey();
+	//			listTillNow.addAll(this.shortestPath(currPosKey, togoKey));
+	//			System.out.println("one path to add "+listTillNow);
+	//			return listTillNow;
+	//		}
+	//		else {
+	//			double min=Integer.MAX_VALUE;
+	//			node_data minV= null;
+	//			ArrayList<node_data> ListCopy=new ArrayList<node_data>();
+	//			for (int i = 0; i < unvisited.size(); i++) {
+	//				node_data togo=unvisited.get(i);
+	//				int togoKey=togo.getKey();
+	//				ArrayList<node_data> unvisitedcopy=new ArrayList<node_data>();
+	//				unvisitedcopy=(ArrayList<node_data>) unvisited.clone();
+	//				ListCopy= (ArrayList<node_data>) listTillNow.clone();
+	//				unvisitedcopy.remove(togo);
+	//				double currEdge=this.shortestPathDist(currPosKey, togoKey);
+	//				ListCopy.add(togo);
+	//				double thiscost=
+	//					this.tsp(unvisitedcopy, cost+currEdge, togoKey, ListCopy);
+	//				if (thiscost<min) {
+	//					min=thiscost;
+	//					minV=togo;
+	//				//	this.Tsp(unvisitedcopy, thiscost, currPosKey, listTillNow);
+	//				}	
+	//			}
+	//			listTillNow.addAll(this.shortestPath(currPosKey, minV.getKey()));
+	//			System.out.println("minV= "+minV.getKey());
+	//		//	System.out.println(this.shortestPath(currPosKey, minV.getKey()));
+	//			ListCopy.addAll(this.shortestPath(currPosKey, minV.getKey()));
+	//			return ListCopy;
+	//		}
+	//	}
+
+	public TSPObj mytsp (ArrayList<node_data> unvisited,  double cost, int currPosKey, String tillNow) {
+		if(unvisited.size()==1) {
+			String s=tillNow+" "+this.ShortestPathString(currPosKey, unvisited.get(0).getKey());
+			double d= cost+this.shortestPathDist(currPosKey, unvisited.get(0).getKey());
+			TSPObj ans = new TSPObj(d, s);
+			return ans;
+		}
+		else {
+			TSPObj ans= new TSPObj(Integer.MAX_VALUE, "");
+			for (Iterator iterator = unvisited.iterator(); iterator.hasNext();) {
+				node_data nodeToGo = (node_data) iterator.next();
+				ArrayList<node_data> listcopy=new ArrayList<node_data>();
+				listcopy = (ArrayList<node_data>) unvisited.clone();
+				listcopy.remove(nodeToGo);
+				int nodeToGoKey= nodeToGo.getKey();
+				TSPObj currAns= this.mytsp(listcopy, 
+						cost+this.shortestPathDist(currPosKey, nodeToGoKey),nodeToGoKey,
+						tillNow+" "+this.ShortestPathString(currPosKey, nodeToGoKey));
+				if(currAns.getWeight()<ans.getWeight())
+					ans=currAns;
+			}
+			return ans;
+		}
+	}
+
+
 	@Override
 	public List<node_data> TSP(List<Integer> targets) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList <node_data> targetNodes= new ArrayList<node_data>();
+		for (Iterator it = targets.iterator(); it.hasNext();) {	//Shallow copy from key list to node list
+			Integer i= (Integer) it.next();
+			targetNodes.add(this.myGraph.getNode(i));
+		}
+		TSPObj ans= new TSPObj(Integer.MAX_VALUE, "");
+		for (Iterator iterator = targetNodes.iterator(); iterator.hasNext();) {
+			node_data start = (node_data) iterator.next();
+			ArrayList<node_data> listcopy= new ArrayList<node_data>();
+			listcopy=(ArrayList<node_data>) targetNodes.clone();
+			listcopy.remove(start);
+			TSPObj currAns= this.mytsp(listcopy, 0, start.getKey(), ""+start.getKey());
+			if(currAns.getWeight()<ans.getWeight())
+				ans=currAns;
+		}
+		System.out.println(ans.getPath());
+		System.out.println(ans.getWeight());
+		return this.string2list(ans.getPath());
 	}
 }

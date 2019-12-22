@@ -1,5 +1,6 @@
 package Test;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -14,14 +15,14 @@ import utils.StdDraw;
 
 public class idoTest {
 
-	public final static int numberOfVertexs = 100;
-	public final static int numberOfEdge = 1000;
+	public final static int numberOfVertexs = 1000000;
+	public final static int numberOfEdge = 1000000;
 	public static int seed = 5;
 	public static void main(String[] args) {
 		SPtest();
-		edutesting();
-		save_init_test();
-				idotesting();
+//		edutesting();
+//		save_init_test();
+//		idotesting();
 	}
 
 	private static void SPtest() {
@@ -34,17 +35,44 @@ public class idoTest {
 		g.addNode(v2);
 		g.addNode(v3);
 		g.addNode(v4);
-		g.connect(v1.getKey(), v2.getKey(), 3);
-		g.connect(v2.getKey(), v3.getKey(), 6);
-		g.connect(v3.getKey(), v4.getKey(), 10.33);
-		g.connect(v4.getKey(), v1.getKey(), 8);
+		g.connect(v1.getKey(), v2.getKey(), 10);
+		g.connect(v1.getKey(), v3.getKey(), 15);
+		g.connect(v1.getKey(), v4.getKey(), 20);
+		g.connect(v2.getKey(), v1.getKey(), 10);
+		g.connect(v2.getKey(), v3.getKey(), 35);
+		g.connect(v2.getKey(), v4.getKey(), 25);
+		g.connect(v3.getKey(), v1.getKey(), 15);
+		g.connect(v3.getKey(), v2.getKey(), 35);
+		g.connect(v3.getKey(), v4.getKey(), 30);
+		g.connect(v4.getKey(), v1.getKey(), 20);
+		g.connect(v4.getKey(), v2.getKey(), 25);
+		g.connect(v4.getKey(), v3.getKey(), 30);
+
+
+
 		Graph_Algo al=new Graph_Algo();
 		al.init(g);
-		System.out.println(al.isConnected());
-		System.out.println("path 1-2 ="+al.shortestPathDist(1, 2));
-		System.out.println("4 path "+g.getNode(4).getInfo());
-		System.out.println("object address trip "+al.shortestPath(1, 4));
-
+	//		System.out.println(al.isConnected());
+	//		System.out.println("path 1-4 ="+al.shortestPathDist(1, 4));
+	//	System.out.println("object address trip "+al.shortestPath(1, 4));
+	//	al.drawTable();
+		ArrayList<node_data> list= new ArrayList<node_data>();
+	//	list.add(v1);
+		list.add(v2);
+		list.add(v3);
+	//	System.out.println(al.mytsp(list, 0, 1, "").getPath());
+		ArrayList<Integer> check= new ArrayList<Integer>();
+		check.add(1);
+		check.add(2);
+		check.add(3);
+		check.add(4);
+		System.out.println(al.TSP(check));
+	//	list.add(v4);
+	//	ArrayList<node_data> listi= al.mytsp(list, 0, 1, new ArrayList<node_data>());
+	//	System.out.println(listi.size());
+	//	for (int i = 0; i < listi.size(); i++) {
+	//		System.out.println(listi.get(i).getKey());
+	//	}
 	}
 
 
