@@ -1,5 +1,7 @@
 package Test;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -15,14 +17,15 @@ import utils.StdDraw;
 
 public class idoTest {
 
-	public final static int numberOfVertexs = 1000000;
-	public final static int numberOfEdge = 1000000;
+	public final static int numberOfVertexs = 10;
+	public final static int numberOfEdge = 10;
 	public static int seed = 5;
 	public static void main(String[] args) {
-		SPtest();
+//		SPtest();
 //		edutesting();
 //		save_init_test();
 //		idotesting();
+		connectest();
 	}
 
 	private static void SPtest() {
@@ -31,27 +34,32 @@ public class idoTest {
 		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
 		Vertex v3=new Vertex(new Point3D(10,20,1),3,30);
 		Vertex v4=new Vertex(new Point3D(7,65,1),4,40);
+		Vertex v5=new Vertex(new Point3D(80,10,1),5,50);
+
 		g.addNode(v1);
 		g.addNode(v2);
 		g.addNode(v3);
 		g.addNode(v4);
+		g.addNode(v5);
 		g.connect(v1.getKey(), v2.getKey(), 10);
 		g.connect(v1.getKey(), v3.getKey(), 15);
 		g.connect(v1.getKey(), v4.getKey(), 20);
 		g.connect(v2.getKey(), v1.getKey(), 10);
-		g.connect(v2.getKey(), v3.getKey(), 35);
-		g.connect(v2.getKey(), v4.getKey(), 25);
+//		g.connect(v2.getKey(), v3.getKey(), 35);
+//		g.connect(v2.getKey(), v4.getKey(), 25);
 		g.connect(v3.getKey(), v1.getKey(), 15);
-		g.connect(v3.getKey(), v2.getKey(), 35);
-		g.connect(v3.getKey(), v4.getKey(), 30);
+//		g.connect(v3.getKey(), v2.getKey(), 35);
+//		g.connect(v3.getKey(), v4.getKey(), 30);
 		g.connect(v4.getKey(), v1.getKey(), 20);
-		g.connect(v4.getKey(), v2.getKey(), 25);
-		g.connect(v4.getKey(), v3.getKey(), 30);
+//		g.connect(v4.getKey(), v2.getKey(), 25);
+//		g.connect(v4.getKey(), v3.getKey(), 30);
+		g.connect(v5.getKey(), v1.getKey(), 20);
 
 
 
 		Graph_Algo al=new Graph_Algo();
 		al.init(g);
+		StdDraw.paint(g);
 	//		System.out.println(al.isConnected());
 	//		System.out.println("path 1-4 ="+al.shortestPathDist(1, 4));
 	//	System.out.println("object address trip "+al.shortestPath(1, 4));
@@ -66,6 +74,7 @@ public class idoTest {
 		check.add(2);
 		check.add(3);
 		check.add(4);
+		check.add(5);
 		System.out.println(al.TSP(check));
 	//	list.add(v4);
 	//	ArrayList<node_data> listi= al.mytsp(list, 0, 1, new ArrayList<node_data>());
@@ -146,8 +155,8 @@ public class idoTest {
 		long endTime = System.currentTimeMillis();
 
 		System.out.println("That took " + (endTime - startTime) + " milliseconds");
-
-//				StdDraw.paint(g);
+		
+				StdDraw.paint(g);
 //					g.removeNode(1);
 //					g.connect(2, 3, 1);
 //			g.removeEdge(2,3);
@@ -162,7 +171,38 @@ public class idoTest {
 		if (sizebefore -1 == g.edgeSize() &&  edge != null)
 			System.out.println("remove edge succsess");
 	}
+	private static void connectest() {
+		DGraph dg= new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
+		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
+		Vertex v3=new Vertex(new Point3D(10,20,1),3,30);
+		Vertex v4=new Vertex(new Point3D(7,65,1),4,40);
+		Vertex v5=new Vertex(new Point3D(80,10,1),5,50);
+		dg.addNode(v1);
+		dg.addNode(v2);
+		dg.addNode(v3);
+		dg.addNode(v4);
+		dg.addNode(v5);
+		dg.connect(v1.getKey(), v2.getKey(), 10);
+		dg.connect(v2.getKey(), v3.getKey(), 15);
+		dg.connect(v3.getKey(), v4.getKey(), 20);
+		dg.connect(v4.getKey(), v1.getKey(), 10);
+		dg.connect(v5.getKey(), v1.getKey(), 10);
+		dg.connect(v4.getKey(), v5.getKey(), 10);
 
+		Graph_Algo al= new Graph_Algo();
+		al.init(dg);
+		StdDraw.paint(dg);
+//		System.out.println(al.isConnected());
+//		if(al.isConnected()) {
+//			System.out.println("fail");
+//		//	fail("isConnected failed");
+//		}
+		dg.connect(v4.getKey(), v5.getKey(), 10);
+		System.out.println(al.isConnected());
+		al.init(dg);
+		StdDraw.paint(dg);
+	}
 	private static void removeNodeTest(DGraph g, int key) {
 		int sizebefore = g.nodeSize();
 		node_data node = g.removeNode(key);

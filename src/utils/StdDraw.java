@@ -1922,7 +1922,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	public static void paint(graph g2) {
 		if(g2 != null) {
 			StdDraw.g = g2;
-			System.out.println("g: " +StdDraw.g.edgeSize() + "   "+ StdDraw.g.nodeSize());
 			StdDraw.setCanvasSize(800,600);
 			StdDraw.setXscale(0,100);
 			StdDraw.setYscale(0,100);
@@ -1941,7 +1940,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				}
 			}
 		}
-		System.out.println(i);
 		StdDraw.show();
 	}
 	private static void drawEdge(edge_data edge) {
