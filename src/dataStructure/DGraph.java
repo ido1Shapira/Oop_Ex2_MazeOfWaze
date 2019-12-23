@@ -148,7 +148,8 @@ public class DGraph implements graph, Serializable{
 		 */
 		@Override
 		public int nodeSize() {
-			return id;
+			return this.getV().size();
+		//	return id;
 		}
 		/** 
 		 * return the number of edges (assume directional graph).

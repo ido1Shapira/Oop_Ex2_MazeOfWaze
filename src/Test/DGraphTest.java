@@ -68,35 +68,64 @@ public class DGraphTest {
 		Graph_Algo al= new Graph_Algo();
 		al.init(dg);
 		StdDraw.paint(dg);
-		System.out.println(al.isConnected());
 		if(al.isConnected()) {
-			System.out.println("fail");
 			fail("isConnected failed");
 		}
 		dg.connect(v4.getKey(), v5.getKey(), 10);
-		System.out.println(al.isConnected());
+		al.init(dg);
 		if(!al.isConnected()) {
-			System.out.println("fail2");
-
 			fail("isConnected failed");
 	}
 	}
-//
-//	@Test
-//	public void testGetV() {
-//		fail("Not yet implemented");
-//	}
-//
+
+	@Test
+	public void testGetV() {
+		DGraph dg= new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
+		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
+		Vertex v3=new Vertex(new Point3D(10,20,1),3,30);
+		Vertex v4=new Vertex(new Point3D(7,65,1),4,40);
+		Vertex v5=new Vertex(new Point3D(80,10,1),5,50);
+		Vertex v6=new Vertex(new Point3D(4, 6));
+		dg.addNode(v1);
+		dg.addNode(v2);
+		dg.addNode(v3);
+		dg.addNode(v4);
+		dg.addNode(v5);
+		if(dg.getV().size()!=5)
+			fail("getV failed");
+		dg.addNode(v6);
+		if(dg.getV().size()!=6)
+			fail("getV failed");
+		
+	}
+
 //	@Test
 //	public void testGetE() {
 //		fail("Not yet implemented");
 //	}
 //
-//	@Test
-//	public void testRemoveNode() {
-//		fail("Not yet implemented");
-//	}
-//
+	@Test
+	public void testRemoveNode() {
+		DGraph dg= new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
+		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
+		Vertex v3=new Vertex(new Point3D(10,20,1),3,30);
+		Vertex v4=new Vertex(new Point3D(7,65,1),4,40);
+		Vertex v5=new Vertex(new Point3D(80,10,1),5,50);
+		dg.addNode(v1);
+		dg.addNode(v2);
+		dg.addNode(v3);
+		dg.addNode(v4);
+		dg.addNode(v5);
+		System.out.println(dg.nodeSize());
+		dg.removeNode(1);
+		StdDraw.paint(dg);
+		System.out.println(dg.nodeSize());
+		if(dg.nodeSize()!=4)
+			fail("remove node failed");
+	}
+
 //	@Test
 //	public void testRemoveEdge() {
 //		fail("Not yet implemented");

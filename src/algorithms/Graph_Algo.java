@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,7 +23,7 @@ import java.io.FileOutputStream;
  *
  */
 public class Graph_Algo implements graph_algorithms{
-	private graph myGraph;
+	public graph myGraph;
 	private HashMap<Integer,HashSet<Integer>> vertexToNeighbors; // v1--->V
 	private HashMap<Integer,HashSet<Integer>> NeighborsToVertex; // V--->v1
 
@@ -113,48 +114,60 @@ public class Graph_Algo implements graph_algorithms{
 
 	@Override
 	public boolean isConnected() {
-		infoTagWeightReset();
+		infoTagWeightReset();		
 		if(!this.checkLegal()) { return false;}
 		int i=1;
 		while (this.myGraph.getNode(i) == null) i++;
 		node_data mySrc= this.myGraph.getNode(i);
-		return this.myGraph.nodeSize()==this.tagMyChilds(mySrc) 
-				&& this.myGraph.nodeSize()==this.tagMyFathers(mySrc);
+		this.tagKids(mySrc);
+		if(this.countTags()!=this.myGraph.nodeSize()) {
+			System.out.println("kids filed "+ this.countTags());
+			return false;
+		}
+		infoTagWeightReset();
+		this.tagDads(mySrc);
+		if(this.countTags()!=this.myGraph.nodeSize()) {
+			System.out.println("dads filed "+ this.countTags());
+
+			return false;
+		}
+		return true;
 	}
 
-//	private int kidsnum(node_data grandSon) {
-//		if(this.NeighborsToVertex.get(grandSon.getKey()).size()==0)
-//			return 1;
-//		else {
-//			int sum;
-//		for (Iterator<Integer> iterator = this.NeighborsToVertex.get(grandSon.getKey()).iterator(); iterator.hasNext();) {
-//			Integer fatherKey = (Integer) iterator.next();
-//			node_data grandpa = this.myGraph.getNode(fatherKey);
-//			
-//		}
-//		}
-//	}
-	private int tagMyFathers(node_data grandSon) {
-		for (Iterator<Integer> iterator = this.NeighborsToVertex.get(grandSon.getKey()).iterator(); iterator.hasNext();) {
+	private void tagKids(node_data src) {
+		src.setTag(1);
+		for (Iterator<Integer> iterator = this.vertexToNeighbors.get(src.getKey()).iterator(); iterator.hasNext();) {
 			Integer sonKey = (Integer) iterator.next();
-			node_data grandpa = this.myGraph.getNode(sonKey);
-			grandSon.setTag(2);
-			if(grandpa.getTag()==1)
-				return 1+tagMyFathers(grandpa) ;
+			node_data son= this.myGraph.getNode(sonKey);
+			if(son.getTag()==0) {
+				this.tagKids(son);
+			}
 		}
-		return 1;
+
 	}
 
-	private int tagMyChilds(node_data father) {
-		for (Iterator<Integer> iterator = this.vertexToNeighbors.get(father.getKey()).iterator(); iterator.hasNext();) {
-			Integer sonKey = (Integer) iterator.next();
-			node_data son = this.myGraph.getNode(sonKey);
-			father.setTag(1);
-			if(son.getTag()==0)
-				return 1+tagMyChilds(son) ;
+	private void tagDads(node_data src) {
+		src.setTag(1);
+		for (Iterator<Integer> iterator = this.NeighborsToVertex.get(src.getKey()).iterator(); iterator.hasNext();) {
+			Integer dadKey = (Integer) iterator.next();
+			node_data dad= this.myGraph.getNode(dadKey);
+			if(dad.getTag()==0) {
+				this.tagDads(dad);
+			}
 		}
-		return 1;
+
 	}
+
+	private int countTags() {
+		int count=0;
+		for (Iterator<node_data> iterator = this.myGraph.getV().iterator(); iterator.hasNext();) {
+			node_data current = (node_data) iterator.next();
+			if(current.getTag()==1)
+				count++;
+		}
+		return count;
+	}
+
 	private boolean checkLegal() {
 		int count = 0;
 		for (Iterator<node_data> it = this.myGraph.getV().iterator(); it.hasNext();) {
