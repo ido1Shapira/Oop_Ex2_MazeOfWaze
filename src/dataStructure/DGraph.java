@@ -16,12 +16,14 @@ public class DGraph implements graph, Serializable{
 	private HashMap<Integer,node_data> idToVertex;
 	private HashMap<Integer,HashMap<Integer,edge_data>> idToEdge; 
 	private int mc;
+	private int edgeNum;
 
 	/////////Default constructor//////////
 	public DGraph() {
 		this.id =0;
 		this.idToVertex = new HashMap<Integer,node_data>();
 		this.idToEdge = new HashMap<Integer,HashMap<Integer,edge_data>>();
+		this.edgeNum=0;
 	}
 	/**
 	 * return the node_data by the node_id,
@@ -69,11 +71,15 @@ public class DGraph implements graph, Serializable{
 	@Override
 	public void connect(int src, int dest, double w) {	
 		try {
+			if(this.idToEdge.get(src).get(dest)==null)
+				this.edgeNum++;
 			this.idToEdge.get(src).put(dest, new Edge(src,dest,w));
 		}
 		catch(NullPointerException e){
 			this.idToEdge.put(src,new HashMap<Integer,edge_data>());	
 			this.idToEdge.get(src).put(dest, new Edge(src,dest,w));
+			this.edgeNum++;
+
 		}
 
 		this.mc++;
@@ -107,65 +113,73 @@ public class DGraph implements graph, Serializable{
 	 * @param key
 	 */
 	@Override
-	public node_data removeNode(int key) {
+	public node_data removeNode(int key) {///////////////////////////fix me!!!!
 		node_data nodeToRemove = this.getNode(key);
 		if(nodeToRemove != null) {
-			for (Iterator<HashMap<Integer,edge_data>> iter = this.idToEdge.values().iterator(); iter.hasNext();)
-			{
-				HashMap<Integer,edge_data> hash = (HashMap<Integer,edge_data>) iter.next();
-				for (Iterator<Integer>iter2 = hash.keySet().iterator(); iter2.hasNext();)
-				{
-					int dest = (int) iter2.next();
-					this.removeEdge(dest, key);
-
-				}
+			for (Iterator<node_data> iterator = this.getV().iterator(); iterator.hasNext();) {
+				node_data v = (node_data) iterator.next();
+				this.removeEdge(v.getKey(), key);
 			}
+			//			for (Iterator<HashMap<Integer,edge_data>> iter = this.idToEdge.values().iterator(); iter.hasNext();)
+			//			{
+			//				HashMap<Integer,edge_data> hash = (HashMap<Integer,edge_data>) iter.next();
+			//				for (Iterator<Integer>iter2 = hash.keySet().iterator(); iter2.hasNext();)
+			//				{
+			//					int dest = (int) iter2.next();
+			//					this.removeEdge(dest, key);
+			//
+			//				}
+			//			}
 			this.idToVertex.remove(key);
+			int i=this.idToEdge.get(key).size();
+			this.edgeNum-=i;
 			this.idToEdge.remove(key);
 			this.mc++;
 		}
 		return nodeToRemove;
 	}
-		/**
-		 * Delete the edge from the graph, 
-		 * Note: this method should run in O(1) time.
-		 * @param src
-		 * @param dest
-		 * @return the data of the removed edge (null if none).
-		 */
-		@Override
-		public edge_data removeEdge(int src, int dest) {
-			edge_data edgeToRemove = this.getEdge(src, dest);
-			if(edgeToRemove != null) {
-				this.idToEdge.get(src).remove(dest);
-				this.mc++;
-			}
-			return edgeToRemove;
+	/**
+	 * Delete the edge from the graph, 
+	 * Note: this method should run in O(1) time.
+	 * @param src
+	 * @param dest
+	 * @return the data of the removed edge (null if none).
+	 */
+	@Override
+	public edge_data removeEdge(int src, int dest) {
+		edge_data edgeToRemove = this.getEdge(src, dest);
+		if(edgeToRemove != null) {
+			if(this.idToEdge.get(src).remove(dest)!=null)
+				this.edgeNum-=1;
+			this.mc++;
+			if(this.idToEdge.get(src).size()==0)
+				this.idToEdge.remove(src);
 		}
-		/** return the number of vertices (nodes) in the graph.
-		 * Note: this method should run in O(1) time. 
-		 * @return
-		 */
-		@Override
-		public int nodeSize() {
-			return this.getV().size();
-		//	return id;
-		}
-		/** 
-		 * return the number of edges (assume directional graph).
-		 * Note: this method should run in O(1) time.
-		 * @return
-		 */
-		@Override
-		public int edgeSize() {
-			return idToEdge.size();
-		}
-		/**
-		 * return the Mode Count - for testing changes in the graph.
-		 * @return
-		 */
-		@Override
-		public int getMC() {
-			return this.mc;
-		}
+		return edgeToRemove;
 	}
+	/** return the number of vertices (nodes) in the graph.
+	 * Note: this method should run in O(1) time. 
+	 * @return
+	 */
+	@Override
+	public int nodeSize() {
+		return this.getV().size();
+	}
+	/** 
+	 * return the number of edges (assume directional graph).
+	 * Note: this method should run in O(1) time.
+	 * @return
+	 */
+	@Override
+	public int edgeSize() {
+		return this.edgeNum;
+	}
+	/**
+	 * return the Mode Count - for testing changes in the graph.
+	 * @return
+	 */
+	@Override
+	public int getMC() {
+		return this.mc;
+	}
+}
