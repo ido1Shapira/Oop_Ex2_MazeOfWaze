@@ -11,7 +11,9 @@ import org.junit.Test;
 
 import algorithms.Graph_Algo;
 import dataStructure.DGraph;
+import dataStructure.Edge;
 import dataStructure.Vertex;
+import dataStructure.edge_data;
 import dataStructure.node_data;
 import utils.Point3D;
 import utils.StdDraw;
@@ -19,7 +21,7 @@ import utils.StdDraw;
 public class DGraphTest {
 
 	public static DGraph g = new DGraph();
-	public final static int numberOfVertexs = 1000000;
+	public final static int numberOfVertexs = 100000;
 	public final static int numberOfEdge = 10000000;
 	public static int seed = 5;
 
@@ -70,9 +72,28 @@ public class DGraphTest {
 		if(dg.nodeSize()!=5)
 			fail("add node failed");
 	}
-
 	@Test
 	public void testConnect() {
+		DGraph dg= new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
+		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
+		Vertex v3=new Vertex(new Point3D(10,20,1),3,30);
+		dg.addNode(v1);
+		dg.addNode(v2);
+		dg.addNode(v3);
+		dg.connect(v1.getKey(), v2.getKey(), 10);
+		dg.connect(v2.getKey(), v3.getKey(), 15);
+		edge_data e12=dg.getEdge(1, 2);
+		if(e12.getWeight()!=10)
+			fail("testConnect failed");
+		dg.removeEdge(1, 2);
+		e12=dg.getEdge(1, 2);
+		if(e12!=null)
+			fail("testConnect failed");
+	}
+	
+	@Test
+	public void testIsConnected() {
 		DGraph dg= new DGraph();
 		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
 		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);

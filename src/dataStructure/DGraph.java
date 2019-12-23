@@ -32,7 +32,12 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public node_data getNode(int key) {
+		try {
 		return this.idToVertex.get(key);
+		}
+		catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -44,7 +49,13 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public edge_data getEdge(int src, int dest) {
+		try {
 		return this.idToEdge.get(src).get(dest);
+		}
+		catch(Exception e) {
+			return null;
+		}
+		
 	}
 
 	/**

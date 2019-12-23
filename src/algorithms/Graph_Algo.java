@@ -329,4 +329,30 @@ public class Graph_Algo implements graph_algorithms{
 			return null;
 		return this.string2list(ans.getPath());
 	}
+
+//	public  List<node_data> AlterTSP(List<Integer> targets){
+//		if(targets.size()==1) {
+//			ArrayList<node_data> list= new ArrayList<node_data>();
+//			list.add(this.myGraph.getNode(targets.get(0)));
+//			return list;
+//		}
+//		else {
+//			for (Iterator<Integer> iterator = targets.iterator(); iterator.hasNext();) {
+//				Integer srcKey = (Integer) iterator.next();
+//				return Altertsp( targets.remove(srcKey), srcKey);
+//			}
+//		}
+//
+//	}
+//
+//	private List<node_data> Altertsp(List<Integer> targets, Integer srcKey, List<node_data> listTillNow) {
+//		if(targets.size()==1) {
+//			listTillNow.add(this.myGraph.getNode(targets.get(0)));
+//			return listTillNow;
+//		}
+//		else {
+//			
+//		}
+//		
+//}
 }
