@@ -2087,8 +2087,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		StdDraw.line(src.getLocation().x(),src.getLocation().y(),dest.getLocation().x() , dest.getLocation().y());
 		StdDraw.setPenRadius(0.02);
 		StdDraw.setPenColor(StdDraw.ORANGE);
-		double relativex=(src.getLocation().x()+dest.getLocation().x()*3)/4;
-		double relativey=(src.getLocation().y()+dest.getLocation().y()*3)/4;
+		double relativex=(src.getLocation().x()+dest.getLocation().x()*7)/8;
+		double relativey=(src.getLocation().y()+dest.getLocation().y()*7)/8;
 		StdDraw.point(relativex, relativey);
 		int round=(int)(edge.getWeight()*100);
 		double roundafter=round;
@@ -2103,7 +2103,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		StdDraw.setPenColor(node.getInfo().equals("selected") ? StdDraw.GREEN : StdDraw.CYAN);
 		StdDraw.point(node.getLocation().x(), node.getLocation().y());
 		StdDraw.setPenColor(StdDraw.BLUE);
-		StdDraw.text(node.getLocation().x(), node.getLocation().y()+1,""+node.getKey());
+		StdDraw.text(node.getLocation().x()+1, node.getLocation().y()+1,""+node.getKey());
 	}
 
 

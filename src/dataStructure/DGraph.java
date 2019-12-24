@@ -81,6 +81,8 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public void connect(int src, int dest, double w) {	
+		if(this.getNode(src)==null || this.getNode(dest)==null || w<0)
+			return;
 		try {
 			if(this.idToEdge.get(src).get(dest)==null)
 				this.edgeNum++;
