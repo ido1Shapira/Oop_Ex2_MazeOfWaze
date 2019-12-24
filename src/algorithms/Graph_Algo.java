@@ -121,14 +121,10 @@ public class Graph_Algo implements graph_algorithms{
 		node_data mySrc= this.myGraph.getNode(i);
 		this.tagKids(mySrc);
 		if(this.countTags()!=this.myGraph.nodeSize()) {
-			System.out.println("kids filed "+ this.countTags());
 			return false;
 		}
-		infoTagWeightReset();
 		this.tagDads(mySrc);
 		if(this.countTags()!=this.myGraph.nodeSize()) {
-			System.out.println("dads filed "+ this.countTags());
-
 			return false;
 		}
 		return true;
@@ -143,26 +139,24 @@ public class Graph_Algo implements graph_algorithms{
 				this.tagKids(son);
 			}
 		}
-
 	}
 
 	private void tagDads(node_data src) {
-		src.setTag(1);
+		src.setTag(2);
 		for (Iterator<Integer> iterator = this.NeighborsToVertex.get(src.getKey()).iterator(); iterator.hasNext();) {
 			Integer dadKey = (Integer) iterator.next();
 			node_data dad= this.myGraph.getNode(dadKey);
-			if(dad.getTag()==0) {
+			if(dad.getTag()==1) {
 				this.tagDads(dad);
 			}
 		}
-
 	}
 
 	private int countTags() {
 		int count=0;
 		for (Iterator<node_data> iterator = this.myGraph.getV().iterator(); iterator.hasNext();) {
 			node_data current = (node_data) iterator.next();
-			if(current.getTag()==1)
+			if(current.getTag()!=0)
 				count++;
 		}
 		return count;
@@ -191,15 +185,9 @@ public class Graph_Algo implements graph_algorithms{
 	}
 	private void shortPathGraph(int src) {
 		infoTagWeightReset();
-		try {
-			this.myGraph.getNode(src).setTag(0);// starting point
-			this.myGraph.getNode(src).setInfo(""+src);// starting point
-			this.myGraph.getNode(src).setWeight(0);
-		}
-		catch (NullPointerException e) {
-			System.out.println("Vertex "+ src + " does not exist");
-		}
-
+		this.myGraph.getNode(src).setTag(0);// starting point
+		this.myGraph.getNode(src).setInfo(""+src);// starting point
+		this.myGraph.getNode(src).setWeight(0);
 		HashMap<Integer, node_data> hashCopy = new HashMap<Integer, node_data>();
 		for (Iterator<node_data> init = this.myGraph.getV().iterator(); init.hasNext();) {
 			node_data v = (node_data) init.next();
@@ -233,10 +221,17 @@ public class Graph_Algo implements graph_algorithms{
 		}
 		return min;
 	}
+
 	@Override
 	public double shortestPathDist(int src, int dest) {
-		this.shortPathGraph(src);
-		return this.myGraph.getNode(dest).getWeight();
+		try {
+			this.shortPathGraph(src);
+			return this.myGraph.getNode(dest).getWeight();	
+		}
+		catch (NullPointerException e) {
+			System.out.println("Vertex src or dest does not exist");
+			return -1;
+		}
 	}
 	private List<node_data> string2list(String path){
 		try {
@@ -260,24 +255,18 @@ public class Graph_Algo implements graph_algorithms{
 			return "";
 		return split[1];
 	}
+	
 	@Override
 	public List<node_data> shortestPath(int src, int dest)  {
 		try {
 			this.shortPathGraph(src);
 			String path = this.myGraph.getNode(dest).getInfo();
-			String [] pathSplit= path.split(" ");
-			ArrayList <node_data> list= new ArrayList<node_data>();
-			for (int i = 0; i < pathSplit.length; i++) {
-				int toAdd= Integer.parseInt(pathSplit[i]);
-				list.add(this.myGraph.getNode(toAdd));
-			}
-			return list;
+			return this.string2list(path);
 		}
 		catch(Exception e) {
 			return null;
 		}
 	}
-
 
 
 	public TSPObj mytsp (ArrayList<node_data> unvisited,  double cost, int currPosKey, String tillNow) {
@@ -330,29 +319,29 @@ public class Graph_Algo implements graph_algorithms{
 		return this.string2list(ans.getPath());
 	}
 
-//	public  List<node_data> AlterTSP(List<Integer> targets){
-//		if(targets.size()==1) {
-//			ArrayList<node_data> list= new ArrayList<node_data>();
-//			list.add(this.myGraph.getNode(targets.get(0)));
-//			return list;
-//		}
-//		else {
-//			for (Iterator<Integer> iterator = targets.iterator(); iterator.hasNext();) {
-//				Integer srcKey = (Integer) iterator.next();
-//				return Altertsp( targets.remove(srcKey), srcKey);
-//			}
-//		}
-//
-//	}
-//
-//	private List<node_data> Altertsp(List<Integer> targets, Integer srcKey, List<node_data> listTillNow) {
-//		if(targets.size()==1) {
-//			listTillNow.add(this.myGraph.getNode(targets.get(0)));
-//			return listTillNow;
-//		}
-//		else {
-//			
-//		}
-//		
-//}
+	//	public  List<node_data> AlterTSP(List<Integer> targets){
+	//		if(targets.size()==1) {
+	//			ArrayList<node_data> list= new ArrayList<node_data>();
+	//			list.add(this.myGraph.getNode(targets.get(0)));
+	//			return list;
+	//		}
+	//		else {
+	//			for (Iterator<Integer> iterator = targets.iterator(); iterator.hasNext();) {
+	//				Integer srcKey = (Integer) iterator.next();
+	//				return Altertsp( targets.remove(srcKey), srcKey);
+	//			}
+	//		}
+	//
+	//	}
+	//
+	//	private List<node_data> Altertsp(List<Integer> targets, Integer srcKey, List<node_data> listTillNow) {
+	//		if(targets.size()==1) {
+	//			listTillNow.add(this.myGraph.getNode(targets.get(0)));
+	//			return listTillNow;
+	//		}
+	//		else {
+	//			
+	//		}
+	//		
+	//}
 }

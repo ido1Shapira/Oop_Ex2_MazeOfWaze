@@ -1,4 +1,4 @@
-package Test;
+package dataStructure;
 
 import static org.junit.Assert.*;
 

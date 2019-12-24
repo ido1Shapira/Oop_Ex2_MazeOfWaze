@@ -28,6 +28,7 @@ package utils;
  ******************************************************************************/
 
 import java.awt.BasicStroke;
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.Font;
@@ -60,8 +61,11 @@ import java.io.IOException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
@@ -74,6 +78,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import algorithms.Graph_Algo;
 import dataStructure.Vertex;
 import dataStructure.edge_data;
 import dataStructure.graph;
@@ -635,7 +640,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// set of key codes currently pressed down
 	private static TreeSet<Integer> keysDown = new TreeSet<Integer>();
 
-	public static graph g;
+	//for the similar method
+	public static final double EPSILON = 10;
+
+	private static Graph_Algo algo;
+
 	// singleton pattern: client can't instantiate
 	public StdDraw() { }
 
@@ -720,29 +729,48 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// create the menu bar (changed to private)
 	public static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
+
 		JMenu file = new JMenu("File");
 		JMenu algo = new JMenu("algoritm");
-
 		menuBar.add(file);
 		menuBar.add(algo);
 
-		JMenuItem save = new JMenuItem(" Save...   ");
-		save.addActionListener(std);
-		save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+		JMenuItem saveImage = new JMenuItem("Save image");
+		saveImage.addActionListener(std);
+		saveImage.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		file.add(save);
+		file.add(saveImage);
 
-		JMenuItem load = new JMenuItem(" Load...   ");
-		//		menuItem1.addActionListener(std);
-		//		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-		//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		JMenuItem saveGraph = new JMenuItem("Save graph");
+		saveGraph.addActionListener(std);
+		file.add(saveGraph);
+
+
+		JMenuItem load = new JMenuItem("Load graph");
+		load.addActionListener(std);
+		load.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L,
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		file.add(load);
 
-		JMenuItem isConnected = new JMenuItem("isConnected");
-		JMenuItem sortestPath = new JMenuItem("sortestPath");
+		JMenuItem clear = new JMenuItem("clear all results");
+		clear.addActionListener(std);
+		file.add(clear);
 
+		JMenuItem isConnected = new JMenuItem("Is connected");
+		isConnected.addActionListener(std);
 		algo.add(isConnected);
-		algo.add(sortestPath);
+
+		JMenuItem shortestPathDist = new JMenuItem("Shortest Path dist");
+		shortestPathDist.addActionListener(std);
+		algo.add(shortestPathDist);
+
+		JMenuItem shortestPath = new JMenuItem("Shortest path");
+		shortestPath.addActionListener(std);
+		algo.add(shortestPath);
+
+		JMenuItem tsp = new JMenuItem("TSP");
+		tsp.addActionListener(std);
+		algo.add(tsp);
 
 		return menuBar;
 	}
@@ -1673,14 +1701,92 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
-		chooser.setVisible(true);
-		String filename = chooser.getFile();
-		if (filename != null) {
-			StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+		String str = e.getActionCommand();
+		switch(str) 
+		{
+		case "Save image": 
+			FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
+			chooser.setVisible(true);
+			String filename = chooser.getFile();
+			if (filename != null) {
+				StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+			}
+			break; 
+		case "Save graph": 
+			FileDialog chooser2 = new FileDialog(StdDraw.frame, "save the graph to a file", FileDialog.SAVE);
+			chooser2.setVisible(true);
+			String filename2 = chooser2.getFile();
+			if (filename2 != null) {
+				algo.save(chooser2.getDirectory() + File.separator + chooser2.getFile());
+			}
+			break; 
+		case "Load graph": 
+			FileDialog chooser3 = new FileDialog(StdDraw.frame, "load form file a graph", FileDialog.LOAD);
+			chooser3.setVisible(true);
+			String filename3 = chooser3.getFile();
+			if (filename3 != null) {
+				algo.init(chooser3.getDirectory() + File.separator + chooser3.getFile());
+				StdDraw.paint(null);
+			}				
+			break;
+		case "clear all results":
+			clearSelected();
+			keys.clear();
+			paint(algo.myGraph);
+			break;
+		case "Is connected":
+			StdDraw.textLeft(Xmin-5,Ymin-5,"the graph is " + (algo.isConnected() ? "connected":"not connected"));
+			break;
+		case "Shortest Path dist":
+			if(keys.size() != 2) {
+				System.out.println("you must choose 2 vertexs");
+			}
+			else {
+				StdDraw.textRight(Xmax+5,Ymax+5,"the shortest path distance between " +
+						keys.toArray()[0] +" to " + keys.toArray()[1] + " is: " +algo.shortestPathDist((int)keys.toArray()[0],(int)keys.toArray()[1]));	
+			}
+			keys.clear();
+			clearSelected();
+			paint(null);
+			break;
+		case "Shortest path":
+			if(keys.size() != 2) {
+				System.out.println("you must choose 2 vertexs");
+				keys.clear();
+				clearSelected();
+				paint(null);
+			}
+			else {
+				List<node_data> result = algo.shortestPath((int)keys.toArray()[0],(int)keys.toArray()[1]);
+				for (int i = 1; i < result.size(); i++) {
+					algo.myGraph.getEdge(result.get(i-1).getKey(), result.get(i).getKey()).setInfo("shortest path");
+					try {
+						algo.myGraph.getEdge(result.get(i).getKey(), result.get(i-1).getKey()).setInfo("shortest path");
+					}
+					catch (NullPointerException ex) {}
+				}
+				paint(null);
+				keys.clear();
+				clearSelected();
+			}
+
+			break;
+		case "TSP":
+			break;
 		}
 	}
 
+
+	private static void clearSelected() {
+		for (Iterator<node_data> iterator = algo.myGraph.getV().iterator(); iterator.hasNext();) {
+			node_data v = (node_data) iterator.next();
+			v.setInfo("");
+			for (Iterator<edge_data> iterator2 = algo.myGraph.getE(v.getKey()).iterator(); iterator2.hasNext();) {
+				edge_data e = (edge_data) iterator2.next();
+				e.setInfo("");
+			}
+		}
+	}
 
 	/***************************************************************************
 	 *  Mouse interactions.
@@ -1732,19 +1838,34 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
-	private static Point3D p;
 	private static boolean isMouseMoved;
+	HashSet<Integer> keys = new HashSet<Integer>();
 
+	private Point3D getCordinateOnScreen(Point3D PbyPixle) {
+		double XPixle=PbyPixle.x();
+		double YPixle=PbyPixle.y();
+		double mX = (Xmax-Xmin)/600.0;
+		double mY=(Ymin-Ymax)/600.0;
+		return new Point3D((mX*XPixle+Xmin), (mY*YPixle+Ymax));
+	}
 	/**
 	 * This method cannot be called directly.
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		Point3D p = getCordinateOnScreen(new Point3D (e.getX(),e.getY()));
+		if(e.getClickCount() == 1) {
+			int key = findVertexWhenClicked(p);
+			if(key != -1) {
+				keys.add(key);
+				algo.myGraph.getNode(key).setInfo("selected");
+				StdDraw.paint(null);
+			}
+		}
 		if(e.getClickCount() == 2) {
-			Point3D p = new Point3D(e.getX(),e.getY());
 			node_data n = new Vertex(p);
-			g.addNode(n);
-			System.out.println("succsess to add vertex\ng:" + g.edgeSize() + "   "+ g.nodeSize());
+			algo.myGraph.addNode(n);
+			System.out.println("succsess to add vertex");
 			paint(null);
 		}
 	}
@@ -1757,11 +1878,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		synchronized (mouseLock) {
 			mouseX = StdDraw.userX(e.getX());
 			mouseY = StdDraw.userY(e.getY());
-			isMousePressed = true;
-			p = new Point3D(mouseX,mouseY);
-			isMouseMoved = false;
+			//			isMousePressed = true;
+			//			p = new Point3D(mouseX,mouseY);
+			//			isMouseMoved = false;
 		}
-		//		System.out.println("on pressed: " +p.toString());
 	}
 
 	/**
@@ -1771,26 +1891,29 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	public void mouseReleased(MouseEvent e) {
 		synchronized (mouseLock) {
 			isMousePressed = false;
-			if(true //isMouseMoved
-					&& e.getClickCount() == 1) {
-				Point3D p2= new Point3D(mouseX,mouseY);
-				int src = findVertexWhenClicked(p);
-				int dest = findVertexWhenClicked(p2);
-				if(src != -1 && dest != -1) {
-					g.connect(src, dest, 0);
-					System.out.println("succsess to add edge");
-					paint(null);
-				}
-				//			System.out.println("on released: " +p2.toString());
-			}
+			//			if(true //isMouseMoved
+			//					&& e.getClickCount() == 1) {
+			//				Point3D p2= new Point3D(mouseX,mouseY);
+			//				int src = findVertexWhenClicked(p);
+			//				int dest = findVertexWhenClicked(p2);
+			//				if(src != -1 && dest != -1) {
+			//					algo.myGraph.connect(src, dest, 0);
+			//					System.out.println("succsess to add edge");
+			//					paint(null);
+			//				}
+			//			}
 		}
-		
-	}
 
-	private int findVertexWhenClicked(Point3D p) {
-		for (Iterator<node_data> iterator = g.getV().iterator(); iterator.hasNext();) {
+	}
+	private boolean similar(Point3D p1 , Point3D p2) {
+		return (Math.abs(p1.x() - p2.x()) <= StdDraw.EPSILON)
+				&& (Math.abs(p1.y() - p2.y()) <= StdDraw.EPSILON)
+				&& (Math.abs(p1.z() - p2.z()) <= StdDraw.EPSILON);
+	}
+	private int findVertexWhenClicked(Point3D p) { //fix this
+		for (Iterator<node_data> iterator = algo.myGraph.getV().iterator(); iterator.hasNext();) {
 			Vertex v = (Vertex) iterator.next();
-			if(v.getLocation().equalsXY(p)) return v.getKey();
+			if(similar(v.getLocation(),p)) {return v.getKey();}
 		}
 		return -1;
 	}
@@ -1813,7 +1936,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		synchronized (mouseLock) {
 			mouseX = StdDraw.userX(e.getX());
 			mouseY = StdDraw.userY(e.getY());
-			StdDraw.isMouseMoved = true;
+			//			StdDraw.isMouseMoved = true;
 		}
 	}
 	/**
@@ -1897,6 +2020,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		synchronized (keyLock) {
 			keysTyped.addFirst(e.getKeyChar());
 		}
+
 	}
 
 	/**
@@ -1919,24 +2043,37 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
+	static int Xmin,Xmax,Ymin,Ymax;
+
 	public static void paint(graph g2) {
 		if(g2 != null) {
-			StdDraw.g = g2;
-			StdDraw.setCanvasSize(800,600);
-			StdDraw.setXscale(0,100);
-			StdDraw.setYscale(0,100);
+			StdDraw.clear();
+			StdDraw.algo = new Graph_Algo();
+			algo.init(g2);
+			Xmin=Integer.MAX_VALUE;
+			Xmax=Integer.MIN_VALUE;
+			Ymin=Integer.MAX_VALUE;
+			Ymax=Integer.MIN_VALUE;
+			for (Iterator<node_data> iterator = StdDraw.algo.myGraph.getV().iterator(); iterator.hasNext();) {
+				node_data v = (node_data) iterator.next();
+				if(v.getLocation().ix() < Xmin) Xmin = v.getLocation().ix();
+				if(v.getLocation().ix() > Xmax) Xmax = v.getLocation().ix();
+				if(v.getLocation().iy() < Ymin) Ymin = v.getLocation().iy();
+				if(v.getLocation().iy() > Ymax) Ymax = v.getLocation().iy();
+			}
+			StdDraw.clearSelected();
+			StdDraw.setCanvasSize(600,600);
+			StdDraw.setXscale(Xmin-10,Xmax+10);
+			StdDraw.setYscale(Ymin-10,Ymax+10);
 		}
 
-		int i=0;
-		for (Iterator<node_data> iterator = g.getV().iterator(); iterator.hasNext();) {
+		for (Iterator<node_data> iterator = StdDraw.algo.myGraph.getV().iterator(); iterator.hasNext();) {
 			node_data node = (node_data) iterator.next();
 			drawNode(node);
-			i++;
-			if(g.getE(node.getKey()) != null) {
-				for (Iterator<edge_data> iterator2 = g.getE(node.getKey()).iterator(); iterator2.hasNext();) {
+			if(algo.myGraph.getE(node.getKey()) != null) {
+				for (Iterator<edge_data> iterator2 = algo.myGraph.getE(node.getKey()).iterator(); iterator2.hasNext();) {
 					edge_data edge = (edge_data) iterator2.next();
 					drawEdge(edge);
-					i++;
 				}
 			}
 		}
@@ -1944,9 +2081,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 	private static void drawEdge(edge_data edge) {
 		StdDraw.setPenRadius(0.005);
-		StdDraw.setPenColor(StdDraw.BLACK);
-		node_data src = g.getNode(edge.getSrc());
-		node_data dest = g.getNode(edge.getDest());
+		StdDraw.setPenColor(edge.getInfo().equals("shortest path") ? StdDraw.YELLOW : StdDraw.BLACK);
+		node_data src = algo.myGraph.getNode(edge.getSrc());
+		node_data dest = algo.myGraph.getNode(edge.getDest());
 		StdDraw.line(src.getLocation().x(),src.getLocation().y(),dest.getLocation().x() , dest.getLocation().y());
 		StdDraw.setPenRadius(0.02);
 		StdDraw.setPenColor(StdDraw.ORANGE);
@@ -1963,7 +2100,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 	private static void drawNode(node_data node) {
 		StdDraw.setPenRadius(0.0255);
-		StdDraw.setPenColor(StdDraw.CYAN);
+		StdDraw.setPenColor(node.getInfo().equals("selected") ? StdDraw.GREEN : StdDraw.CYAN);
 		StdDraw.point(node.getLocation().x(), node.getLocation().y());
 		StdDraw.setPenColor(StdDraw.BLUE);
 		StdDraw.text(node.getLocation().x(), node.getLocation().y()+1,""+node.getKey());

@@ -131,19 +131,10 @@ public class DGraph implements graph, Serializable{
 				node_data v = (node_data) iterator.next();
 				this.removeEdge(v.getKey(), key);
 			}
-			//			for (Iterator<HashMap<Integer,edge_data>> iter = this.idToEdge.values().iterator(); iter.hasNext();)
-			//			{
-			//				HashMap<Integer,edge_data> hash = (HashMap<Integer,edge_data>) iter.next();
-			//				for (Iterator<Integer>iter2 = hash.keySet().iterator(); iter2.hasNext();)
-			//				{
-			//					int dest = (int) iter2.next();
-			//					this.removeEdge(dest, key);
-			//
-			//				}
-			//			}
+			if(this.idToEdge.get(key)!=null) {
+				this.edgeNum-=this.idToEdge.get(key).size();;
+			}
 			this.idToVertex.remove(key);
-			int i=this.idToEdge.get(key).size();
-			this.edgeNum-=i;
 			this.idToEdge.remove(key);
 			this.mc++;
 		}
@@ -160,11 +151,12 @@ public class DGraph implements graph, Serializable{
 	public edge_data removeEdge(int src, int dest) {
 		edge_data edgeToRemove = this.getEdge(src, dest);
 		if(edgeToRemove != null) {
-			if(this.idToEdge.get(src).remove(dest)!=null)
-				this.edgeNum-=1;
+//			if(this.idToEdge.get(src).remove(dest)!=null)
+			this.idToEdge.get(src).remove(dest);
+			this.edgeNum-=1;
 			this.mc++;
-			if(this.idToEdge.get(src).size()==0)
-				this.idToEdge.remove(src);
+//			if(this.idToEdge.get(src).size()==0)
+//				this.idToEdge.remove(src);
 		}
 		return edgeToRemove;
 	}
@@ -174,7 +166,7 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public int nodeSize() {
-		return this.getV().size();
+		return this.idToVertex.size();
 	}
 	/** 
 	 * return the number of edges (assume directional graph).
