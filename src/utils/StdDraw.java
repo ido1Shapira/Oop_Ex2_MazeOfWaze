@@ -28,7 +28,6 @@ package utils;
  ******************************************************************************/
 
 import java.awt.BasicStroke;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.Font;
@@ -607,6 +606,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static final double DEFAULT_XMAX = 1.0;
 	private static final double DEFAULT_YMIN = 0.0;
 	private static final double DEFAULT_YMAX = 1.0;
+	
+	//for scale
 	private static double xmin, ymin, xmax, ymax;
 
 	// for synchronization
@@ -1769,9 +1770,24 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				keys.clear();
 				clearSelected();
 			}
-
 			break;
 		case "TSP":
+			List<Integer> toSend = new ArrayList<Integer>();
+			for (Iterator<Integer> iterator = keys.iterator(); iterator.hasNext();) {
+				Integer key = (Integer) iterator.next();
+				toSend.add(key);
+			}
+			List<node_data> result = algo.TSP(toSend);
+			for (int i = 1; i < result.size(); i++) {
+				algo.myGraph.getEdge(result.get(i-1).getKey(), result.get(i).getKey()).setInfo("shortest path");
+				try {
+					algo.myGraph.getEdge(result.get(i).getKey(), result.get(i-1).getKey()).setInfo("shortest path");
+				}
+				catch (NullPointerException ex) {}
+			}
+			paint(null);
+			keys.clear();
+			clearSelected();
 			break;
 		}
 	}
@@ -1838,7 +1854,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
-	private static boolean isMouseMoved;
 	HashSet<Integer> keys = new HashSet<Integer>();
 
 	private Point3D getCordinateOnScreen(Point3D PbyPixle) {
@@ -1854,20 +1869,20 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Point3D p = getCordinateOnScreen(new Point3D (e.getX(),e.getY()));
-		if(e.getClickCount() == 1) {
+//		if(e.getClickCount() == 1) {
 			int key = findVertexWhenClicked(p);
 			if(key != -1) {
 				keys.add(key);
 				algo.myGraph.getNode(key).setInfo("selected");
 				StdDraw.paint(null);
 			}
-		}
-		if(e.getClickCount() == 2) {
-			node_data n = new Vertex(p);
-			algo.myGraph.addNode(n);
-			System.out.println("succsess to add vertex");
-			paint(null);
-		}
+//		}
+//		if(e.getClickCount() == 2) {
+//			node_data n = new Vertex(p);
+//			algo.myGraph.addNode(n);
+//			System.out.println("succsess to add vertex");
+//			paint(null);
+//		}
 	}
 
 	/**
@@ -1878,9 +1893,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		synchronized (mouseLock) {
 			mouseX = StdDraw.userX(e.getX());
 			mouseY = StdDraw.userY(e.getY());
-			//			isMousePressed = true;
-			//			p = new Point3D(mouseX,mouseY);
-			//			isMouseMoved = false;
 		}
 	}
 
@@ -1891,17 +1903,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	public void mouseReleased(MouseEvent e) {
 		synchronized (mouseLock) {
 			isMousePressed = false;
-			//			if(true //isMouseMoved
-			//					&& e.getClickCount() == 1) {
-			//				Point3D p2= new Point3D(mouseX,mouseY);
-			//				int src = findVertexWhenClicked(p);
-			//				int dest = findVertexWhenClicked(p2);
-			//				if(src != -1 && dest != -1) {
-			//					algo.myGraph.connect(src, dest, 0);
-			//					System.out.println("succsess to add edge");
-			//					paint(null);
-			//				}
-			//			}
 		}
 
 	}
@@ -1936,7 +1937,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		synchronized (mouseLock) {
 			mouseX = StdDraw.userX(e.getX());
 			mouseY = StdDraw.userY(e.getY());
-			//			StdDraw.isMouseMoved = true;
 		}
 	}
 	/**
