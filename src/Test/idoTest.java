@@ -1,7 +1,5 @@
 package Test;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
@@ -22,10 +20,10 @@ public class idoTest {
 	public static int seed = 5;
 	public static void main(String[] args) {
 //		SPtest();
-		isConnectedTest();
+//		isConnectedTest();
 //		edutesting();
 //		save_init_test();
-//		idotesting();
+		idotesting();
 //		connectest();
 	}
 	private static void isConnectedTest() {
@@ -170,7 +168,7 @@ public class idoTest {
 		Random r = new Random(seed);
 		DGraph g = new DGraph();
 		for(int i = 1; i<=numberOfVertexs;i++) {
-			g.addNode((node_data) new Vertex(new Point3D(r.nextInt(),r.nextInt(),0)));
+			g.addNode((node_data) new Vertex(new Point3D(r.nextInt(300),r.nextInt(300),0)));
 		}
 		for(int i = 1; i<=numberOfEdge;i++) {
 			int v1 = r.nextInt(numberOfVertexs) +1;
