@@ -1759,6 +1759,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			}
 			else {
 				List<node_data> result = algo.shortestPath((int)keys.toArray()[0],(int)keys.toArray()[1]);
+				if(result != null) {
 				for (int i = 1; i < result.size(); i++) {
 					algo.myGraph.getEdge(result.get(i-1).getKey(), result.get(i).getKey()).setInfo("shortest path");
 					try {
@@ -1769,6 +1770,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				paint(null);
 				keys.clear();
 				clearSelected();
+				}
+				else {
+					System.out.println("there is no path between the to vertexs");
+				}
 			}
 			break;
 		case "TSP":
