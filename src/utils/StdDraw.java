@@ -61,8 +61,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
@@ -606,7 +606,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static final double DEFAULT_XMAX = 1.0;
 	private static final double DEFAULT_YMIN = 0.0;
 	private static final double DEFAULT_YMAX = 1.0;
-	
+
 	//for scale
 	private static double xmin, ymin, xmax, ymax;
 
@@ -643,7 +643,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 	//for the similar method
 	public static final double EPSILON = 10;
-
+	LinkedHashSet<Integer> keys = new LinkedHashSet<Integer>();
 	private static Graph_Algo algo;
 
 	// singleton pattern: client can't instantiate
@@ -1736,15 +1736,20 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			paint(algo.myGraph);
 			break;
 		case "Is connected":
-			StdDraw.textLeft(Xmin-5,Ymin-5,"the graph is " + (algo.isConnected() ? "connected":"not connected"));
+			StdDraw.setPenColor(Color.magenta);
+			StdDraw.textLeft(Xmin+5,Ymin+5,"the graph is " + (algo.isConnected() ? "connected":"not connected"));
 			break;
 		case "Shortest Path dist":
 			if(keys.size() != 2) {
 				System.out.println("you must choose 2 vertexs");
 			}
 			else {
-				StdDraw.textRight(Xmax+5,Ymax+5,"the shortest path distance between " +
-						keys.toArray()[0] +" to " + keys.toArray()[1] + " is: " +algo.shortestPathDist((int)keys.toArray()[0],(int)keys.toArray()[1]));	
+				StdDraw.setPenColor(Color.magenta);
+				double round = algo.shortestPathDist((int)keys.toArray()[0],(int)keys.toArray()[1]);
+				int i=(int) (round*100);
+				round=i/100.0;
+				StdDraw.textRight(Xmax-5,Ymax-5,"the shortest path distance between " +
+						keys.toArray()[0] +" to " + keys.toArray()[1] + " is: " +round);	
 			}
 			keys.clear();
 			clearSelected();
@@ -1757,9 +1762,30 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				clearSelected();
 				paint(null);
 			}
-			else {
+			else {				
 				List<node_data> result = algo.shortestPath((int)keys.toArray()[0],(int)keys.toArray()[1]);
 				if(result != null) {
+					for (int i = 1; i < result.size(); i++) {
+						algo.myGraph.getEdge(result.get(i-1).getKey(), result.get(i).getKey()).setInfo("shortest path");
+						try {
+							algo.myGraph.getEdge(result.get(i).getKey(), result.get(i-1).getKey()).setInfo("shortest path");
+						}
+						catch (NullPointerException ex) {}
+					}
+					paint(null);
+					keys.clear();
+					clearSelected();
+				}
+				else {
+					System.out.println("there is no path between the two vertexs");
+				}
+			}
+			break;
+		case "TSP":
+			List<Integer> toSend = new ArrayList<Integer>();
+			toSend.addAll(keys);
+			List<node_data> result = algo.TSP(toSend);
+			if(result != null) {
 				for (int i = 1; i < result.size(); i++) {
 					algo.myGraph.getEdge(result.get(i-1).getKey(), result.get(i).getKey()).setInfo("shortest path");
 					try {
@@ -1770,29 +1796,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				paint(null);
 				keys.clear();
 				clearSelected();
-				}
-				else {
-					System.out.println("there is no path between the to vertexs");
-				}
 			}
-			break;
-		case "TSP":
-			List<Integer> toSend = new ArrayList<Integer>();
-			for (Iterator<Integer> iterator = keys.iterator(); iterator.hasNext();) {
-				Integer key = (Integer) iterator.next();
-				toSend.add(key);
+			else { 
+				System.out.println("there is no path that can go between all those verteces");
 			}
-			List<node_data> result = algo.TSP(toSend);
-			for (int i = 1; i < result.size(); i++) {
-				algo.myGraph.getEdge(result.get(i-1).getKey(), result.get(i).getKey()).setInfo("shortest path");
-				try {
-					algo.myGraph.getEdge(result.get(i).getKey(), result.get(i-1).getKey()).setInfo("shortest path");
-				}
-				catch (NullPointerException ex) {}
-			}
-			paint(null);
-			keys.clear();
-			clearSelected();
 			break;
 		}
 	}
@@ -1859,8 +1866,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
-	HashSet<Integer> keys = new HashSet<Integer>();
-
 	private Point3D getCordinateOnScreen(Point3D PbyPixle) {
 		double XPixle=PbyPixle.x();
 		double YPixle=PbyPixle.y();
@@ -1874,20 +1879,27 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Point3D p = getCordinateOnScreen(new Point3D (e.getX(),e.getY()));
-//		if(e.getClickCount() == 1) {
+		if(e.getClickCount() == 2) {
 			int key = findVertexWhenClicked(p);
 			if(key != -1) {
-				keys.add(key);
-				algo.myGraph.getNode(key).setInfo("selected");
+				if(algo.myGraph.getNode(key).getInfo().equals("selected")) {
+					keys.remove(key);
+					algo.myGraph.getNode(key).setInfo("");
+				}
+				else {
+					keys.add(key);
+					algo.myGraph.getNode(key).setInfo("selected");
+				}
 				StdDraw.paint(null);
 			}
-//		}
-//		if(e.getClickCount() == 2) {
-//			node_data n = new Vertex(p);
-//			algo.myGraph.addNode(n);
-//			System.out.println("succsess to add vertex");
-//			paint(null);
-//		}
+		}
+		//		}
+		//		if(e.getClickCount() == 2) {
+		//			node_data n = new Vertex(p);
+		//			algo.myGraph.addNode(n);
+		//			System.out.println("succsess to add vertex");
+		//			paint(null);
+		//		}
 	}
 
 	/**
@@ -2066,10 +2078,14 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				if(v.getLocation().iy() < Ymin) Ymin = v.getLocation().iy();
 				if(v.getLocation().iy() > Ymax) Ymax = v.getLocation().iy();
 			}
+			Xmin -= 15;
+			Xmax += 10;
+			Ymin -= 10;
+			Ymax += 15;
 			StdDraw.clearSelected();
 			StdDraw.setCanvasSize(600,600);
-			StdDraw.setXscale(Xmin-10,Xmax+10);
-			StdDraw.setYscale(Ymin-10,Ymax+10);
+			StdDraw.setXscale(Xmin,Xmax);
+			StdDraw.setYscale(Ymin,Ymax);
 		}
 
 		for (Iterator<node_data> iterator = StdDraw.algo.myGraph.getV().iterator(); iterator.hasNext();) {
@@ -2108,7 +2124,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		StdDraw.setPenColor(node.getInfo().equals("selected") ? StdDraw.GREEN : StdDraw.CYAN);
 		StdDraw.point(node.getLocation().x(), node.getLocation().y());
 		StdDraw.setPenColor(StdDraw.BLUE);
-		StdDraw.text(node.getLocation().x()+1, node.getLocation().y()+1,""+node.getKey());
+		StdDraw.text(node.getLocation().x()+2.5, node.getLocation().y()+2.5,""+node.getKey());
 	}
 
 

@@ -16,8 +16,8 @@ import utils.StdDraw;
 public class idoTest {
 
 	public final static int numberOfVertexs = 10;
-	public final static int numberOfEdge = 10;
-	public static int seed = 5;
+	public final static int numberOfEdge = 15;
+	public static int seed = 4;
 	public static void main(String[] args) {
 //		SPtest();
 //		isConnectedTest();
@@ -179,17 +179,8 @@ public class idoTest {
 			g.connect(v1, v2, g.getNode(v1).getLocation().distance2D(g.getNode(v2).getLocation()));
 		}
 		long endTime = System.currentTimeMillis();
-
 		System.out.println("That took " + (endTime - startTime) + " milliseconds");
-
 		StdDraw.paint(g);
-		//					g.removeNode(1);
-		//					g.connect(2, 3, 1);
-		//			g.removeEdge(2,3);
-		//			Graph_Algo al=new Graph_Algo();
-		//			al.init(g);
-		//	System.out.println(al.isConnected()+"    "+al.shortestPathDist(4, 10));
-		//	algotest(g);
 	}
 	private static void removeEdge(DGraph g, int src, int dest) {
 		int sizebefore = g.edgeSize();
