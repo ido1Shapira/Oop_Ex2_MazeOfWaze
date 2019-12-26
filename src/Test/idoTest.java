@@ -181,6 +181,15 @@ public class idoTest {
 		long endTime = System.currentTimeMillis();
 		System.out.println("That took " + (endTime - startTime) + " milliseconds");
 		StdDraw.paint(g);
+		Graph_Algo al= new Graph_Algo();
+		al.init(g);
+		ArrayList<Integer> targets= new ArrayList<Integer>();
+		targets.add(3);
+		targets.add(8);
+		targets.add(4);
+		targets.add(2);
+
+		System.out.println(al.TSP(targets));
 	}
 	private static void removeEdge(DGraph g, int src, int dest) {
 		int sizebefore = g.edgeSize();

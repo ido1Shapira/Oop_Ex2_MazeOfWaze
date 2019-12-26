@@ -1,7 +1,7 @@
 package algorithms;
-import dataStructure.*;
-import utils.Point3D;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,9 +11,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+
+import dataStructure.Vertex;
+import dataStructure.edge_data;
+import dataStructure.graph;
+import dataStructure.node_data;
+import utils.Point3D;
 
 /**
  * This empty class represents the set of graph-theory algorithms
@@ -232,22 +235,14 @@ public class Graph_Algo implements graph_algorithms{
 			return -1;
 		}
 	}
-	private List<node_data> string2list(String path){ //gets a string of nodes keys and brings back list of those nodes
-		try {
-			String [] pathSplit= path.split(" ");
-			ArrayList <node_data> list= new ArrayList<node_data>();
-			for (int i = 0; i < pathSplit.length; i++) {
-				int toAdd= Integer.parseInt(pathSplit[i]);
-				list.add(this.myGraph.getNode(toAdd));
-			}
-			return list;
-		}
-		catch(Exception e) {
-			return null;
-		}
-	}
-	private List<node_data> stringToPathTSPExtended (String path){//gets a string of nodes keys and brings back list of those nodes including nodes that are not on the list
 
+	/**
+	 * gets a string of nodes keys and brings back list of those nodes 
+	 * including nodes that are not on the list
+	 * @param path
+	 * @return
+	 */
+	private List<node_data> string2list (String path){
 		try {
 			String [] pathSplit= path.split(" ");
 			ArrayList <node_data> list= new ArrayList<node_data>();
@@ -289,28 +284,21 @@ public class Graph_Algo implements graph_algorithms{
 		int n=targets.size();
 		double [][]table=new double [n][n]; 
 		table=this.drawTable(nodeList);//distance table for only necessary targets
-		int [] nodesByOrder= new int[n]; //save the connection between the array indexes and the keys
-		int arr=0;
-		for (Iterator<node_data> iterator = nodeList.iterator(); iterator.hasNext();) {//targets as int[]
-			node_data out = (node_data) iterator.next();
-			nodesByOrder[arr]=out.getKey();
-			arr++;
-		}
-		String []ans=new String [2]; //answer is splited to distance and list of keys string
+		String []ans=new String [2]; //answer is splitted to distance and list of keys string
 		double min= Integer.MAX_VALUE;
 		for (int i = 0; i < n; i++) {
-			String [] curAns=this.TspSub(i, table, nodesByOrder); //starts from each vertex
+			String [] curAns=this.TspSub(i, table, nodeList); //starts each time with a different vertex
 			if(Double.parseDouble(curAns[0])<min) {
 				ans=curAns; //save the smallest path value
-				min=Double.parseDouble(curAns[0]);
+				min=Double.parseDouble(curAns[0]); // changes the minimum path distance
 			}
 		}
-		if(ans[0]==null ||ans[1]==null)
+		if(ans[0]==null ||ans[1]==null) //if no path is legal (infinity distance)
 			return null;
-		if(Double.parseDouble(ans[0])>=Integer.MAX_VALUE)
+		if(Double.parseDouble(ans[0])>=Integer.MAX_VALUE) //if path is infinity
 			return null;
 		else
-			return this.stringToPathTSPExtended(ans[1]);
+			return this.string2list(ans[1]);
 	}
 
 
@@ -341,14 +329,22 @@ public class Graph_Algo implements graph_algorithms{
 		return table;
 	}
 
-
-	private String[] TspSub(int  src, double [][] table, int [] nodesByOrder ) {
+	/**
+	 * returns string array
+	 * ans[0]= minimum distance that goes from all the vertices starting with src
+	 * ans [1]= a String of the nodes by passing order
+	 * @param src from what line to start the search
+	 * @param table
+	 * @param nodesByOrder
+	 * @return
+	 */
+	private String[] TspSub(int  src, double [][] table, List<node_data> nodesByOrder ) {
 		String ans=""+src;
 		String [] toreturn=new String[2];
 		int n=table.length;
 		double sum=0;
 
-		String nodeskey=""+nodesByOrder[src];
+		String nodeskey=""+nodesByOrder.get(src).getKey();
 		boolean [] nodes= new boolean [n];
 		for (int i = 0; i < nodes.length; i++) { //reset array to false
 			nodes[i]=false;
@@ -372,7 +368,7 @@ public class Graph_Algo implements graph_algorithms{
 			}
 			sum=sum+table[current][minplace];
 			ans=ans+" "+minplace;
-			nodeskey=nodeskey+" "+nodesByOrder[minplace];
+			nodeskey=nodeskey+" "+nodesByOrder.get(minplace).getKey();
 			current=minplace;	
 			nodes[minplace]=true;
 		}
@@ -380,7 +376,6 @@ public class Graph_Algo implements graph_algorithms{
 		toreturn[1]= nodeskey;
 		return toreturn;
 	}
-
 }
 
 //public double [] [] drawThisGraphTable () {
@@ -468,4 +463,18 @@ public class Graph_Algo implements graph_algorithms{
 //if(split.length==1)
 //	return "";
 //return split[1];
+//}
+//private List<node_data> string2list(String path){ //gets a string of nodes keys and brings back list of those nodes
+//try {
+//	String [] pathSplit= path.split(" ");
+//	ArrayList <node_data> list= new ArrayList<node_data>();
+//	for (int i = 0; i < pathSplit.length; i++) {
+//		int toAdd= Integer.parseInt(pathSplit[i]);
+//		list.add(this.myGraph.getNode(toAdd));
+//	}
+//	return list;
+//}
+//catch(Exception e) {
+//	return null;
+//}
 //}
