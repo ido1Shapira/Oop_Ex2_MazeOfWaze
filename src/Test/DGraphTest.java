@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import algorithms.Graph_Algo;
 import dataStructure.DGraph;
+import dataStructure.Edge;
 import dataStructure.Vertex;
 import dataStructure.edge_data;
 import dataStructure.node_data;
@@ -209,64 +210,47 @@ public class DGraphTest {
 		if(dg.edgeSize()!=1)
 			fail("fail edgesize");
 	}
-//	@Test
-//	public void testDGraph() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testGetNode() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testGetEdge() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testAddNode() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testConnect() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testGetV() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testGetE() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testRemoveNode() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testRemoveEdge() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testNodeSize() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testEdgeSize() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testGetMC() {
-//		fail("Not yet implemented");
-//	}
 
+	@Test
+	public void testGetNode() {
+		DGraph dg= new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
+		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
+		Vertex v3=new Vertex(new Point3D(10,80,1),3,54);
+		dg.addNode(v1);
+		dg.addNode(v2);
+		dg.addNode(v3);
+		if(!dg.getNode(1).getLocation().equalsXY(v1.getLocation()))
+			fail("get node failed");
+	}
+
+	@Test
+	public void testGetEdge() {
+		DGraph dg= new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
+		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
+		dg.addNode(v1);
+		dg.addNode(v2);
+		Edge e=new Edge(1, 2, 10);
+		dg.connect(v1.getKey(), v2.getKey(), 10);
+		if(e.getWeight()!=dg.getEdge(1, 2).getWeight())
+			fail("get edge failed");
+	}
+
+	@Test
+	public void testGetE() {
+		DGraph dg= new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
+		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
+		Vertex v3=new Vertex(new Point3D(10,80,1),3,54);
+		dg.addNode(v1);
+		dg.addNode(v2);
+		dg.addNode(v3);
+		dg.connect(v1.getKey(), v2.getKey(), 10);
+		dg.connect(v1.getKey(), v3.getKey(), 10);
+		dg.connect(v2.getKey(), v3.getKey(), 10);
+		dg.connect(v3.getKey(), v1.getKey(), 10);		
+		if(!dg.getE(v1.getKey()).contains(dg.getEdge(1, 2)))
+			fail("test getE failed");
+	}
 }

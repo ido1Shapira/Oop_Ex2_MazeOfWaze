@@ -182,6 +182,7 @@ public class idoTest {
 		targets.add(8);
 		targets.add(4);
 		targets.add(2);
+		System.out.println(g.getNode(8));
 		System.out.println(al.TSP(targets));
 	}
 	private static void removeEdge(DGraph g, int src, int dest) {
