@@ -78,6 +78,7 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import algorithms.Graph_Algo;
+import dataStructure.DGraph;
 import dataStructure.Vertex;
 import dataStructure.edge_data;
 import dataStructure.graph;
@@ -732,9 +733,13 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		JMenuBar menuBar = new JMenuBar();
 
 		JMenu file = new JMenu("File");
-		JMenu algo = new JMenu("algoritm");
+		JMenu algo = new JMenu("Algoritm");
+		JMenu graph = new JMenu("Graph");
+
 		menuBar.add(file);
 		menuBar.add(algo);
+		menuBar.add(graph);
+
 
 		JMenuItem saveImage = new JMenuItem("Save image");
 		saveImage.addActionListener(std);
@@ -753,11 +758,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		file.add(load);
 
-		JMenuItem clear = new JMenuItem("clear all results");
-		clear.addActionListener(std);
-		file.add(clear);
-
-		JMenuItem isConnected = new JMenuItem("Is connected");
+		JMenuItem isConnected = new JMenuItem("Is connected?");
 		isConnected.addActionListener(std);
 		algo.add(isConnected);
 
@@ -772,6 +773,23 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		JMenuItem tsp = new JMenuItem("TSP");
 		tsp.addActionListener(std);
 		algo.add(tsp);
+
+
+		JMenuItem v = new JMenuItem("Add vertex");
+		v.addActionListener(std);
+		graph.add(v);
+
+		JMenuItem e = new JMenuItem("Add edge");
+		e.addActionListener(std);
+		graph.add(e);
+
+		JMenuItem ngraph = new JMenuItem("New graph");
+		ngraph.addActionListener(std);
+		graph.add(ngraph);
+
+		JMenuItem clear = new JMenuItem("Clear all results");
+		clear.addActionListener(std);
+		graph.add(clear);
 
 		return menuBar;
 	}
@@ -1730,12 +1748,12 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				StdDraw.paint(null);
 			}				
 			break;
-		case "clear all results":
+		case "Clear all results":
 			clearSelected();
 			keys.clear();
 			paint(algo.myGraph);
 			break;
-		case "Is connected":
+		case "Is connected?":
 			StdDraw.setPenColor(Color.magenta);
 			StdDraw.textLeft(Xmin+5,Ymin+5,"the graph is " + (algo.isConnected() ? "connected":"not connected"));
 			break;
@@ -1773,12 +1791,12 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 						catch (NullPointerException ex) {}
 					}
 					paint(null);
-					keys.clear();
-					clearSelected();
 				}
 				else {
 					System.out.println("there is no path between the two vertexs");
 				}
+				keys.clear();
+				clearSelected();
 			}
 			break;
 		case "TSP":
@@ -1794,12 +1812,31 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					catch (NullPointerException ex) {}
 				}
 				paint(null);
-				keys.clear();
-				clearSelected();
 			}
 			else { 
 				System.out.println("there is no path that can go between all those verteces");
 			}
+			keys.clear();
+			clearSelected();
+			break;
+		case "Add vertex":
+			StdDraw.textRight(Xmax-5,Ymin+5,"just click on the board while you pressing space");
+			break;
+		case "Add edge":
+			if(keys.size() == 2) {
+				algo.myGraph.connect((int)keys.toArray()[0], (int)keys.toArray()[1],0);
+				keys.clear();
+				paint(null);
+			}
+			else {
+				System.out.println("you must choose 2 vertexs");
+			}
+			break;
+		case "New graph":
+			if(algo.myGraph instanceof DGraph) {
+				algo.init(new DGraph());
+			}
+			paint(algo.myGraph);
 			break;
 		}
 	}
@@ -1893,13 +1930,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				StdDraw.paint(null);
 			}
 		}
-		//		}
-		//		if(e.getClickCount() == 2) {
-		//			node_data n = new Vertex(p);
-		//			algo.myGraph.addNode(n);
-		//			System.out.println("succsess to add vertex");
-		//			paint(null);
-		//		}
+		if(e.getClickCount() == 1 && isKeyPressed((int)' ')) {
+			algo.myGraph.addNode(new Vertex(p));
+			paint(null);
+		}
 	}
 
 	/**
@@ -2067,21 +2101,23 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			StdDraw.clear();
 			StdDraw.algo = new Graph_Algo();
 			algo.init(g2);
-			Xmin=Integer.MAX_VALUE;
-			Xmax=Integer.MIN_VALUE;
-			Ymin=Integer.MAX_VALUE;
-			Ymax=Integer.MIN_VALUE;
-			for (Iterator<node_data> iterator = StdDraw.algo.myGraph.getV().iterator(); iterator.hasNext();) {
-				node_data v = (node_data) iterator.next();
-				if(v.getLocation().ix() < Xmin) Xmin = v.getLocation().ix();
-				if(v.getLocation().ix() > Xmax) Xmax = v.getLocation().ix();
-				if(v.getLocation().iy() < Ymin) Ymin = v.getLocation().iy();
-				if(v.getLocation().iy() > Ymax) Ymax = v.getLocation().iy();
+			if(g2.nodeSize() > 0) {
+				Xmin=Integer.MAX_VALUE;
+				Xmax=Integer.MIN_VALUE;
+				Ymin=Integer.MAX_VALUE;
+				Ymax=Integer.MIN_VALUE;
+				for (Iterator<node_data> iterator = StdDraw.algo.myGraph.getV().iterator(); iterator.hasNext();) {
+					node_data v = (node_data) iterator.next();
+					if(v.getLocation().ix() < Xmin) Xmin = v.getLocation().ix();
+					if(v.getLocation().ix() > Xmax) Xmax = v.getLocation().ix();
+					if(v.getLocation().iy() < Ymin) Ymin = v.getLocation().iy();
+					if(v.getLocation().iy() > Ymax) Ymax = v.getLocation().iy();
+				}
+				Xmin -= 15;
+				Xmax += 10;
+				Ymin -= 10;
+				Ymax += 15;
 			}
-			Xmin -= 15;
-			Xmax += 10;
-			Ymin -= 10;
-			Ymax += 15;
 			StdDraw.clearSelected();
 			StdDraw.setCanvasSize(600,600);
 			StdDraw.setXscale(Xmin,Xmax);
