@@ -67,6 +67,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.NoSuchElementException;
+import java.util.Random;
+
 import javax.imageio.ImageIO;
 
 import javax.swing.ImageIcon;
@@ -1824,7 +1826,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			break;
 		case "Add edge":
 			if(keys.size() == 2) {
-				algo.myGraph.connect((int)keys.toArray()[0], (int)keys.toArray()[1],0);
+				Random r = new Random();
+				algo.myGraph.connect((int)keys.toArray()[0], (int)keys.toArray()[1],r.nextDouble()*100);
 				keys.clear();
 				paint(null);
 			}
@@ -2136,7 +2139,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 		StdDraw.show();
 	}
+
 	private static void drawEdge(edge_data edge) {
+		double rangeX=xmax-xmin;
+		double rangeY=ymax-ymin;
 		StdDraw.setPenRadius(0.005);
 		StdDraw.setPenColor(edge.getInfo().equals("shortest path") ? StdDraw.YELLOW : StdDraw.BLACK);
 		node_data src = algo.myGraph.getNode(edge.getSrc());
@@ -2152,15 +2158,17 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		roundafter=roundafter/100;
 		StdDraw.setPenColor(StdDraw.RED);
 		StdDraw.setPenRadius(0.02);
-		StdDraw.text(relativex-1.5, relativey-1.5,""+roundafter);
+		StdDraw.text(relativex+(10*rangeX/600.0), relativey+(10*rangeY/600.0),""+roundafter);
 	}
 
 	private static void drawNode(node_data node) {
+		double rangeX=xmax-xmin;
+		double rangeY=ymax-ymin;
 		StdDraw.setPenRadius(0.0255);
 		StdDraw.setPenColor(node.getInfo().equals("selected") ? StdDraw.GREEN : StdDraw.CYAN);
 		StdDraw.point(node.getLocation().x(), node.getLocation().y());
 		StdDraw.setPenColor(StdDraw.BLUE);
-		StdDraw.text(node.getLocation().x()+2.5, node.getLocation().y()+2.5,""+node.getKey());
+		StdDraw.text(node.getLocation().x()+(10.0*(rangeX/600.0)), node.getLocation().y()+(10.0*(rangeY)/600.0),""+node.getKey());
 	}
 
 

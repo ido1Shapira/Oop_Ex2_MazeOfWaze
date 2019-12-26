@@ -242,7 +242,7 @@ public class Graph_Algo implements graph_algorithms{
 	 * @param path
 	 * @return
 	 */
-	private List<node_data> string2list (String path){
+	private List<node_data> string2listExtendad (String path){
 		try {
 			String [] pathSplit= path.split(" ");
 			ArrayList <node_data> list= new ArrayList<node_data>();
@@ -275,13 +275,32 @@ public class Graph_Algo implements graph_algorithms{
 		}
 	}
 
+	private List<node_data> string2list(String path){ //gets a string of nodes keys and brings back list of those nodes
+		try {
+			String [] pathSplit= path.split(" ");
+			ArrayList <node_data> list= new ArrayList<node_data>();
+			for (int i = 0; i < pathSplit.length; i++) {
+				int toAdd= Integer.parseInt(pathSplit[i]);
+				list.add(this.myGraph.getNode(toAdd));
+			}
+			return list;
+		}
+		catch(Exception e) {
+			return null;
+		}
+	}
 	public  List<node_data> TSP(List<Integer> targets){
+		int n=targets.size();
 		ArrayList<node_data> nodeList= new ArrayList<node_data>();//same list as targets but with nodes
 		for (Iterator<Integer> iterator = targets.iterator(); iterator.hasNext();) {
 			Integer nodeKey = (Integer) iterator.next();
-			nodeList.add(this.myGraph.getNode(nodeKey));
+			if(this.myGraph.getNode(nodeKey)!=null)
+				nodeList.add(this.myGraph.getNode(nodeKey));
+			else {
+				n-=1;
+			}
 		}
-		int n=targets.size();
+		//int n=targets.size();
 		double [][]table=new double [n][n]; 
 		table=this.drawTable(nodeList);//distance table for only necessary targets
 		String []ans=new String [2]; //answer is splitted to distance and list of keys string
@@ -298,7 +317,7 @@ public class Graph_Algo implements graph_algorithms{
 		if(Double.parseDouble(ans[0])>=Integer.MAX_VALUE) //if path is infinity
 			return null;
 		else
-			return this.string2list(ans[1]);
+			return this.string2listExtendad(ans[1]);
 	}
 
 
@@ -320,12 +339,12 @@ public class Graph_Algo implements graph_algorithms{
 			}
 			i++;
 		}
-//		for (int a = 0; a < n; a++) {
-//			for (int b = 0; b < n; b++) {
-//				System.out.print(table[a][b] + "\t \t");
-//			}
-//			System.out.println();
-//		}
+		//		for (int a = 0; a < n; a++) {
+		//			for (int b = 0; b < n; b++) {
+		//				System.out.print(table[a][b] + "\t \t");
+		//			}
+		//			System.out.println();
+		//		}
 		return table;
 	}
 
@@ -343,7 +362,6 @@ public class Graph_Algo implements graph_algorithms{
 		String [] toreturn=new String[2];
 		int n=table.length;
 		double sum=0;
-
 		String nodeskey=""+nodesByOrder.get(src).getKey();
 		boolean [] nodes= new boolean [n];
 		for (int i = 0; i < nodes.length; i++) { //reset array to false
@@ -463,18 +481,4 @@ public class Graph_Algo implements graph_algorithms{
 //if(split.length==1)
 //	return "";
 //return split[1];
-//}
-//private List<node_data> string2list(String path){ //gets a string of nodes keys and brings back list of those nodes
-//try {
-//	String [] pathSplit= path.split(" ");
-//	ArrayList <node_data> list= new ArrayList<node_data>();
-//	for (int i = 0; i < pathSplit.length; i++) {
-//		int toAdd= Integer.parseInt(pathSplit[i]);
-//		list.add(this.myGraph.getNode(toAdd));
-//	}
-//	return list;
-//}
-//catch(Exception e) {
-//	return null;
-//}
 //}

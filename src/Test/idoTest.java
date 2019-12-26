@@ -15,13 +15,13 @@ import utils.StdDraw;
 
 public class idoTest {
 
-	public final static int numberOfVertexs = 10;
+	public final static int numberOfVertexs = 5;
 	public final static int numberOfEdge = 15;
 	public static int seed = 4;
 	public static void main(String[] args) {
 //		SPtest();
 //		isConnectedTest();
-//		edutesting();
+		edutesting();
 //		save_init_test();
 		idotesting();
 //		connectest();
@@ -147,22 +147,16 @@ public class idoTest {
 		g.connect(v2.getKey(), v4.getKey(), 6);
 		g.connect(v4.getKey(), v3.getKey(), 2.33);
 		g.connect(v3.getKey(), v2.getKey(), 8);
-		g.removeEdge(1, 2);
-		g.removeNode(1);
+//		g.removeEdge(1, 2);
+//		g.removeNode(1);
 		Graph_Algo ga=new Graph_Algo();
 		ga.init(g);
 		StdDraw.paint(g);
 		System.out.println("conncted "+ga.isConnected());
-		System.out.println(ga.shortestPathDist(1, 2));
-		System.out.println(ga.shortestPathDist(1, 3));
-		algotest(g);
+		System.out.println("shortest path "+ ga.shortestPath(1, 2));
+	//	System.out.println(ga.shortestPathDist(1, 3));		
+	}
 
-	}
-	private static void algotest(graph g) {
-		Graph_Algo al = new Graph_Algo();	
-		al.init(g);
-		System.out.println(al.isConnected());
-	}
 	private static void idotesting() {
 		long startTime = System.currentTimeMillis();
 		Random r = new Random(seed);
@@ -188,7 +182,6 @@ public class idoTest {
 		targets.add(8);
 		targets.add(4);
 		targets.add(2);
-
 		System.out.println(al.TSP(targets));
 	}
 	private static void removeEdge(DGraph g, int src, int dest) {
