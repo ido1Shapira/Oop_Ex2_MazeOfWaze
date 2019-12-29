@@ -797,7 +797,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		ngraph.addActionListener(std);
 		graph.add(ngraph);
 
-		JMenuItem clear = new JMenuItem("Clear all results");
+		JMenuItem clear = new JMenuItem("Clear");
 		clear.addActionListener(std);
 		graph.add(clear);
 
@@ -1758,7 +1758,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				StdDraw.paint(null);
 			}
 			break;
-		case "Clear all results":
+		case "Clear":
 			clearSelected();
 			keys.clear();
 			paint(algo.myGraph);
@@ -1768,8 +1768,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			JOptionPane.showMessageDialog(null,"the graph is " + (algo.isConnected() ? "connected":"not connected"));
 			break;
 		case "Shortest Path dist":
-			if(keys.size() != 2) {
-				JOptionPane.showMessageDialog(null,"you must choose 2 vertexs");
+			if(keys.size() != 2 ) {
+				JOptionPane.showMessageDialog(null, "you must choose 2 vertexs","Error",JOptionPane.ERROR_MESSAGE);
 			}
 			else {
 				StdDraw.setPenColor(Color.magenta);
@@ -1785,7 +1785,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			break;
 		case "Shortest path":
 			if(keys.size() != 2) {
-				JOptionPane.showMessageDialog(null,"you must choose 2 vertexs");
+				JOptionPane.showMessageDialog(null, "you must choose 2 vertexs","Error", JOptionPane.ERROR_MESSAGE);
 				keys.clear();
 				clearSelected();
 				paint(null);
@@ -1810,21 +1810,27 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			}
 			break;
 		case "TSP":
-			List<Integer> toSend = new ArrayList<Integer>();
-			toSend.addAll(keys);
-			List<node_data> result = algo.TSP(toSend);
-			if(result != null) {
-				for (int i = 1; i < result.size(); i++) {
-					algo.myGraph.getEdge(result.get(i-1).getKey(), result.get(i).getKey()).setInfo("shortest path");
-					try {
-						algo.myGraph.getEdge(result.get(i).getKey(), result.get(i-1).getKey()).setInfo("shortest path");
-					}
-					catch (NullPointerException ex) {}
-				}
+			if(keys.size() < 2) {
+				JOptionPane.showMessageDialog(null, "you must choose at least 2 vertexs","Error", JOptionPane.ERROR_MESSAGE);
 				paint(null);
 			}
 			else {
-				JOptionPane.showMessageDialog(null,"there is no path that can go between all those verteces");
+				List<Integer> toSend = new ArrayList<Integer>();
+				toSend.addAll(keys);
+				List<node_data> result = algo.TSP(toSend);
+				if(result != null) {
+					for (int i = 1; i < result.size(); i++) {
+						algo.myGraph.getEdge(result.get(i-1).getKey(), result.get(i).getKey()).setInfo("shortest path");
+						try {
+							algo.myGraph.getEdge(result.get(i).getKey(), result.get(i-1).getKey()).setInfo("shortest path");
+						}
+						catch (NullPointerException ex) {}
+					}
+					paint(null);
+				}
+				else {
+					JOptionPane.showMessageDialog(null,"there is no path that can go between all those verteces");
+				}
 			}
 			keys.clear();
 			clearSelected();
@@ -1846,15 +1852,18 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 						w = Double.valueOf(JOptionPane.showInputDialog("enter wight of edge"));
 					}
 					catch (Exception e2) {
-						JOptionPane.showMessageDialog(null,"invalid input");
+						JOptionPane.showMessageDialog(null,"invalid input","Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 				algo.myGraph.connect((int)keys.toArray()[0], (int)keys.toArray()[1],w);
 				keys.clear();
+				clearSelected();
 				paint(null);
 			}
 			else {
-				JOptionPane.showMessageDialog(null,"you must choose 2 vertexs");
+				keys.clear();
+				clearSelected();
+				JOptionPane.showMessageDialog(null,"you must choose 2 vertexs","Error", JOptionPane.ERROR_MESSAGE);
 			}
 			break;
 		case "Remove edge":
@@ -1864,6 +1873,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			int dest = (Integer)JOptionPane.showInputDialog(null, "Pick a dest vertex:",
 					"Remove edge", JOptionPane.QUESTION_MESSAGE, null, tempkeys1, null);
 			if(algo.myGraph.removeEdge(src, dest) != null) {paint(algo.myGraph);}
+			if(src == dest) {
+				JOptionPane.showMessageDialog(null,"the 2 vertexs can not be the same","Error",JOptionPane.ERROR_MESSAGE);
+
+			}
 			break;
 		case "New graph":
 			if(algo.myGraph instanceof DGraph) {
