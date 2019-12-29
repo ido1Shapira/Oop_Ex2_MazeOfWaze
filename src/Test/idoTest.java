@@ -1,6 +1,7 @@
 package Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -20,11 +21,11 @@ public class idoTest {
 	public static int seed = 4;
 	public static void main(String[] args) {
 //		SPtest();
-//		isConnectedTest();
+		isConnectedTest();
 //		edutesting();
 //		save_init_test();
 //		idotesting();
-		connectest();
+//		connectest();
 	}
 	private static void isConnectedTest() {
 		DGraph g = new DGraph();
@@ -50,6 +51,15 @@ public class idoTest {
 		StdDraw.paint(g);
 		Graph_Algo al= new Graph_Algo();
 		al.init(g);
+		ArrayList<Integer> targets =new ArrayList<Integer>();
+		targets.add(1);
+		targets.add(2);
+		targets.add(1);
+		targets.add(2);
+		System.out.println(targets.size());
+		System.out.println(al.TSP(targets));	
+		System.out.println(al.shortestPathDist(1, 1));
+		System.out.println(al.shortestPath(1, 1));
 		System.out.println(al.isConnected());
 	}
 
