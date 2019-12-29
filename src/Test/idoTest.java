@@ -21,10 +21,10 @@ public class idoTest {
 	public static void main(String[] args) {
 //		SPtest();
 //		isConnectedTest();
-		edutesting();
+//		edutesting();
 //		save_init_test();
-		idotesting();
-//		connectest();
+//		idotesting();
+		connectest();
 	}
 	private static void isConnectedTest() {
 		DGraph g = new DGraph();
@@ -90,11 +90,6 @@ public class idoTest {
 		//		System.out.println("path 1-4 ="+al.shortestPathDist(1, 4));
 		//	System.out.println("object address trip "+al.shortestPath(1, 4));
 		//	al.drawTable();
-		ArrayList<node_data> list= new ArrayList<node_data>();
-		//	list.add(v1);
-		list.add(v2);
-		list.add(v3);
-		//	System.out.println(al.mytsp(list, 0, 1, "").getPath());
 		ArrayList<Integer> check= new ArrayList<Integer>();
 		check.add(1);
 		check.add(2);
@@ -132,6 +127,7 @@ public class idoTest {
 		al1.init("edut");
 		graph gcopy = al.copy();
 		g.removeNode(1);
+		StdDraw.paint(g);
 
 	}
 	private static void edutesting() {

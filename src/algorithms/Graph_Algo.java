@@ -19,16 +19,22 @@ import dataStructure.node_data;
 import utils.Point3D;
 
 /**
- * This empty class represents the set of graph-theory algorithms
- * which should be implemented as part of Ex2 - Do edit this class.
- * @author 
+ * This class represents the set of graph-theory algorithms
+ * @author Ido Shapira & Edut Cohen
  *
  */
 public class Graph_Algo implements graph_algorithms{
 	public graph myGraph;
 	private HashMap<Integer,HashSet<Integer>> vertexToNeighbors; // v1--->V
 	private HashMap<Integer,HashSet<Integer>> NeighborsToVertex; // V--->v1
-
+	/**
+	 * initiate a graph into graph-algo object
+	 * in addition adds 2 new fields to help control the graph.
+	 * vertexToNeighbors- represents the connection between a vertex and his "kids"-
+	 *  (all the vertices that end an edge that starts with the main vertex)
+	 *  NeighborsToVertex- represents the connection between a vertex and his "dads"-
+	 *  (all the vertices that start an edge that ends with the main vertex)
+	 */
 	@Override
 	public void init(graph g) {
 		myGraph = g;
@@ -65,14 +71,16 @@ public class Graph_Algo implements graph_algorithms{
 			}
 		}
 	}
-
+	/**
+	 * initiate a graph from a file into graph-algo object 
+	 */
 	@Override
 	public void init(String file_name) {
 		try
 		{    
 			FileInputStream file = new FileInputStream(!file_name.contains(".txt")? file_name+".txt" : file_name); 
 			ObjectInputStream in = new ObjectInputStream(file); 
-			this.myGraph = (graph)in.readObject(); 
+			this.init((graph)in.readObject());
 			in.close(); 
 			file.close(); 
 		} 
@@ -85,13 +93,16 @@ public class Graph_Algo implements graph_algorithms{
 			System.out.println("ClassNotFoundException is caught"); 
 		} 
 	}
+	/**
+	 * save the graph field from this graph-algo object to a file
+	 */
 	@Override
 	public void save(String file_name) {
 		try
 		{    
 			FileOutputStream file = new FileOutputStream(!file_name.contains(".txt")? file_name+".txt" : file_name); 
 			ObjectOutputStream out = new ObjectOutputStream(file); 
-			out.writeObject((graph) this.myGraph); 
+			out.writeObject((graph) this.myGraph); 			
 			out.close(); 
 			file.close(); 
 		}   
@@ -99,39 +110,48 @@ public class Graph_Algo implements graph_algorithms{
 		{
 			ex.printStackTrace();
 			System.out.println(ex.getMessage());
-			System.out.println("save- IOException is caught"); 
 		}
 	}
+	/**
+	 * returns a deep copy of this object's graph
+	 */
 	@Override
 	public graph copy() {
 		Random r = new Random();
-		String file_name = "file"+Math.abs(r.nextInt());
+		String file_name = "file"+Math.abs(r.nextInt()); //save this graph to a file with a random name
 		this.save(file_name);
 		Graph_Algo ga=new Graph_Algo();
-		ga.init(file_name);
+		ga.init(file_name); // initiate the info from the file to a new graph
 		File file = new File(file_name+".txt"); 
-		file.delete(); 
+		file.delete(); //delete the new file we have created
 		return ga.myGraph;
 	}
-
+	/**
+	 * returns true if and only if (iff) there is a valid path from EVREY node to each other node in this graph
+	 * 
+	 */
 	@Override
 	public boolean isConnected() {
 		infoTagWeightReset();		
-		if(!this.checkLegal()) { return false;}
+		if(!this.checkLegal()) { return false;} //there is a node that is not reachable to any other node
 		int i=1;
-		while (this.myGraph.getNode(i) == null) i++;
+		while (this.myGraph.getNode(i) == null) i++; //finds the first node that exists
 		node_data mySrc= this.myGraph.getNode(i);
 		this.tagKids(mySrc);
-		if(this.countTags()!=this.myGraph.nodeSize()) {
+		if(this.countTags()!=this.myGraph.nodeSize()) { //if not all the vertices are reachable from src
 			return false;
 		}
+		infoTagWeightReset();		
 		this.tagDads(mySrc);
-		if(this.countTags()!=this.myGraph.nodeSize()) {
+		if(this.countTags()!=this.myGraph.nodeSize()) { //if not all the vertices can reach to src
 			return false;
 		}
 		return true;
 	}
-
+/**
+ * tags all of src's kids (as defined above)
+ * @param src the vertex to start from
+ */
 	private void tagKids(node_data src) {
 		src.setTag(1);
 		for (Iterator<Integer> iterator = this.vertexToNeighbors.get(src.getKey()).iterator(); iterator.hasNext();) {
@@ -142,13 +162,16 @@ public class Graph_Algo implements graph_algorithms{
 			}
 		}
 	}
-
+	/**
+	 * tags all of src's dads (as defined above)
+	 * @param src the vertex to start from
+	 */
 	private void tagDads(node_data src) {
-		src.setTag(2);
+		src.setTag(1);
 		for (Iterator<Integer> iterator = this.NeighborsToVertex.get(src.getKey()).iterator(); iterator.hasNext();) {
 			Integer dadKey = (Integer) iterator.next();
 			node_data dad= this.myGraph.getNode(dadKey);
-			if(dad.getTag()==1) {
+			if(dad.getTag()==0) {
 				this.tagDads(dad);
 			}
 		}
