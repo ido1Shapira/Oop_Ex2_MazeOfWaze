@@ -253,4 +253,23 @@ public class DGraphTest {
 		if(!dg.getE(v1.getKey()).contains(dg.getEdge(1, 2)))
 			fail("test getE failed");
 	}
+	@Test
+	public void testGetMC() {
+		DGraph dg= new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
+		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
+		Vertex v3=new Vertex(new Point3D(10,80,1),3,54);
+		dg.addNode(v1);
+		dg.addNode(v2);
+		dg.addNode(v3);
+		dg.connect(v1.getKey(), v2.getKey(), 10);
+		dg.connect(v1.getKey(), v3.getKey(), 10);
+		dg.connect(v2.getKey(), v3.getKey(), 10);
+		dg.connect(v3.getKey(), v1.getKey(), 10);	
+		int oldMC= dg.getMC();
+		dg.removeNode(1);
+		if(dg.getMC()==oldMC)
+			fail("get MC failed");
+	}
+	
 }

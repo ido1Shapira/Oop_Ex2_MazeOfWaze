@@ -134,7 +134,8 @@ public class DGraph implements graph, Serializable{
 				this.removeEdge(v.getKey(), key);
 			}
 			if(this.idToEdge.get(key)!=null) {
-				this.edgeNum-=this.idToEdge.get(key).size();;
+				this.edgeNum-=this.idToEdge.get(key).size();
+				this.mc+=this.idToEdge.get(key).size();
 			}
 			this.idToVertex.remove(key);
 			this.idToEdge.remove(key);

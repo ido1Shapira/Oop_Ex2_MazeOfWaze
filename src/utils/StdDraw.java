@@ -67,7 +67,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.NoSuchElementException;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -86,11 +85,12 @@ import dataStructure.edge_data;
 import dataStructure.graph;
 import dataStructure.node_data;
 
+import javax.swing.JOptionPane;
 
 /**
  *  The {@code StdDraw} class provides a basic capability for
  *  creating drawings with your programs. It uses a simple graphics model that
- *  allows you to create drawings consisting of points, lines, squares, 
+ *  allows you to create drawings consisting of points, lines, squares,
  *  circles, and other geometric shapes in a window on your computer and
  *  to save the drawings to a file. Standard drawing also includes
  *  facilities for text, color, pictures, and animation, along with
@@ -259,7 +259,7 @@ import dataStructure.node_data;
  *  <li> {@link #setScale(double min, double max)}
  *  </ul>
  *  <p>
- *  The arguments are the coordinates of the minimum and maximum 
+ *  The arguments are the coordinates of the minimum and maximum
  *  <em>x</em>- or <em>y</em>-coordinates that will appear in the canvas.
  *  For example, if you  wish to use the default coordinate system but
  *  leave a small margin, you can call {@code StdDraw.setScale(-.05, 1.05)}.
@@ -323,7 +323,7 @@ import dataStructure.node_data;
  *  <p>
  *  The supported image formats are JPEG and PNG. The filename must have either the
  *  extension .jpg or .png.
- *  We recommend using PNG for drawing that consist solely of geometric shapes and JPEG 
+ *  We recommend using PNG for drawing that consist solely of geometric shapes and JPEG
  *  for drawings that contains pictures.
  *  <p>
  *  <b>Clearing the canvas.</b>
@@ -358,7 +358,7 @@ import dataStructure.node_data;
  *  all drawing takes place on the <em>offscreen canvas</em>. The offscreen canvas
  *  is not displayed. Only when you call
  *  {@link #show()} does your drawing get copied from the offscreen canvas to
- *  the onscreen canvas, where it is displayed in the standard drawing window. You 
+ *  the onscreen canvas, where it is displayed in the standard drawing window. You
  *  can think of double buffering as collecting all of the lines, points, shapes,
  *  and text that you tell it to draw, and then drawing them all
  *  <em>simultaneously</em>, upon request.
@@ -722,7 +722,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		frame.addKeyListener(std);    // JLabel cannot get keyboard focus
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
-		//		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
+		// frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
 		frame.setTitle("Drawing of the graph");
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
@@ -781,9 +781,17 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		v.addActionListener(std);
 		graph.add(v);
 
+		JMenuItem vr = new JMenuItem("Remove vertex");
+		vr.addActionListener(std);
+		graph.add(vr);
+
 		JMenuItem e = new JMenuItem("Add edge");
 		e.addActionListener(std);
 		graph.add(e);
+
+		JMenuItem er = new JMenuItem("Remove edge");
+		er.addActionListener(std);
+		graph.add(er);
 
 		JMenuItem ngraph = new JMenuItem("New graph");
 		ngraph.addActionListener(std);
@@ -1262,7 +1270,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 
 	/**
-	 * Draws a polygon with the vertices 
+	 * Draws a polygon with the vertices
 	 * (<em>x</em><sub>0</sub>, <em>y</em><sub>0</sub>),
 	 * (<em>x</em><sub>1</sub>, <em>y</em><sub>1</sub>), ...,
 	 * (<em>x</em><sub><em>n</em>–1</sub>, <em>y</em><sub><em>n</em>–1</sub>).
@@ -1291,7 +1299,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	/**
-	 * Draws a polygon with the vertices 
+	 * Draws a polygon with the vertices
 	 * (<em>x</em><sub>0</sub>, <em>y</em><sub>0</sub>),
 	 * (<em>x</em><sub>1</sub>, <em>y</em><sub>1</sub>), ...,
 	 * (<em>x</em><sub><em>n</em>–1</sub>, <em>y</em><sub><em>n</em>–1</sub>).
@@ -1373,7 +1381,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
             URL url = new URL(filename);
             BufferedImage image = ImageIO.read(url);
             return image;
-        } 
+        }
         catch (IOException e) {
             // ignore
         }
@@ -1382,7 +1390,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
             URL url = StdDraw.class.getResource(filename);
             BufferedImage image = ImageIO.read(url);
             return image;
-        } 
+        }
         catch (IOException e) {
             // ignore
         }
@@ -1391,7 +1399,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
             URL url = StdDraw.class.getResource("/" + filename);
             BufferedImage image = ImageIO.read(url);
             return image;
-        } 
+        }
         catch (IOException e) {
             // ignore
         }
@@ -1645,7 +1653,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	/**
-	 * Enable double buffering. All subsequent calls to 
+	 * Enable double buffering. All subsequent calls to
 	 * drawing methods such as {@code line()}, {@code circle()},
 	 * and {@code square()} will be deffered until the next call
 	 * to show(). Useful for animations.
@@ -1655,7 +1663,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	/**
-	 * Disable double buffering. All subsequent calls to 
+	 * Disable double buffering. All subsequent calls to
 	 * drawing methods such as {@code line()}, {@code circle()},
 	 * and {@code square()} will be displayed on screen when called.
 	 * This is the default.
@@ -1723,32 +1731,32 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String str = e.getActionCommand();
-		switch(str) 
+		switch(str)
 		{
-		case "Save image": 
+		case "Save image":
 			FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
 			chooser.setVisible(true);
 			String filename = chooser.getFile();
 			if (filename != null) {
 				StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
 			}
-			break; 
-		case "Save graph": 
+			break;
+		case "Save graph":
 			FileDialog chooser2 = new FileDialog(StdDraw.frame, "save the graph to a file", FileDialog.SAVE);
 			chooser2.setVisible(true);
 			String filename2 = chooser2.getFile();
 			if (filename2 != null) {
 				algo.save(chooser2.getDirectory() + File.separator + chooser2.getFile());
 			}
-			break; 
-		case "Load graph": 
+			break;
+		case "Load graph":
 			FileDialog chooser3 = new FileDialog(StdDraw.frame, "load form file a graph", FileDialog.LOAD);
 			chooser3.setVisible(true);
 			String filename3 = chooser3.getFile();
 			if (filename3 != null) {
 				algo.init(chooser3.getDirectory() + File.separator + chooser3.getFile());
 				StdDraw.paint(null);
-			}				
+			}
 			break;
 		case "Clear all results":
 			clearSelected();
@@ -1757,19 +1765,19 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			break;
 		case "Is connected?":
 			StdDraw.setPenColor(Color.magenta);
-			StdDraw.textLeft(Xmin+5,Ymin+5,"the graph is " + (algo.isConnected() ? "connected":"not connected"));
+			JOptionPane.showMessageDialog(null,"the graph is " + (algo.isConnected() ? "connected":"not connected"));
 			break;
 		case "Shortest Path dist":
 			if(keys.size() != 2) {
-				System.out.println("you must choose 2 vertexs");
+				JOptionPane.showMessageDialog(null,"you must choose 2 vertexs");
 			}
 			else {
 				StdDraw.setPenColor(Color.magenta);
 				double round = algo.shortestPathDist((int)keys.toArray()[0],(int)keys.toArray()[1]);
 				int i=(int) (round*100);
 				round=i/100.0;
-				StdDraw.textRight(Xmax-5,Ymax-5,"the shortest path distance between " +
-						keys.toArray()[0] +" to " + keys.toArray()[1] + " is: " +round);	
+				JOptionPane.showMessageDialog(null,"the shortest path distance between " +
+						keys.toArray()[0] +" to " + keys.toArray()[1] + " is: " +round);
 			}
 			keys.clear();
 			clearSelected();
@@ -1777,12 +1785,12 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			break;
 		case "Shortest path":
 			if(keys.size() != 2) {
-				System.out.println("you must choose 2 vertexs");
+				JOptionPane.showMessageDialog(null,"you must choose 2 vertexs");
 				keys.clear();
 				clearSelected();
 				paint(null);
 			}
-			else {				
+			else {
 				List<node_data> result = algo.shortestPath((int)keys.toArray()[0],(int)keys.toArray()[1]);
 				if(result != null) {
 					for (int i = 1; i < result.size(); i++) {
@@ -1795,7 +1803,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					paint(null);
 				}
 				else {
-					System.out.println("there is no path between the two vertexs");
+					JOptionPane.showMessageDialog(null,"there is no path between the two vertexs");
 				}
 				keys.clear();
 				clearSelected();
@@ -1815,25 +1823,47 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				}
 				paint(null);
 			}
-			else { 
-				System.out.println("there is no path that can go between all those verteces");
+			else {
+				JOptionPane.showMessageDialog(null,"there is no path that can go between all those verteces");
 			}
 			keys.clear();
 			clearSelected();
 			break;
 		case "Add vertex":
-			StdDraw.textRight(Xmax-5,Ymin+5,"just click on the board while you pressing space");
+			JOptionPane.showMessageDialog(null,"just click on the board while you pressing space");
+			break;
+		case "Remove vertex":
+			Object[] tempkeys = keysList();
+			int key = (Integer)JOptionPane.showInputDialog(null, "Pick a vertex to remove:",
+					"Remove vertex", JOptionPane.QUESTION_MESSAGE, null, tempkeys, null);
+			if(algo.myGraph.removeNode(key) != null) {paint(algo.myGraph);}
 			break;
 		case "Add edge":
 			if(keys.size() == 2) {
-				Random r = new Random();
-				algo.myGraph.connect((int)keys.toArray()[0], (int)keys.toArray()[1],r.nextDouble()*100);
+				double w = Double.MAX_VALUE;
+				while(w == Double.MAX_VALUE) {
+					try {
+						w = Double.valueOf(JOptionPane.showInputDialog("enter wight of edge"));
+					}
+					catch (Exception e2) {
+						JOptionPane.showMessageDialog(null,"invalid input");
+					}
+				}
+				algo.myGraph.connect((int)keys.toArray()[0], (int)keys.toArray()[1],w);
 				keys.clear();
 				paint(null);
 			}
 			else {
-				System.out.println("you must choose 2 vertexs");
+				JOptionPane.showMessageDialog(null,"you must choose 2 vertexs");
 			}
+			break;
+		case "Remove edge":
+			Object[] tempkeys1 = keysList();
+			int src = (Integer)JOptionPane.showInputDialog(null, "Pick a src vertex:",
+					"Remove edge", JOptionPane.QUESTION_MESSAGE, null, tempkeys1, null);
+			int dest = (Integer)JOptionPane.showInputDialog(null, "Pick a dest vertex:",
+					"Remove edge", JOptionPane.QUESTION_MESSAGE, null, tempkeys1, null);
+			if(algo.myGraph.removeEdge(src, dest) != null) {paint(algo.myGraph);}
 			break;
 		case "New graph":
 			if(algo.myGraph instanceof DGraph) {
@@ -1843,7 +1873,15 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			break;
 		}
 	}
-
+	private Object[] keysList() {
+		Object[] keys = new Object[algo.myGraph.nodeSize()];
+		int i = 0;
+		for (Iterator<node_data> iterator = algo.myGraph.getV().iterator(); iterator.hasNext();) {
+			node_data v = (node_data) iterator.next();
+			keys[i++] = v.getKey();
+		}
+		return keys;
+	}
 
 	private static void clearSelected() {
 		for (Iterator<node_data> iterator = algo.myGraph.getV().iterator(); iterator.hasNext();) {
@@ -2202,5 +2240,5 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 }
 
 
-//Copyright © 2000–2017, Robert Sedgewick and Kevin Wayne. 
+//Copyright © 2000–2017, Robert Sedgewick and Kevin Wayne.
 //Last updated: Mon Aug 27 16:43:47 EDT 2018.

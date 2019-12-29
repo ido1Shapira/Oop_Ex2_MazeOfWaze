@@ -39,27 +39,18 @@ public class idoTest {
 		g.addNode(v2);
 		g.addNode(v3);
 		g.addNode(v4);
-	//	g.addNode(v5);
+		g.addNode(v5);
 		g.connect(v1.getKey(), v2.getKey(), 10);
 		g.connect(v2.getKey(), v3.getKey(), 15);
 		g.connect(v3.getKey(), v1.getKey(), 20);
 		g.connect(v2.getKey(), v4.getKey(), 10);
 		g.connect(v4.getKey(), v5.getKey(), 10);
-//		g.connect(v5.getKey(), v2.getKey(), 15);
-//		g.connect(v4.getKey(), v1.getKey(), 20);
-//		g.connect(v5.getKey(), v1.getKey(), 10);
+		g.connect(v5.getKey(), v2.getKey(), 15);
+		g.connect(v4.getKey(), v1.getKey(), 20);
+		g.connect(v5.getKey(), v1.getKey(), 10);
 		StdDraw.paint(g);
 		Graph_Algo al= new Graph_Algo();
 		al.init(g);
-		ArrayList<Integer> targets =new ArrayList<Integer>();
-		targets.add(1);
-		targets.add(2);
-		targets.add(1);
-		targets.add(2);
-		System.out.println(targets.size());
-		System.out.println(al.TSP(targets));	
-		System.out.println(al.shortestPathDist(1, 1));
-		System.out.println(al.shortestPath(1, 1));
 		System.out.println(al.isConnected());
 	}
 

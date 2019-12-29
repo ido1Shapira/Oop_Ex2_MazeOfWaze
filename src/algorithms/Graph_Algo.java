@@ -28,7 +28,8 @@ public class Graph_Algo implements graph_algorithms{
 	private HashMap<Integer,HashSet<Integer>> vertexToNeighbors; // v1--->V
 	private HashMap<Integer,HashSet<Integer>> NeighborsToVertex; // V--->v1
 	/**
-	 * initiate a graph into graph-algo object
+	 * initiate the graph given into graph-algo object
+	 * (NOT A DEEP COPY)- gets an actual pointer to graph g
 	 * in addition adds 2 new fields to help control the graph.
 	 * vertexToNeighbors- represents the connection between a vertex and his "kids"-
 	 *  (all the vertices that end an edge that starts with the main vertex)
@@ -135,13 +136,13 @@ public class Graph_Algo implements graph_algorithms{
 		infoTagWeightReset();		
 		if(!this.checkLegal()) { return false;} //there is a node that is not reachable to any other node
 		int i=1;
+
 		while (this.myGraph.getNode(i) == null) i++; //finds the first node that exists
 		node_data mySrc= this.myGraph.getNode(i);
 		this.tagKids(mySrc);
 		if(this.countTags(1)!=this.myGraph.nodeSize()) { //if not all the vertices are reachable from src
 			return false;
-		}
-		infoTagWeightReset();		
+		}		
 		this.tagDads(mySrc);
 		if(this.countTags(2)!=this.myGraph.nodeSize()) { //if not all the vertices can reach to src
 			return false;
@@ -473,90 +474,3 @@ public class Graph_Algo implements graph_algorithms{
 		return toreturn;
 	}
 }
-
-//public double [] [] drawThisGraphTable () {
-//	graph dg= (graph)this.myGraph;
-//	int i=0;
-//	int j=0;
-//	int n= dg.nodeSize();
-//	node_data [] nodesByOrder= new node_data[n];
-//	double [][] table = new double[n][n];
-//	for (Iterator<node_data> iterator = dg.getV().iterator(); iterator.hasNext();) {
-//		node_data out = (node_data) iterator.next();
-//		nodesByOrder[i]=out;
-//		j=0;
-//		for (Iterator<node_data> it = dg.getV().iterator(); it.hasNext();) {
-//			node_data in = (node_data) it.next();
-//			table[i][j]=this.shortestPathDist(out.getKey(), in.getKey());
-//			j++;
-//		}
-//		i++;
-//	}
-//	for (int a = 0; a < n; a++) {
-//		for (int b = 0; b < n; b++) {
-//			System.out.print(table[a][b] + "\t \t");
-//		}
-//		System.out.println();
-//	}
-//	return table;
-//}
-
-
-//public TSPObj mytsp (ArrayList<node_data> unvisited,  double cost, int currPosKey, String tillNow) {
-//	if(unvisited.size()==1) {
-//		String s=tillNow+" "+this.ShortestPathString(currPosKey, unvisited.get(0).getKey());
-//		double d= cost+this.shortestPathDist(currPosKey, unvisited.get(0).getKey());
-//		TSPObj ans = new TSPObj(d, s);
-//		return ans;
-//	}
-//	else {
-//		TSPObj ans= new TSPObj(Integer.MAX_VALUE, "");
-//		for (Iterator iterator = unvisited.iterator(); iterator.hasNext();) {
-//			node_data nodeToGo = (node_data) iterator.next();
-//			ArrayList<node_data> listcopy=new ArrayList<node_data>();
-//			listcopy = (ArrayList<node_data>) unvisited.clone();
-//			listcopy.remove(nodeToGo);
-//			int nodeToGoKey= nodeToGo.getKey();
-//			TSPObj currAns= this.mytsp(listcopy, 
-//					cost+this.shortestPathDist(currPosKey, nodeToGoKey),nodeToGoKey,
-//					tillNow+" "+this.ShortestPathString(currPosKey, nodeToGoKey));
-//			if(currAns.getWeight()<ans.getWeight())
-//				ans=currAns;
-//		}
-//		return ans;
-//	}
-//}
-//
-//
-//@Override
-//public List<node_data> MostAccurateTSP(List<Integer> targets) {
-//	ArrayList <node_data> targetNodes= new ArrayList<node_data>();
-//	for (Iterator it = targets.iterator(); it.hasNext();) {	//Shallow copy from key list to node list
-//		Integer i= (Integer) it.next();
-//		targetNodes.add(this.myGraph.getNode(i));
-//	}
-//	TSPObj ans= new TSPObj(Integer.MAX_VALUE, "");
-//	for (Iterator iterator = targetNodes.iterator(); iterator.hasNext();) {
-//		node_data start = (node_data) iterator.next();
-//		ArrayList<node_data> listcopy= new ArrayList<node_data>();
-//		listcopy=(ArrayList<node_data>) targetNodes.clone();
-//		listcopy.remove(start);
-//		TSPObj currAns= this.mytsp(listcopy, 0, start.getKey(), ""+start.getKey());
-//		if(currAns.getWeight()<ans.getWeight())
-//			ans=currAns;
-//	}
-//	System.out.println(ans.getPath());
-//	System.out.println(ans.getWeight());
-//	if(ans.getWeight()>=Integer.MAX_VALUE)
-//		return null;
-//	return this.string2list(ans.getPath());
-//}
-//public String ShortestPathString(int src, int dest) {//gets the string of keys
-////we need to go from src to dest, not including src
-//this.shortPathGraph(src);
-//String path = this.myGraph.getNode(dest).getInfo();
-//String[] split= path.split(" ", 2);
-//if(split.length==1)
-//	return "";
-//return split[1];
-//}
