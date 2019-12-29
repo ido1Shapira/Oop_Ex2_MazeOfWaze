@@ -35,6 +35,7 @@ public class Graph_Algo implements graph_algorithms{
 	 *  (all the vertices that end an edge that starts with the main vertex)
 	 *  NeighborsToVertex- represents the connection between a vertex and his "dads"-
 	 *  (all the vertices that start an edge that ends with the main vertex)
+	 *  @param g the graph to insert
 	 */
 	@Override
 	public void init(graph g) {
@@ -74,6 +75,8 @@ public class Graph_Algo implements graph_algorithms{
 	}
 	/**
 	 * initiate a graph from a file into graph-algo object 
+	 * uses init(graph) ^ the method above
+	 * @param file_name the file with the graph's info
 	 */
 	@Override
 	public void init(String file_name) {
@@ -96,6 +99,7 @@ public class Graph_Algo implements graph_algorithms{
 	}
 	/**
 	 * save the graph field from this graph-algo object to a file
+	 * @param file_name the file to save our graph info to
 	 */
 	@Override
 	public void save(String file_name) {
@@ -114,7 +118,7 @@ public class Graph_Algo implements graph_algorithms{
 		}
 	}
 	/**
-	 * returns a deep copy of this object's graph
+	 * @return a deep copy of this object's graph- save the graph to a file and initiate it from the file 
 	 */
 	@Override
 	public graph copy() {
@@ -128,15 +132,17 @@ public class Graph_Algo implements graph_algorithms{
 		return ga.myGraph;
 	}
 	/**
-	 * returns true if and only if (iff) there is a valid path from EVREY node to each other node in this graph
+	 * Checks whether this graph is connected or not
+	 * a connected graph means there is a valid path from EVREY node to each other node in this graph
+	 * returns true if and only if (iff) the graph is connected
 	 * 
 	 */
 	@Override
 	public boolean isConnected() {
+		if(this.myGraph.getV().size()==1) return true;
 		infoTagWeightReset();		
-		if(!this.checkLegal()) { return false;} //there is a node that is not reachable to any other node
+		if(!this.checkLegal())  return false; //there is a node that is not reachable to any other node
 		int i=1;
-
 		while (this.myGraph.getNode(i) == null) i++; //finds the first node that exists
 		node_data mySrc= this.myGraph.getNode(i);
 		this.tagKids(mySrc);
@@ -192,8 +198,8 @@ public class Graph_Algo implements graph_algorithms{
 		return count;
 	}
 	/**
-	 * pre-testing for isConnected 
-	 * @return true iff every vertex has kids and dads- 
+	 * pretesting for isConnected 
+	 * @return true iff every vertex has kids and dads (at least one)
 	 * which means it can reach another vertex and can be reached from another vertex 
 	 */
 	private boolean checkLegal() {
@@ -223,7 +229,8 @@ public class Graph_Algo implements graph_algorithms{
 	 * Initiate all the vertices's weight to their distance from src node
 	 * and all the vertices info to a string represents their path from src
 	 * set tag to 1 if we finished with this vertex
-	 * based on diaxtra algorithm 
+	 * based on Dijkstra's algorithm
+	 * https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm 
 	 * @param src the node we start from
 	 */
 	private void shortPathGraph(int src) {
@@ -257,7 +264,7 @@ public class Graph_Algo implements graph_algorithms{
 	/**
 	 * finds the vertex which its weight is minimum
 	 * @param hashNotVisited the hash-map we search in
-	 * @return the node most light
+	 * @return The least weighted node
 	 */
 	private node_data findMin (HashMap<Integer, node_data> hashNotVisited) {
 		node_data min=new Vertex(new Point3D(0,0,0), Integer.MAX_VALUE, Integer.MAX_VALUE);

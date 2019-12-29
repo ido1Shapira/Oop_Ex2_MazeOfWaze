@@ -39,7 +39,6 @@ public class DGraph implements graph, Serializable{
 			return null;
 		}
 	}
-
 	/**
 	 * return the data of the edge (src,dest), null if none.
 	 * Note: this method should run in O(1) time.
@@ -55,9 +54,7 @@ public class DGraph implements graph, Serializable{
 		catch(Exception e) {
 			return null;
 		}
-		
 	}
-
 	/**
 	 * add a new node to the graph with the given node_data.
 	 * Note: this method should run in O(1) time.
@@ -92,9 +89,7 @@ public class DGraph implements graph, Serializable{
 			this.idToEdge.put(src,new HashMap<Integer,edge_data>());	
 			this.idToEdge.get(src).put(dest, new Edge(src,dest,w));
 			this.edgeNum++;
-
 		}
-
 		this.mc++;
 	}
 	/**
@@ -126,7 +121,7 @@ public class DGraph implements graph, Serializable{
 	 * @param key
 	 */
 	@Override
-	public node_data removeNode(int key) {///////////////////////////fix me!!!!
+	public node_data removeNode(int key) {
 		node_data nodeToRemove = this.getNode(key);
 		if(nodeToRemove != null) {
 			for (Iterator<node_data> iterator = this.getV().iterator(); iterator.hasNext();) {
@@ -154,12 +149,9 @@ public class DGraph implements graph, Serializable{
 	public edge_data removeEdge(int src, int dest) {
 		edge_data edgeToRemove = this.getEdge(src, dest);
 		if(edgeToRemove != null) {
-//			if(this.idToEdge.get(src).remove(dest)!=null)
 			this.idToEdge.get(src).remove(dest);
 			this.edgeNum-=1;
 			this.mc++;
-//			if(this.idToEdge.get(src).size()==0)
-//				this.idToEdge.remove(src);
 		}
 		return edgeToRemove;
 	}
