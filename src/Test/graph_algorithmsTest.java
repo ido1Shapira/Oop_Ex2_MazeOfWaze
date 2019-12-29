@@ -1,21 +1,15 @@
 package Test;
 
 import static org.junit.Assert.*;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.Test;
-
 import algorithms.Graph_Algo;
 import dataStructure.DGraph;
 import dataStructure.Vertex;
 import dataStructure.graph;
 import dataStructure.node_data;
 import utils.Point3D;
-import utils.StdDraw;
-
 public class graph_algorithmsTest {
 
 	@Test
@@ -44,7 +38,6 @@ public class graph_algorithmsTest {
 		g.addNode(v1);
 		Graph_Algo al= new Graph_Algo();
 		al.init(g);
-		Graph_Algo al2= new Graph_Algo();
 		g2 = al.copy();
 		g2.addNode(v2);
 		g2.connect(v1.getKey(), v2.getKey(), 10);
