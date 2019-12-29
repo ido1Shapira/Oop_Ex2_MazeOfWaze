@@ -138,20 +138,20 @@ public class Graph_Algo implements graph_algorithms{
 		while (this.myGraph.getNode(i) == null) i++; //finds the first node that exists
 		node_data mySrc= this.myGraph.getNode(i);
 		this.tagKids(mySrc);
-		if(this.countTags()!=this.myGraph.nodeSize()) { //if not all the vertices are reachable from src
+		if(this.countTags(1)!=this.myGraph.nodeSize()) { //if not all the vertices are reachable from src
 			return false;
 		}
 		infoTagWeightReset();		
 		this.tagDads(mySrc);
-		if(this.countTags()!=this.myGraph.nodeSize()) { //if not all the vertices can reach to src
+		if(this.countTags(2)!=this.myGraph.nodeSize()) { //if not all the vertices can reach to src
 			return false;
 		}
 		return true;
 	}
-/**
- * tags all of src's kids (as defined above)
- * @param src the vertex to start from
- */
+	/**
+	 * tags all of src's kids (as defined above)
+	 * @param src the vertex to start from
+	 */
 	private void tagKids(node_data src) {
 		src.setTag(1);
 		for (Iterator<Integer> iterator = this.vertexToNeighbors.get(src.getKey()).iterator(); iterator.hasNext();) {
@@ -167,26 +167,34 @@ public class Graph_Algo implements graph_algorithms{
 	 * @param src the vertex to start from
 	 */
 	private void tagDads(node_data src) {
-		src.setTag(1);
+		src.setTag(2);
 		for (Iterator<Integer> iterator = this.NeighborsToVertex.get(src.getKey()).iterator(); iterator.hasNext();) {
 			Integer dadKey = (Integer) iterator.next();
 			node_data dad= this.myGraph.getNode(dadKey);
-			if(dad.getTag()==0) {
+			if(dad.getTag()==1) {
 				this.tagDads(dad);
 			}
 		}
 	}
-
-	private int countTags() {
+	/**
+	 * counts how many vertices's tag is =i
+	 * @param i the tag we now counting
+	 * @return the number of vertices with i tag
+	 */
+	private int countTags(int i) {
 		int count=0;
 		for (Iterator<node_data> iterator = this.myGraph.getV().iterator(); iterator.hasNext();) {
 			node_data current = (node_data) iterator.next();
-			if(current.getTag()!=0)
+			if(current.getTag()==i)
 				count++;
 		}
 		return count;
 	}
-
+	/**
+	 * pre-testing for isConnected 
+	 * @return true iff every vertex has kids and dads- 
+	 * which means it can reach another vertex and can be reached from another vertex 
+	 */
 	private boolean checkLegal() {
 		int count = 0;
 		for (Iterator<node_data> it = this.myGraph.getV().iterator(); it.hasNext();) {
@@ -199,7 +207,9 @@ public class Graph_Algo implements graph_algorithms{
 		if(count == 0) return true;
 		return false;
 	}
-
+	/**
+	 * reset all the tags to 0, the info to an empty string and the weights to 0
+	 */
 	private void infoTagWeightReset() {
 		for (Iterator<node_data> init = this.myGraph.getV().iterator(); init.hasNext();) {
 			node_data v = (node_data) init.next();
@@ -208,6 +218,13 @@ public class Graph_Algo implements graph_algorithms{
 			v.setWeight(Integer.MAX_VALUE-1);
 		}
 	}
+	/**
+	 * Initiate all the vertices's weight to their distance from src node
+	 * and all the vertices info to a string represents their path from src
+	 * set tag to 1 if we finished with this vertex
+	 * based on diaxtra algorithm 
+	 * @param src the node we start from
+	 */
 	private void shortPathGraph(int src) {
 		infoTagWeightReset();
 		this.myGraph.getNode(src).setTag(0);// starting point
@@ -236,7 +253,11 @@ public class Graph_Algo implements graph_algorithms{
 			current.setTag(1);
 		}
 	}
-
+	/**
+	 * finds the vertex which its weight is minimum
+	 * @param hashNotVisited the hash-map we search in
+	 * @return the node most light
+	 */
 	private node_data findMin (HashMap<Integer, node_data> hashNotVisited) {
 		node_data min=new Vertex(new Point3D(0,0,0), Integer.MAX_VALUE, Integer.MAX_VALUE);
 		for (Iterator <node_data> it = hashNotVisited.values().iterator(); it.hasNext();) {
@@ -246,10 +267,17 @@ public class Graph_Algo implements graph_algorithms{
 		}
 		return min;
 	}
-
+	/**
+	 * Calculate the shortest path distance starting from src and ending with dest
+	 * @param src the node to start from
+	 * @param dest the node to end with
+	 * @return the distance 
+	 */
 	@Override
 	public double shortestPathDist(int src, int dest) {
 		try {
+			if(src==dest && this.myGraph.getNode(src)!=null)
+				return 0;
 			this.shortPathGraph(src);
 			return this.myGraph.getNode(dest).getWeight();	
 		}
@@ -261,9 +289,9 @@ public class Graph_Algo implements graph_algorithms{
 
 	/**
 	 * gets a string of nodes keys and brings back list of those nodes 
-	 * including nodes that are not on the list
-	 * @param path
-	 * @return
+	 * including nodes that are not on the list according to the shortest path between each 2 nodes in the list
+	 * @param path the string of nodes
+	 * @return the list of nodes to visit
 	 */
 	private List<node_data> string2listExtendad (String path){
 		try {
@@ -285,19 +313,33 @@ public class Graph_Algo implements graph_algorithms{
 			return null;
 		}
 	}
-
+	/**
+	 * Calculate the shortest path starting from src and ending with dest
+	 * @param src the node to start from
+	 * @param dest the node to end with
+	 * @return list of nodes which are the shortest path
+	 */
 	@Override
 	public List<node_data> shortestPath(int src, int dest)  {
 		try {
+			if(src==dest) {
+				ArrayList<node_data> list= new ArrayList<node_data>();
+				list.add(this.myGraph.getNode(src));
+				return list;
+			}
 			this.shortPathGraph(src);
 			String path = this.myGraph.getNode(dest).getInfo();
-			return this.string2list(path); //maybe i can change
+			return this.string2list(path);
 		}
 		catch(Exception e) {
 			return null;
 		}
 	}
-
+	/**
+	 * Translates the string of nodes' keys to actual list of nodes
+	 * @param path the string to translate
+	 * @return list of nodes according to the string
+	 */
 	private List<node_data> string2list(String path){ //gets a string of nodes keys and brings back list of those nodes
 		try {
 			String [] pathSplit= path.split(" ");
@@ -312,21 +354,29 @@ public class Graph_Algo implements graph_algorithms{
 			return null;
 		}
 	}
+	/**
+	 * computes a relatively short path which visit each node in the targets List.
+	 * @param targets the nodes to visit
+	 * @return the relatively short path that was found
+	 * 
+	 */
 	public  List<node_data> TSP(List<Integer> targets){
 		int n=targets.size();
 		ArrayList<node_data> nodeList= new ArrayList<node_data>();//same list as targets but with nodes
 		for (Iterator<Integer> iterator = targets.iterator(); iterator.hasNext();) {
 			Integer nodeKey = (Integer) iterator.next();
-			if(this.myGraph.getNode(nodeKey)!=null)
+			node_data currNode=this.myGraph.getNode(nodeKey);
+			if(currNode!=null && currNode.getTag()!=3) {
 				nodeList.add(this.myGraph.getNode(nodeKey));
+				this.myGraph.getNode(nodeKey).setTag(3); //to prevent inserting 2 equal nodes to the table
+			}
 			else {
 				n-=1;
 			}
 		}
-		//int n=targets.size();
 		double [][]table=new double [n][n]; 
 		table=this.drawTable(nodeList);//distance table for only necessary targets
-		String []ans=new String [2]; //answer is splitted to distance and list of keys string
+		String []ans=new String [2]; //answer is split to distance and list of keys string
 		double min= Integer.MAX_VALUE;
 		for (int i = 0; i < n; i++) {
 			String [] curAns=this.TspSub(i, table, nodeList); //starts each time with a different vertex
@@ -343,7 +393,11 @@ public class Graph_Algo implements graph_algorithms{
 			return this.string2listExtendad(ans[1]);
 	}
 
-
+	/**
+	 * define a distance table to all nodes in the nodeList
+	 * @param nodeList list of nodes to insert the table
+	 * @return the table
+	 */
 	private double [] [] drawTable (List<node_data> nodeList) {
 		int i=0;
 		int j=0;
@@ -362,6 +416,7 @@ public class Graph_Algo implements graph_algorithms{
 			}
 			i++;
 		}
+		//prints the table if necessary
 		//		for (int a = 0; a < n; a++) {
 		//			for (int b = 0; b < n; b++) {
 		//				System.out.print(table[a][b] + "\t \t");
@@ -396,13 +451,13 @@ public class Graph_Algo implements graph_algorithms{
 			double min=Integer.MAX_VALUE;
 			int j;
 			int minplace=-1;
-			for ( j = 0; j < n ; j++) { // after iteration table [current][minplace] is selected
+			for ( j = 0; j < n ; j++) { // after iteration - table [current][minplace] is selected
 				if(table[current][j]<=min && nodes[j]==false ) {
 					min=table[current][j];
 					minplace=j;
 				}
 			}
-			if(min==Integer.MAX_VALUE) {
+			if(min==Integer.MAX_VALUE) { //no finite distance is found
 				toreturn[0]=""+Integer.MAX_VALUE;
 				toreturn[1]= nodeskey;
 				return toreturn;
@@ -411,7 +466,7 @@ public class Graph_Algo implements graph_algorithms{
 			ans=ans+" "+minplace;
 			nodeskey=nodeskey+" "+nodesByOrder.get(minplace).getKey();
 			current=minplace;	
-			nodes[minplace]=true;
+			nodes[minplace]=true; //markes this nodes as -already visited
 		}
 		toreturn[0]=""+sum;
 		toreturn[1]= nodeskey;
