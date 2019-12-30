@@ -116,7 +116,8 @@ public class graph_algorithmsTest {
 		if(al.shortestPathDist(v1.getKey(), v2.getKey())!=22)
 			fail("shortest path failed");
 		if(al.shortestPathDist(v2.getKey(), v1.getKey())!=Integer.MAX_VALUE-1)
-			fail("shortest path failed");
+			fail("shortest path failed"); 
+		System.out.println("ERROR massages expected:");
 		if(al.shortestPathDist(1, 5)!=-1)
 			fail("shortest path failed");
 		if(al.shortestPathDist(5, 5)!=-1)

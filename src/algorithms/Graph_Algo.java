@@ -450,7 +450,7 @@ public class Graph_Algo implements graph_algorithms{
 		double sum=0;
 		String nodeskey=""+nodesByOrder.get(src).getKey();
 		boolean [] nodes= new boolean [n];
-		for (int i = 0; i < nodes.length; i++) { //reset array to false
+		for (int i = 0; i < nodes.length; i++) { //reset array to false- all nodes are unvisited
 			nodes[i]=false;
 		}
 		nodes[src]=true;
@@ -474,7 +474,7 @@ public class Graph_Algo implements graph_algorithms{
 			ans=ans+" "+minplace;
 			nodeskey=nodeskey+" "+nodesByOrder.get(minplace).getKey();
 			current=minplace;	
-			nodes[minplace]=true; //markes this nodes as -already visited
+			nodes[minplace]=true; //marks this nodes as visited
 		}
 		toreturn[0]=""+sum;
 		toreturn[1]= nodeskey;
