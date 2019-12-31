@@ -24,6 +24,7 @@ import utils.Point3D;
  *
  */
 public class Graph_Algo implements graph_algorithms{
+	private int mcGraph;
 	public graph myGraph;
 	private HashMap<Integer,HashSet<Integer>> vertexToNeighbors; // v1--->V
 	private HashMap<Integer,HashSet<Integer>> NeighborsToVertex; // V--->v1
@@ -40,6 +41,7 @@ public class Graph_Algo implements graph_algorithms{
 	@Override
 	public void init(graph g) {
 		myGraph = g;
+		this.mcGraph = g.getMC();
 		this.vertexToNeighbors = new HashMap<Integer,HashSet<Integer>>();
 		for (Iterator<node_data> Nodeiter = this.myGraph.getV().iterator(); Nodeiter.hasNext();) {
 			node_data n = (node_data) Nodeiter.next();
@@ -139,6 +141,7 @@ public class Graph_Algo implements graph_algorithms{
 	 */
 	@Override
 	public boolean isConnected() {
+		if(this.mcGraph != this.myGraph.getMC()) this.init(myGraph);
 		if(this.myGraph.getV().size()==1) return true;
 		infoTagWeightReset();		
 		if(!this.checkLegal())  return false; //there is a node that is not reachable to any other node
@@ -283,6 +286,7 @@ public class Graph_Algo implements graph_algorithms{
 	 */
 	@Override
 	public double shortestPathDist(int src, int dest) {
+		if(this.mcGraph != this.myGraph.getMC()) this.init(myGraph);
 		try {
 			if(src==dest && this.myGraph.getNode(src)!=null)
 				return 0;
@@ -329,6 +333,7 @@ public class Graph_Algo implements graph_algorithms{
 	 */
 	@Override
 	public List<node_data> shortestPath(int src, int dest)  {
+		if(this.mcGraph != this.myGraph.getMC()) this.init(myGraph);
 		try {
 			if(src==dest) {
 				ArrayList<node_data> list= new ArrayList<node_data>();
@@ -369,6 +374,7 @@ public class Graph_Algo implements graph_algorithms{
 	 * 
 	 */
 	public  List<node_data> TSP(List<Integer> targets){
+		if(this.mcGraph != this.myGraph.getMC()) this.init(myGraph);
 		int n=targets.size();
 		ArrayList<node_data> nodeList= new ArrayList<node_data>();//same list as targets but with nodes
 		for (Iterator<Integer> iterator = targets.iterator(); iterator.hasNext();) {
