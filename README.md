@@ -56,7 +56,7 @@ Graph_Algo object:
 
 Graph_Algo implements graph_algorithms interface
 
-# main mathods 
+### main mathods 
 
 * init (graph g)- initate the graph given into our object, and defines the 2 additional hashMaps  
 
