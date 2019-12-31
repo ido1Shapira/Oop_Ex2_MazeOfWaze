@@ -29,7 +29,7 @@ DGraph implements graph interface because every directed graph is first of all a
 
 * getV- This method return a pointer (shallow copy) for the collection representing all the nodes in the graph. O(1)
 
-* getE(int srcID)- This method return a pointer (shallow copy) for the collection representing all the edges getting out of the given node (all the edges starting at the given node). 
+* getE(int srcID)- This method return a pointer (shallow copy) for the collection representing all the edges getting out of the given node (all the edges starting at the given node). O(1)
 
 * removeNode (int nodeID)- Delete the node (with the given ID) from the graph -and removes all edges which starts or ends at this node - O(n)
 
