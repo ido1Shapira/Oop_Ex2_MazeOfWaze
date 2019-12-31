@@ -19,15 +19,25 @@ DGraph implements graph interface because every directed graph is first of all a
 
 ### main methods 
 
-*getNode- return the node_data by the node's id-  O(1)
-*getEdge- return the data of the edge (src,dest), null if edge does not exist- O(1)
-*addNode- add a new node to the graph with the given node's data.- O(1)
-*connect- connect an edge with the given weight between node src to node dest. O(1)
-*getV- This method return a pointer (shallow copy) for the collection representing all the nodes in the graph. O(1)
-*getE(int srcID)- This method return a pointer (shallow copy) for the collection representing all the edges getting out of the given node (all the edges starting at the given node). 
-*removeNode (int nodeID)- Delete the node (with the given ID) from the graph -and removes all edges which starts or ends at this node - O(n)
-*removeEdge(int src, int dest)- delete the edge from the graph (the one from src to dest) O(1)
-*nodeSize- return the number of nodes O(1)
-*edgeSize- return the number of edges O(1)
-*getMC- return the number of changes of the graph O(1)
+* getNode- return the node_data by the node's id-  O(1)
+
+* getEdge- return the data of the edge (src,dest), null if edge does not exist- O(1)
+
+* addNode- add a new node to the graph with the given node's data.- O(1)
+
+* connect- connect an edge with the given weight between node src to node dest. O(1)
+
+* getV- This method return a pointer (shallow copy) for the collection representing all the nodes in the graph. O(1)
+
+* getE(int srcID)- This method return a pointer (shallow copy) for the collection representing all the edges getting out of the given node (all the edges starting at the given node). 
+
+* removeNode (int nodeID)- Delete the node (with the given ID) from the graph -and removes all edges which starts or ends at this node - O(n)
+
+* removeEdge(int src, int dest)- delete the edge from the graph (the one from src to dest) O(1)
+
+* nodeSize- return the number of nodes O(1)
+
+* edgeSize- return the number of edges O(1)
+
+* getMC- return the number of changes of the graph O(1)
 
