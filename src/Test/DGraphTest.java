@@ -16,35 +16,39 @@ import utils.Point3D;
 
 public class DGraphTest {
 
-	
+
 	public static DGraph g = new DGraph();
-	public final static int numberOfVertexs = 100000;
-	public final static int numberOfEdge = 100000;
-	public static int seed = 5;
-
-		@Test
-		public void testDGraph() {
-			long startTime = System.currentTimeMillis();
-			Random r = new Random(seed);
-			DGraph g = new DGraph();
-			for(int i = 1; i<=numberOfVertexs;i++) {
-				g.addNode((node_data) new Vertex(new Point3D(r.nextInt(),r.nextInt(),0)));
-			}
-			for(int i = 1; i<=numberOfEdge;i++) {
-				int v1 = r.nextInt(numberOfVertexs) +1;
-				int v2;
-				do {  
-					v2 = r.nextInt(numberOfVertexs) +1;
-				}while(v1 == v2);
-				g.connect(v1, v2, g.getNode(v1).getLocation().distance2D(g.getNode(v2).getLocation()));
-			}
-			long endTime = System.currentTimeMillis();
-
-			System.out.println("That took " + (endTime - startTime) + " milliseconds");
-			
-//			StdDraw.paint(g);
+	public final static int numberOfVertexs = 1000000;
+	public final static int numberOfEdge = 10000000;
+	int i,j;
+	@Test
+	public void testDGraph() {
+		long startTime = System.currentTimeMillis();
+		DGraph g = new DGraph();
+		Point3D p= new Point3D(0,0);
+		for(int l = 1; l<=numberOfVertexs;l++) {
+			g.addNode (new Vertex(p,0));
 		}
-	
+		for( i = 1; i<=numberOfVertexs;i++) {
+			if(i<numberOfVertexs-10) {
+				for(j=1; j<11; j++) 			
+					g.connect(i, i+j, 10);
+				}
+			else {
+				for(j=1; j<11; j++) 
+					g.connect(i, i-j, 10);
+			}
+		}
+		long endTime = System.currentTimeMillis();
+		System.out.println("That took " + (endTime - startTime) + " milliseconds");
+		System.out.println("number of edges= "+g.edgeSize());
+		System.out.println("number of nodes= "+g.nodeSize());
+//		Graph_Algo al= new Graph_Algo();
+//		al.init(g);
+//		System.out.println("That took " + (System.currentTimeMillis()-endTime ) + " milliseconds");
+
+	}
+
 	@Test
 	public void testAddNode() {
 		DGraph dg= new DGraph();
@@ -88,7 +92,7 @@ public class DGraphTest {
 		if(e12!=null)
 			fail("testConnect failed");
 	}
-	
+
 	@Test
 	public void testIsConnected() {
 		DGraph dg= new DGraph();
@@ -271,5 +275,5 @@ public class DGraphTest {
 		if(dg.getMC()==oldMC)
 			fail("get MC failed");
 	}
-	
+
 }
