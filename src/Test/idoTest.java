@@ -6,6 +6,7 @@ import algorithms.Graph_Algo;
 import dataStructure.DGraph;
 import dataStructure.Vertex;
 import dataStructure.node_data;
+import gui.Graph_GUI;
 import utils.Point3D;
 import utils.StdDraw;
 
@@ -42,7 +43,7 @@ public class idoTest {
 		g.connect(v5.getKey(), v2.getKey(), 15);
 		g.connect(v4.getKey(), v1.getKey(), 20);
 		g.connect(v5.getKey(), v1.getKey(), 10);
-		StdDraw.paint(g);
+		Graph_GUI gui = new Graph_GUI(g);
 		Graph_Algo al= new Graph_Algo();
 		al.init(g);
 		System.out.println("true= "+al.isConnected());
@@ -71,7 +72,7 @@ public class idoTest {
 		g.connect(v5.getKey(), v1.getKey(), 20);
 		Graph_Algo al=new Graph_Algo();
 		al.init(g);
-		StdDraw.paint(g);
+		Graph_GUI gui = new Graph_GUI(g);
 		System.out.println("false= " +al.isConnected());
 		System.out.println("path 1-4 =(15) "+al.shortestPathDist(1, 4));
 		System.out.println("object address trip (3 expected) "+al.shortestPath(1, 4));
@@ -111,7 +112,7 @@ public class idoTest {
 		al1.init("edut");
 		g.removeNode(1);
 		System.out.println("edge size(2)= "+g.edgeSize());
-		StdDraw.paint(g);
+		Graph_GUI gui = new Graph_GUI(g);
 	}
 	private static void edutesting() {
 		DGraph g = new DGraph();
@@ -129,7 +130,7 @@ public class idoTest {
 		g.removeNode(1);
 		Graph_Algo ga=new Graph_Algo();
 		ga.init(g);
-		StdDraw.paint(g);
+		Graph_GUI gui = new Graph_GUI(g);
 		System.out.println("conncted true expected"+ga.isConnected());
 		System.out.println("shortest path null expoected+ERROR massage "+ ga.shortestPath(1, 2));
 		System.out.println("8 expected= "+ga.shortestPathDist(2, 3));		
@@ -152,7 +153,7 @@ public class idoTest {
 		}
 		long endTime = System.currentTimeMillis();
 		System.out.println("That took " + (endTime - startTime) + " milliseconds");
-		StdDraw.paint(g);
+		Graph_GUI gui = new Graph_GUI(g);
 		Graph_Algo al= new Graph_Algo();
 		al.init(g);
 		ArrayList<Integer> targets= new ArrayList<Integer>();
@@ -190,11 +191,11 @@ public class idoTest {
 		dg.connect(v4.getKey(), v5.getKey(), 10);
 		Graph_Algo al= new Graph_Algo();
 		al.init(dg);
-		StdDraw.paint(dg);
+		Graph_GUI gui = new Graph_GUI(dg);
 		dg.connect(v4.getKey(), v5.getKey(), 10);
 		System.out.println("true expected= "+al.isConnected());
 		al.init(dg);
-		StdDraw.paint(dg);
+		Graph_GUI gui1 = new Graph_GUI(dg);
 	}
 //	private static void removeNodeTest(DGraph g, int key) {
 //		int sizebefore = g.nodeSize();
