@@ -23,6 +23,7 @@ public class DGraph implements graph, Serializable{
 		this.id =0;
 		this.idToVertex = new HashMap<Integer,node_data>();
 		this.idToEdge = new HashMap<Integer,HashMap<Integer,edge_data>>();
+		this.mc = 0;
 		this.edgeNum=0;
 	}
 	/**
@@ -77,9 +78,10 @@ public class DGraph implements graph, Serializable{
 	 * @param w - positive weight representing the cost (aka time, price, etc) between src-->dest.
 	 */
 	@Override
-	public void connect(int src, int dest, double w) {	
+	public void connect(int src, int dest, double w) {
 		if(this.getNode(src)==null || this.getNode(dest)==null || w<0)
 			return;
+		int sizeBefore = this.edgeSize();
 		try {
 			if(this.idToEdge.get(src).get(dest)==null)
 				this.edgeNum++;
@@ -90,7 +92,7 @@ public class DGraph implements graph, Serializable{
 			this.idToEdge.get(src).put(dest, new Edge(src,dest,w));
 			this.edgeNum++;
 		}
-		this.mc++;
+		if(this.edgeSize() -1 == sizeBefore) {this.mc++;}
 	}
 	/**
 	 * This method return a pointer (shallow copy) for the
