@@ -1,19 +1,20 @@
+
 # assignment 2
 ## DGraph class
 
 our class represents a directed graph who is made of nodes and edges
-every edge has a source node and a destenation node, which means this edge creates a path from source to destenation
-(the oposite path may not exist)
+every edge has a source node and a destination node, which means this edge creates a path from source to destination
+(the opposite path may not exist)
 every edge has a weight filed that represents the "cost" of using this edge during a path, 
-we would like to think about this cost as the time it takes to get from source node to destenation node.
-thats why nonpositve weight is not possible.
+we would like to think about this cost as the time it takes to get from source node to destination node.
+that is why nonsensitive weight is not possible.
 DGraph object:
 * int id- represents the next available id for a node to be added.
-* HashMap<Integer,node_data> idToVertex- a hash that gets an id of a node and connects it to the actual node who has that id.
+* HashMap <Integer,node_data> idToVertex- a hash that gets an id of a node and connects it to the actual node who has that id.
 * HashMap<Integer,HashMap<Integer,edge_data>>- a hashMap that represents the edges in the graph. main key is the id of the source node
 values for a specific key is a hashMap where the keys are the id of all the nodes that has a direct edge that starts with this specific key and ends within them  
 * int edgeNum- the number of edges in the graph
-* int mc- mode counter- counts all the changes in thte graph 
+* int mc- mode counter- counts all the changes in the graph 
 
 DGraph implements graph interface because every directed graph is first of all a graph.
 
@@ -48,7 +49,7 @@ DGraph implements graph interface because every directed graph is first of all a
 this class goal is to activate some well known algorithms on a graph.
 
 Graph_Algo object:
-* graph- a shallo copy of the graph to activate the algorithms on. if the graph changes the Graph_Algo changes as well
+* graph- a shallow copy of the graph to activate the algorithms on. if the graph changes the Graph_Algo changes as well
 
 *	HashMap<Integer,HashSet<Integer>> vertexToNeighbors- represents the connection between a vertex and his "kids"-(all the vertices that end an edge that starts with the main vertex)
 
@@ -56,9 +57,9 @@ Graph_Algo object:
 
 Graph_Algo implements graph_algorithms interface
 
-### main mathods 
+### main methods 
 
-* init (graph g)- initate the graph given into our object, and defines the 2 additional hashMaps  
+* init (graph g)- initiate the graph given into our object, and defines the 2 additional hashMaps  
 
 * init(String file_name)- initiate a graph from a file into graph-algo object, and defines the 2 additional hashMaps  
 
@@ -68,7 +69,7 @@ Graph_Algo implements graph_algorithms interface
 
 * isConnected- Checks whether this graph is connected or not a connected graph means there is a valid path from EVREY node to each other node in this graph returns true if and only if (iff) the graph is connected
 
-* shortPathGraph(int src)- Initiate all the vertices's weight to their distance from src node and all the vertices info to a string represents their path from src. based on Dijkstra's algorith.
+* shortPathGraph(int src)- Initiate all the vertices's weight to their distance from src node and all the vertices info to a string represents their path from src. based on Dijkstra's algorithm.
 
 * shortestPathDist(int src, int dest)- Calculate the shortest path distance starting from src and ending with dest
 
@@ -91,4 +92,4 @@ we matched StdDraw to support a graph GUI window with several options:
 
 3. run some algorithm on the graph. (isConnected, shortestPath , TSP)
 
-4. add/remove vertex, add/remove edge, create new graph , clear selected vertexs
+4. add/remove vertex, add/remove edge, create new graph , clear selected vertices
