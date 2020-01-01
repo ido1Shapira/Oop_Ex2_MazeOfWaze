@@ -78,9 +78,17 @@ Graph_Algo implements graph_algorithms interface
 
 ## GUI:
 we used StdDraw class that Princeton University created.
-here the original class: https://introcs.cs.princeton.edu/java/stdlib/StdDraw.java.html
-we match StdDraw to support a graph GUI window with the several options:
+
+here is the original class:
+
+https://introcs.cs.princeton.edu/java/stdlib/StdDraw.java.html
+
+we matched StdDraw to support a graph GUI window with several options:
+
 1. save the graph as a photo or as a Serializable file. 
+
 2. load a graph from the file system.
+
 3. run some algorithm on the graph. (isConnected, shortestPath , TSP)
+
 4. add/remove vertex, add/remove edge, create new graph , clear selected vertexs
