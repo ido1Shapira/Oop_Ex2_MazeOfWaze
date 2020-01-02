@@ -154,8 +154,8 @@ public class Graph_Algo implements graph_algorithms{
 	@Override
 	public boolean isConnected() {
 		if(this.myGraph == null) new RuntimeException("the graph is null");
+		if(this.myGraph.nodeSize() <= 1) return true;
 		if(this.mcGraph != this.myGraph.getMC()) this.init(myGraph);
-		if(this.myGraph.getV().size()==1) return true;
 		infoTagWeightReset();		
 		if(!this.checkLegal())  return false; //there is a node that is not reachable to any other node
 		int i=1;
