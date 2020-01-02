@@ -22,37 +22,7 @@ public class idoTest {
 //		save_init_test();
 //		idotesting();
 //		connectest();
-//	   	emptyGraphTest();
-	   	casesTest();
-	}
-	private static void casesTest() {
-		DGraph g = new DGraph();
-		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
-		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
-		Vertex v3=new Vertex(new Point3D(10,20,1),3,30);
-		Vertex v4=new Vertex(new Point3D(7,65,1),4,40);
-		Vertex v5=new Vertex(new Point3D(80,10,1),5,50);
-		g.addNode(v1);
-		g.addNode(v2);
-		g.addNode(v3);
-		g.addNode(v4);
-		g.addNode(v5);
-		g.connect(v1.getKey(), v2.getKey(), 10);
-		g.connect(v2.getKey(), v3.getKey(), 15);
-		g.connect(v1.getKey(), v1.getKey(), 20);
-//		Graph_GUI gui = new Graph_GUI(g);
-		System.out.println(g.getEdge(1,2).getWeight());
-		System.out.println(g.edgeSize());
-		g.connect(v1.getKey(), v2.getKey(), 20);
-		System.out.println(g.getEdge(1,2).getWeight());
-		System.out.println(g.edgeSize());
-		g.addNode(v1);
-		System.out.println(g.getNode(1).getWeight());
-		System.out.println(g.nodeSize());
-
-
-
-		
+	   	emptyGraphTest();
 	}
 	private static void emptyGraphTest() {
 		DGraph g = new DGraph();		

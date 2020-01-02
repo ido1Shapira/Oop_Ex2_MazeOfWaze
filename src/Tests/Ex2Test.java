@@ -55,8 +55,13 @@ class Ex2Test {
 		graph ans = new DGraph();
 		return ans;
 	}
-	boolean drawGraph(graph g) { 
+	boolean drawGraph(graph g) {
 		Graph_GUI gui = new Graph_GUI(g);
+		Thread t1 = new Thread(gui);
+		t1.start();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {e.printStackTrace();}
 		return true;
 		
 	}

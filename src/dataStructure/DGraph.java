@@ -137,6 +137,7 @@ public class DGraph implements graph, Serializable{
 			this.idToEdge.remove(key);
 			this.mc++;
 		}
+		
 		return nodeToRemove;
 	}
 	/**

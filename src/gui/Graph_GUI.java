@@ -9,14 +9,34 @@ import dataStructure.node_data;
 import utils.Point3D;
 import utils.StdDraw;
 
-public class Graph_GUI {
+public class Graph_GUI implements Runnable {
+	private graph g;
+	private int mc;
 	public Graph_GUI() {
-		StdDraw.paint(null);
+		this.g = new DGraph();
+		this.mc = 0;
+		StdDraw.paint(g);
 	}
 	public Graph_GUI(graph g) {
+		this.g = g;
+		this.mc = g.getMC();
 		StdDraw.paint(g);
 	} 
-
+	@Override
+	public void run() {
+		while(true) {
+			if(this.mc != this.g.getMC()) {
+				this.mc = this.g.getMC();
+				synchronized(this) {
+					StdDraw.paint(g);
+				}
+			}
+	        try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {e.printStackTrace();}
+		}
+	}
+	
 	/**
 	 * Test client.
 	 *

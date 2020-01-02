@@ -2150,8 +2150,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	static int Xmin,Xmax,Ymin,Ymax;
-
+	static boolean firstPaint = true;
 	public static void paint(graph g2) {
+		if(firstPaint) { StdDraw.setCanvasSize(600,600); firstPaint = false;}
 		if(g2 != null) {
 			StdDraw.clear();
 			StdDraw.algo = new Graph_Algo(g2);
@@ -2173,7 +2174,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				Ymax += 15;
 			}
 			StdDraw.clearSelected();
-			StdDraw.setCanvasSize(600,600);
 			try {
 				StdDraw.setXscale(Xmin,Xmax);
 				StdDraw.setYscale(Ymin,Ymax);
