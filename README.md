@@ -55,6 +55,8 @@ Graph_Algo object:
 
 *	HashMap<Integer,HashSet<Integer>> NeighborsToVertex- represents the connection between a vertex and his "dads"- (all the vertices that start an edge that ends with the main vertex)
 
+Integer.MAX_VALUE = infinity.
+
 Graph_Algo implements graph_algorithms interface
 
 ### main methods 
