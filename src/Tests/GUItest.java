@@ -1,7 +1,10 @@
 package Tests;
 
+import java.util.Random;
+
 import dataStructure.DGraph;
 import dataStructure.Vertex;
+import dataStructure.node_data;
 import gui.Graph_GUI;
 import utils.Point3D;
 
@@ -26,16 +29,26 @@ public class GUItest {
 
 		
 		Graph_GUI gui = new Graph_GUI(g);
-		Thread t1 = new Thread(gui);
-		t1.start();
-        Thread.sleep(2000);
+		
+        Thread.sleep(1000);
         
-		g.connect(v1.getKey(), v4.getKey(), 20);
-		g.addNode(v5);
-		g.connect(v5.getKey(), v4.getKey(), 20);
-		g.connect(v4.getKey(), v5.getKey(), 20);
-
-
+        final int numberOfVertexs = 10;
+        final int numberOfEdge = 10;
+        final int seed = 1;
+		Random r = new Random(seed);
+        for(int i = 1; i<=numberOfVertexs;i++) {
+			g.addNode((node_data) new Vertex(new Point3D(r.nextInt(300),r.nextInt(300),0)));
+//	        Thread.sleep(100);
+        }
+		for(int i = 1; i<=numberOfEdge;i++) {
+			int keyv1 = r.nextInt(numberOfVertexs) +1;
+			int keyv2;
+			do {  
+				keyv2 = r.nextInt(numberOfVertexs) +1;
+			}while(v1 == v2);
+			g.connect(keyv1, keyv2, g.getNode(keyv1).getLocation().distance2D(g.getNode(keyv2).getLocation()));
+//	        Thread.sleep(100);
+		}
 	}
 
 }

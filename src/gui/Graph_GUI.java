@@ -8,42 +8,58 @@ import dataStructure.graph;
 import dataStructure.node_data;
 import utils.Point3D;
 import utils.StdDraw;
-
+/**
+ * Every Graph-GUI object is a thread
+ * that repaint the graph every 0.5 second if necessary.
+ * the tread checkes if there is a need to repaint
+ * the graph by chacking the mc field within the graph.
+ */
 public class Graph_GUI implements Runnable {
 	private graph g;
 	private int mc;
+	/**
+	 * draw an empty graph
+	 */
 	public Graph_GUI() {
 		this.g = new DGraph();
 		this.mc = 0;
+		Thread toPaint = new Thread(this);
+		toPaint.start();
 		StdDraw.paint(g);
 	}
+	/**
+	 * draw g
+	 * @param g a graph
+	 */
 	public Graph_GUI(graph g) {
 		this.g = g;
 		this.mc = g.getMC();
+		Thread toPaint = new Thread(this);
+		toPaint.start();
 		StdDraw.paint(g);
 	} 
 	@Override
 	public void run() {
 		while(true) {
-			if(this.mc != this.g.getMC()) {
-				this.mc = this.g.getMC();
-				synchronized(this) {
+			synchronized(this) {
+				if(this.mc != this.g.getMC()) {
+					this.mc = this.g.getMC();
 					StdDraw.paint(g);
 				}
 			}
-	        try {
+			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
-	
+
 	/**
 	 * Test client.
 	 *
 	 * @param args the command-line arguments
 	 */
 	public static void main(String[]args) {
-		//draws a random graph with "numberOfVertexs" verdexes and "numberOfEdge" edges on random seed "seed".
+		//draws a random graph with "numberOfVertexs" vertices and "numberOfEdge" edges on random seed "seed".
 
 		/*long startTime = System.currentTimeMillis();*/ //we can check how much time that it took
 		Graph_GUI gui = new Graph_GUI(createRandomGraph(5,15,4));

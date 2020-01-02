@@ -1842,7 +1842,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			Object[] tempkeys = keysList();
 			int key = (Integer)JOptionPane.showInputDialog(null, "Pick a vertex to remove:",
 					"Remove vertex", JOptionPane.QUESTION_MESSAGE, null, tempkeys, null);
-			if(algo.myGraph.removeNode(key) != null) {paint(algo.myGraph);}
+			if(algo.myGraph.removeNode(key) != null && newGraph) {paint(algo.myGraph);}
 			break;
 		case "Add edge":
 			if(keys.size() == 2) {
@@ -1858,7 +1858,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				algo.myGraph.connect((int)keys.toArray()[0], (int)keys.toArray()[1],w);
 				keys.clear();
 				clearSelected();
-				paint(null);
+				if(newGraph) {paint(null);}
 			}
 			else {
 				keys.clear();
@@ -1872,7 +1872,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					"Remove edge", JOptionPane.QUESTION_MESSAGE, null, tempkeys1, null);
 			int dest = (Integer)JOptionPane.showInputDialog(null, "Pick a dest vertex:",
 					"Remove edge", JOptionPane.QUESTION_MESSAGE, null, tempkeys1, null);
-			if(algo.myGraph.removeEdge(src, dest) != null) {paint(algo.myGraph);}
+			if(algo.myGraph.removeEdge(src, dest) != null && newGraph) {paint(algo.myGraph);}
 			if(src == dest) {
 				JOptionPane.showMessageDialog(null,"the 2 vertexs can not be the same","Error",JOptionPane.ERROR_MESSAGE);
 
@@ -1881,11 +1881,13 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		case "New graph":
 			if(algo.myGraph instanceof DGraph) {
 				algo.init(new DGraph());
+				newGraph = true;
 			}
 			paint(algo.myGraph);
 			break;
 		}
 	}
+	static boolean newGraph = false;
 	private Object[] keysList() {
 		Object[] keys = new Object[algo.myGraph.nodeSize()];
 		int i = 0;
@@ -1987,7 +1989,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 		if(e.getClickCount() == 1 && isKeyPressed((int)' ')) {
 			algo.myGraph.addNode(new Vertex(p));
-			paint(null);
+			if(newGraph) {paint(null);}
 		}
 	}
 
