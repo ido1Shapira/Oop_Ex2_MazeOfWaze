@@ -93,3 +93,5 @@ we matched StdDraw to support a graph GUI window with several options:
 3. run some algorithm on the graph. (isConnected, shortestPath , TSP)
 
 4. add/remove vertex, add/remove edge, create new graph , clear selected vertices
+
+(if the graph to draw is null we refer to it as an empty graph.) 
