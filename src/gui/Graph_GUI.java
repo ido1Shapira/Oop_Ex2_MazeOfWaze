@@ -10,6 +10,9 @@ import utils.Point3D;
 import utils.StdDraw;
 
 public class Graph_GUI {
+//	public Graph_GUI() {
+//		StdDraw.paint(g); 
+//	}
 	public Graph_GUI(graph g) {
 		StdDraw.paint(g);
 	} 

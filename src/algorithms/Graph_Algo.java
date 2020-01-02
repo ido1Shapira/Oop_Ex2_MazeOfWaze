@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import org.junit.internal.ExactComparisonCriteria;
+
 import dataStructure.Vertex;
 import dataStructure.edge_data;
 import dataStructure.graph;
@@ -28,6 +30,16 @@ public class Graph_Algo implements graph_algorithms{
 	public graph myGraph;
 	private HashMap<Integer,HashSet<Integer>> vertexToNeighbors; // v1--->V
 	private HashMap<Integer,HashSet<Integer>> NeighborsToVertex; // V--->v1
+	
+	public Graph_Algo() {
+		this.mcGraph = 0;
+		this.myGraph = null;
+		this.vertexToNeighbors = new HashMap<Integer,HashSet<Integer>>();
+		this.NeighborsToVertex = new HashMap<Integer,HashSet<Integer>>();
+	}
+	public Graph_Algo(graph g) {
+		this.init(g);
+	}
 	/**
 	 * initiate the graph given into graph-algo object
 	 * (NOT A DEEP COPY)- gets an actual pointer to graph g
@@ -141,6 +153,7 @@ public class Graph_Algo implements graph_algorithms{
 	 */
 	@Override
 	public boolean isConnected() {
+		if(this.myGraph == null) new RuntimeException("the graph is null");
 		if(this.mcGraph != this.myGraph.getMC()) this.init(myGraph);
 		if(this.myGraph.getV().size()==1) return true;
 		infoTagWeightReset();		
@@ -286,6 +299,7 @@ public class Graph_Algo implements graph_algorithms{
 	 */
 	@Override
 	public double shortestPathDist(int src, int dest) {
+		if(this.myGraph == null) new RuntimeException("the graph is null");
 		if(this.mcGraph != this.myGraph.getMC()) this.init(myGraph);
 		try {
 			if(src==dest && this.myGraph.getNode(src)!=null)
@@ -333,6 +347,7 @@ public class Graph_Algo implements graph_algorithms{
 	 */
 	@Override
 	public List<node_data> shortestPath(int src, int dest)  {
+		if(this.myGraph == null) new RuntimeException("the graph is null");
 		if(this.mcGraph != this.myGraph.getMC()) this.init(myGraph);
 		try {
 			if(src==dest) {
@@ -374,6 +389,7 @@ public class Graph_Algo implements graph_algorithms{
 	 * 
 	 */
 	public  List<node_data> TSP(List<Integer> targets){
+		if(this.myGraph == null) new RuntimeException("the graph is null");
 		if(this.mcGraph != this.myGraph.getMC()) this.init(myGraph);
 		int n=targets.size();
 		ArrayList<node_data> nodeList= new ArrayList<node_data>();//same list as targets but with nodes
