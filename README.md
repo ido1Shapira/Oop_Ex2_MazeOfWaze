@@ -24,7 +24,7 @@ DGraph implements graph interface because every directed graph is first of all a
 
 * getEdge- return the data of the edge (src,dest), null if edge does not exist- O(1)
 
-* addNode- add a new node to the graph with the given node's data.- O(1)
+* addNode- add a deep copy of the node given to the graph with the given node's data. This is why 2 similar nodes are possible -the ID is unique for each node. Adding a node to the graph more than 1 time is possible since every addition gets a unique id O(1)
 
 * connect- connect an edge with the given weight between node src to node dest. (if the edge is already exist the new edge overwriting the old one.) O(1)
 
