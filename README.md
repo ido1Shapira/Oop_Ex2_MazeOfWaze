@@ -24,9 +24,9 @@ DGraph implements graph interface because every directed graph is first of all a
 
 * getEdge- return the data of the edge (src,dest), null if edge does not exist- O(1)
 
-* addNode- add a new node to the graph with the given node's data.- O(1)
+* addNode- add a deep copy of the node given to the graph with the given node's data. This is why 2 similar nodes are possible -the ID is unique for each node. Adding a node to the graph more than 1 time is possible since every addition gets a unique id O(1)
 
-* connect- connect an edge with the given weight between node src to node dest. O(1)
+* connect- connect an edge with the given weight between node src to node dest. (if the edge is already exist the new edge overwriting the old one.) O(1)
 
 * getV- This method return a pointer (shallow copy) for the collection representing all the nodes in the graph. O(1)
 
@@ -54,6 +54,8 @@ Graph_Algo object:
 *	HashMap<Integer,HashSet<Integer>> vertexToNeighbors- represents the connection between a vertex and his "kids"-(all the vertices that end an edge that starts with the main vertex)
 
 *	HashMap<Integer,HashSet<Integer>> NeighborsToVertex- represents the connection between a vertex and his "dads"- (all the vertices that start an edge that ends with the main vertex)
+
+Integer.MAX_VALUE = infinity.
 
 Graph_Algo implements graph_algorithms interface
 
@@ -93,3 +95,5 @@ we matched StdDraw to support a graph GUI window with several options:
 3. run some algorithm on the graph. (isConnected, shortestPath , TSP)
 
 4. add/remove vertex, add/remove edge, create new graph , clear selected vertices
+
+(if the graph to draw is null we refer to it as an empty graph.) 
