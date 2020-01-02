@@ -1,4 +1,4 @@
-package Test;
+package Tests;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -16,12 +16,18 @@ public class idoTest {
 	public final static int numberOfEdge = 15;
 	public static int seed = 4;
 	public static void main(String[] args) {
-		SPtest();
-		isConnectedTest();
-		edutesting();
-		save_init_test();
-		idotesting();
-		connectest();
+//		SPtest();
+//		isConnectedTest();
+//		edutesting();
+//		save_init_test();
+//		idotesting();
+//		connectest();
+	   	emptyGraphTest();
+	}
+	private static void emptyGraphTest() {
+		DGraph g = new DGraph();		
+		Graph_GUI gui = new Graph_GUI();
+
 	}
 	private static void isConnectedTest() {
 		DGraph g = new DGraph();

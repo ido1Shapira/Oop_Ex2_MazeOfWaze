@@ -606,9 +606,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// private static final double BORDER = 0.05;
 	private static final double BORDER = 0.00;
 	private static final double DEFAULT_XMIN = 0.0;
-	private static final double DEFAULT_XMAX = 1.0;
+	private static final double DEFAULT_XMAX = 100.0;
 	private static final double DEFAULT_YMIN = 0.0;
-	private static final double DEFAULT_YMAX = 1.0;
+	private static final double DEFAULT_YMAX = 100.0;
 
 	//for scale
 	private static double xmin, ymin, xmax, ymax;
@@ -1960,6 +1960,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private Point3D getCordinateOnScreen(Point3D PbyPixle) {
 		double XPixle=PbyPixle.x();
 		double YPixle=PbyPixle.y();
+
 		double mX = (Xmax-Xmin)/600.0;
 		double mY=(Ymin-Ymax)/600.0;
 		return new Point3D((mX*XPixle+Xmin), (mY*YPixle+Ymax));
@@ -2153,8 +2154,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	public static void paint(graph g2) {
 		if(g2 != null) {
 			StdDraw.clear();
-			StdDraw.algo = new Graph_Algo();
-			algo.init(g2);
+			StdDraw.algo = new Graph_Algo(g2);
 			if(g2.nodeSize() > 0) {
 				Xmin=Integer.MAX_VALUE;
 				Xmax=Integer.MIN_VALUE;
@@ -2174,19 +2174,38 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 			}
 			StdDraw.clearSelected();
 			StdDraw.setCanvasSize(600,600);
-			StdDraw.setXscale(Xmin,Xmax);
-			StdDraw.setYscale(Ymin,Ymax);
+			try {
+				StdDraw.setXscale(Xmin,Xmax);
+				StdDraw.setYscale(Ymin,Ymax);
+			}
+			catch (Exception e) {
+				StdDraw.setScale();
+				Xmin = 0;
+				Xmax = 100;
+				Ymin = 0;
+				Ymax = 100;
+			}
 		}
-
-		for (Iterator<node_data> iterator = StdDraw.algo.myGraph.getV().iterator(); iterator.hasNext();) {
-			node_data node = (node_data) iterator.next();
-			drawNode(node);
-			if(algo.myGraph.getE(node.getKey()) != null) {
-				for (Iterator<edge_data> iterator2 = algo.myGraph.getE(node.getKey()).iterator(); iterator2.hasNext();) {
-					edge_data edge = (edge_data) iterator2.next();
-					drawEdge(edge);
+		try {
+			for (Iterator<node_data> iterator = StdDraw.algo.myGraph.getV().iterator(); iterator.hasNext();) {
+				node_data node = (node_data) iterator.next();
+				drawNode(node);
+				if(algo.myGraph.getE(node.getKey()) != null) {
+					for (Iterator<edge_data> iterator2 = algo.myGraph.getE(node.getKey()).iterator(); iterator2.hasNext();) {
+						edge_data edge = (edge_data) iterator2.next();
+						drawEdge(edge);
+					}
 				}
 			}
+		}
+		catch (Exception e) {
+			StdDraw.algo = new Graph_Algo(new DGraph());
+			StdDraw.setScale();
+			StdDraw.setCanvasSize(600,600);
+			Xmin = 0;
+			Xmax = 100;
+			Ymin = 0;
+			Ymax = 100;
 		}
 		StdDraw.show();
 	}

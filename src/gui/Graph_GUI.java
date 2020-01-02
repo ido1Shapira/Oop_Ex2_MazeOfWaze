@@ -10,13 +10,13 @@ import utils.Point3D;
 import utils.StdDraw;
 
 public class Graph_GUI {
-//	public Graph_GUI() {
-//		StdDraw.paint(g); 
-//	}
+	public Graph_GUI() {
+		StdDraw.paint(null);
+	}
 	public Graph_GUI(graph g) {
 		StdDraw.paint(g);
 	} 
-	
+
 	/**
 	 * Test client.
 	 *
@@ -24,7 +24,7 @@ public class Graph_GUI {
 	 */
 	public static void main(String[]args) {
 		//draws a random graph with "numberOfVertexs" verdexes and "numberOfEdge" edges on random seed "seed".
-		
+
 		/*long startTime = System.currentTimeMillis();*/ //we can check how much time that it took
 		Graph_GUI gui = new Graph_GUI(createRandomGraph(5,15,4));
 		/*long endTime = System.currentTimeMillis();
