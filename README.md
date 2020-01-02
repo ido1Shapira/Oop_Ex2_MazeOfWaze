@@ -26,7 +26,7 @@ DGraph implements graph interface because every directed graph is first of all a
 
 * addNode- add a new node to the graph with the given node's data.- O(1)
 
-* connect- connect an edge with the given weight between node src to node dest. O(1)
+* connect- connect an edge with the given weight between node src to node dest. (if the edge is already exist the new edge overwriting the old one.) O(1)
 
 * getV- This method return a pointer (shallow copy) for the collection representing all the nodes in the graph. O(1)
 
