@@ -79,7 +79,7 @@ Graph_Algo implements graph_algorithms interface
 
 * TSP(List<Integer> targets)- computes a relatively short path which visit each node in the targets List- using a greedy algorithm
 
-## GUI:
+## Graph_GUI:
 we used StdDraw class that Princeton University created.
 
 here is the original class:
@@ -97,3 +97,7 @@ we matched StdDraw to support a graph GUI window with several options:
 4. add/remove vertex, add/remove edge, create new graph , clear selected vertices
 
 (if the graph to draw is null we refer to it as an empty graph.) 
+
+Every Graph-GUI object is a thread that repaint the graph every 0.5 second if necessary.
+the tread checkes if there is a need to repaint the graph by chacking the mc field within the graph.
+
