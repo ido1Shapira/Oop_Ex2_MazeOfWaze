@@ -34,7 +34,7 @@ public class DGraph implements graph, Serializable{
 	@Override
 	public node_data getNode(int key) {
 		try {
-		return this.idToVertex.get(key);
+			return this.idToVertex.get(key);
 		}
 		catch(Exception e) {
 			return null;
@@ -50,7 +50,7 @@ public class DGraph implements graph, Serializable{
 	@Override
 	public edge_data getEdge(int src, int dest) {
 		try {
-		return this.idToEdge.get(src).get(dest);
+			return this.idToEdge.get(src).get(dest);
 		}
 		catch(Exception e) {
 			return null;
@@ -79,8 +79,7 @@ public class DGraph implements graph, Serializable{
 	 */
 	@Override
 	public void connect(int src, int dest, double w) {
-		if(this.getNode(src)==null || this.getNode(dest)==null || w<0)
-			return;
+		if(this.getNode(src)==null || this.getNode(dest)==null || w<0 || src == dest) return;
 		int sizeBefore = this.edgeSize();
 		try {
 			if(this.idToEdge.get(src).get(dest)==null)

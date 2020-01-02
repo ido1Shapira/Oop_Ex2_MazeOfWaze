@@ -12,8 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.internal.ExactComparisonCriteria;
-
 import dataStructure.Vertex;
 import dataStructure.edge_data;
 import dataStructure.graph;

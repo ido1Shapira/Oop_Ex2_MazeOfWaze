@@ -2,8 +2,6 @@ package Tests;
 
 import static org.junit.Assert.*;
 
-import java.util.Random;
-
 import org.junit.Test;
 
 import algorithms.Graph_Algo;
@@ -11,7 +9,6 @@ import dataStructure.DGraph;
 import dataStructure.Edge;
 import dataStructure.Vertex;
 import dataStructure.edge_data;
-import dataStructure.node_data;
 import utils.Point3D;
 
 public class DGraphTest {
@@ -43,10 +40,6 @@ public class DGraphTest {
 		System.out.println("That took " + (endTime - startTime) + " milliseconds");
 		System.out.println("number of edges= "+g.edgeSize());
 		System.out.println("number of nodes= "+g.nodeSize());
-//		Graph_Algo al= new Graph_Algo();
-//		al.init(g);
-//		System.out.println("That took " + (System.currentTimeMillis()-endTime ) + " milliseconds");
-
 	}
 
 	@Test

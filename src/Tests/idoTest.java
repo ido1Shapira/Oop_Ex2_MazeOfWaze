@@ -22,7 +22,37 @@ public class idoTest {
 //		save_init_test();
 //		idotesting();
 //		connectest();
-	   	emptyGraphTest();
+//	   	emptyGraphTest();
+	   	casesTest();
+	}
+	private static void casesTest() {
+		DGraph g = new DGraph();
+		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
+		Vertex v2=new Vertex(new Point3D(10,80,1),2,20);
+		Vertex v3=new Vertex(new Point3D(10,20,1),3,30);
+		Vertex v4=new Vertex(new Point3D(7,65,1),4,40);
+		Vertex v5=new Vertex(new Point3D(80,10,1),5,50);
+		g.addNode(v1);
+		g.addNode(v2);
+		g.addNode(v3);
+		g.addNode(v4);
+		g.addNode(v5);
+		g.connect(v1.getKey(), v2.getKey(), 10);
+		g.connect(v2.getKey(), v3.getKey(), 15);
+		g.connect(v1.getKey(), v1.getKey(), 20);
+//		Graph_GUI gui = new Graph_GUI(g);
+		System.out.println(g.getEdge(1,2).getWeight());
+		System.out.println(g.edgeSize());
+		g.connect(v1.getKey(), v2.getKey(), 20);
+		System.out.println(g.getEdge(1,2).getWeight());
+		System.out.println(g.edgeSize());
+		g.addNode(v1);
+		System.out.println(g.getNode(1).getWeight());
+		System.out.println(g.nodeSize());
+
+
+
+		
 	}
 	private static void emptyGraphTest() {
 		DGraph g = new DGraph();		
@@ -137,8 +167,8 @@ public class idoTest {
 		Graph_Algo ga=new Graph_Algo();
 		ga.init(g);
 		Graph_GUI gui = new Graph_GUI(g);
-		System.out.println("conncted true expected"+ga.isConnected());
-		System.out.println("shortest path null expoected+ERROR massage "+ ga.shortestPath(1, 2));
+		System.out.println("conncted true expected= "+ga.isConnected());
+		System.out.println("shortest path null expected= "+ ga.shortestPath(1, 2));
 		System.out.println("8 expected= "+ga.shortestPathDist(2, 3));		
 	}
 
@@ -171,12 +201,6 @@ public class idoTest {
 		System.out.println(g.getNode(8));
 		System.out.println(al.TSP(targets));
 	}
-//	private static void removeEdge(DGraph g, int src, int dest) {
-//		int sizebefore = g.edgeSize();
-//		edge_data edge = g.removeEdge(src, dest);
-//		if (sizebefore -1 == g.edgeSize() &&  edge != null)
-//			System.out.println("remove edge succsess");
-//	}
 	private static void connectest() {
 		DGraph dg= new DGraph();
 		Vertex v1=new Vertex(new Point3D(50,5,1),1,10);
@@ -203,40 +227,4 @@ public class idoTest {
 		al.init(dg);
 		Graph_GUI gui1 = new Graph_GUI(dg);
 	}
-//	private static void removeNodeTest(DGraph g, int key) {
-//		int sizebefore = g.nodeSize();
-//		node_data node = g.removeNode(key);
-//		if (sizebefore -1 == g.nodeSize() &&   node != null)
-//			System.out.println("remove node succsess");
-//
-//	}
-//
-//	private static void edgeSizeTest(DGraph g) {
-//		int expectedEdges = numberOfEdge;
-//		int actuelEdges = g.edgeSize();
-//		for (Iterator<node_data> iterator = g.getV().iterator(); iterator.hasNext();) {
-//			node_data node = (node_data) iterator.next();
-//			System.out.println(node.getKey() + "edges:\n" + g.getE(node.getKey()));
-//		}
-//		//		if(expectedEdges != actuelEdges)
-//		//			System.out.println("number of edges suppose to be equels --> expected is "+ 
-//		//					expectedEdges + " but got " + actuelEdges);
-//		//		else {
-//		System.out.println("nodeSizeTest succsess");
-//		//		}
-//	}
-//
-//	private static void nodeSizeTest(DGraph g) {
-//		int expectedVertexs = numberOfVertexs;
-//		int actuelVertexs = g.nodeSize();
-//		if(expectedVertexs != actuelVertexs)
-//			System.out.println("number of vertexs suppose to be equels --> expected is "+ 
-//					expectedVertexs + " but got " + actuelVertexs);
-//		else {
-//			System.out.println("edgeSizeTest succsess");
-//		}
-//		System.out.println("Vertex list:\n"+g.getV());
-//	}
-
-
 }
